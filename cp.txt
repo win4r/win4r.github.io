@@ -1,0 +1,42 @@
+<?php
+
+$ua=$_SERVER['HTTP_USER_AGENT'];
+
+$ip=$_SERVER["REMOTE_ADDR"];
+
+//@file_put_contents("./log.txt",$id.'	'.$ua.'	'.$ip."\r\n",FILE_APPEND);
+
+$urls=array(
+
+"http://www.vy2u.com/index.php?id=1",
+
+"https://finaff.g2afse.com/click?pid=6412&offer_id=8798",
+
+"https://finaff.g2afse.com/click?pid=6412&offer_id=8798"
+
+);
+
+$ref=$_SERVER['HTTP_REFERER'];
+
+$id=$_GET['id'];
+
+$ref=$_GET['ref'];
+
+if(isset($id) && strpos($ref, 'index') !== false){
+
+redirect($urls[$id]);
+
+}
+elseif(isset($id) && isset($ref)){
+    redirect("http://www.vy2u.com/index.php?id=".$id."&ref=index");
+}
+
+function redirect($url)
+{
+    header("Location: $url");
+    exit();
+}
+
+
+
+?>
