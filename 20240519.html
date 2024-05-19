@@ -1,0 +1,1365 @@
+
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>roboflow+Paligemma微调识别X光片大模型</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="0bc2e4b3-e77c-4e67-9a6b-9ffff34791ff" class="page sans"><header><h1 class="page-title">roboflow+Paligemma微调识别X光片大模型</h1><p class="page-description"></p></header><div class="page-body"><p id="c1d10038-3b1d-4fdd-8219-0510c8677aad" class="">
+</p><h3 id="98b8d272-fec0-46e6-8039-db6d3e4284d0" class="">colab在线体验</h3><p id="32fb55ea-86ad-43a1-9056-8fa15bb5402a" class=""><a href="https://colab.research.google.com/drive/1xBmU7VNDRXPjhctFiBHqimA446I0i6qe#scrollTo=cb9NEdq2s-nf">https://colab.research.google.com/drive/1xBmU7VNDRXPjhctFiBHqimA446I0i6qe#scrollTo=cb9NEdq2s-nf</a></p><p id="363117cc-3e0a-4a41-80ef-77aa8f744656" class="">
+</p><h3 id="143f736e-043c-479d-a32f-94ca5864390e" class="">本地运行</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="36763b1e-795f-4a78-9f92-2f2b195bac9b" class="code"><code class="language-Shell"># 请在命令行中运行以下安装命令，或确保这些库已正确安装
+# pip install torch numpy Pillow requests
+# pip install git+https://github.com/huggingface/transformers.git
+#AI超元域频道原创视频(视频禁止盗搬，违者必究！)
+
+import torch
+import numpy as np
+from PIL import Image
+import requests
+
+# 定义输入文本和图像URL
+input_text = &quot;What color is the flower that bee is standing on?&quot;
+img_url = &quot;https://huggingface.co/datasets/huggingface/documentation-images/resolve/main/transformers/tasks/bee.JPG?download=true&quot;
+response = requests.get(img_url, stream=True)
+input_image = Image.open(response.raw).convert(&quot;RGB&quot;)
+
+from transformers import PaliGemmaForConditionalGeneration, PaliGemmaProcessor
+
+# 设置设备，自动检测是否支持CUDA
+device = torch.device(&quot;cuda&quot; if torch.cuda.is_available() else &quot;cpu&quot;)
+
+# 初始化模型和处理器
+model_id = &quot;leo009/paligemma-3b-mix-224&quot;
+model = PaliGemmaForConditionalGeneration.from_pretrained(model_id, torch_dtype=torch.bfloat16).to(device)
+processor = PaliGemmaProcessor.from_pretrained(model_id)
+
+# 处理输入
+inputs = processor(text=input_text, images=input_image, padding=&quot;longest&quot;, return_tensors=&quot;pt&quot;).to(device)
+
+# 生成输出
+with torch.no_grad():
+    output = model.generate(**inputs, max_length=496)
+
+# 打印解码后的输出
+result = processor.decode(output[0], skip_special_tokens=True)
+print(result)
+</code></pre><p id="b60dc6ea-a654-4db8-bfe0-735700199d11" class="">
+</p><h3 id="69faa25b-f645-401a-8985-47005c776556" class="">环境配置</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="ba28b2bd-5784-4479-bf4b-11f3ea6dae5e" class="code"><code class="language-Python"># pip install roboflow supervision
+
+
+#Roboflow是一个用于构建和管理计算机视觉应用的数据标注平台。
+#它提供了一套工具，用于轻松地收集、标注和增强图像和视频数据集。
+#Roboflow还提供了一个公开的平台，用于共享和下载数据集和模型。
+
+#AI超元域频道原创视频(视频禁止盗搬，违者必究！)
+
+###执行下载roboflow数据集
+
+import os
+from roboflow import Roboflow
+
+# 直接赋值 API 密钥 此处用Private API Key https://app.roboflow.com/win4r/settings/api
+ROBOFLOW_API_KEY = &quot;hrhnEY2OmKYHI6BbVYP5&quot;
+
+# 使用 Roboflow API 密钥初始化
+rf = Roboflow(api_key=ROBOFLOW_API_KEY)
+project = rf.workspace(&quot;srinithi-s-tzdkb&quot;).project(&quot;fracture-detection-rhud5&quot;)
+version = project.version(4)
+dataset = version.download(&quot;paligemma&quot;)
+</code></pre><p id="20295187-742d-4cf1-a107-fe7c2fa8287c" class="">
+</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="c566fac1-9766-4bb4-bce8-b28d7a9dd642" class="code"><code class="language-Python"># pip install numpy supervision
+
+# python annotate_image.py
+
+#AI超元域频道原创视频(视频禁止盗搬，违者必究！)
+
+###这段代码定义了一个 `from_pali_gemma` 函数，用于解析带有检测结果的字符串，并将其转换为 `sv.Detections` 对象。然后，代码从注释文件中读取图像信息和检测结果，加载图像并应用检测结果进行标注，最后显示标注后的图像。
+
+import re
+import numpy as np
+import supervision as sv
+from typing import Tuple, List, Optional
+from PIL import Image
+import json
+
+# 定义 from_pali_gemma 函数
+def from_pali_gemma(
+    response: str,
+    resolution_wh: Tuple[int, int],
+    classes: Optional[List[str]] = None
+) -&gt; sv.Detections:
+    _SEGMENT_DETECT_RE = re.compile(
+        r&#x27;(.*?)&#x27; +
+        r&#x27;&lt;loc(\d{4})&gt;&#x27; * 4 + r&#x27;\s*&#x27; +
+        &#x27;(?:%s)?&#x27; % (r&#x27;&lt;seg(\d{3})&gt;&#x27; * 16) +
+        r&#x27;\s*([^;&lt;&gt;]+)? ?(?:; )?&#x27;,
+    )
+
+    width, height = resolution_wh
+    xyxy_list = []
+    class_name_list = []
+
+    while response:
+        m = _SEGMENT_DETECT_RE.match(response)
+        if not m:
+            break
+
+        gs = list(m.groups())
+        before = gs.pop(0)
+        name = gs.pop()
+        y1, x1, y2, x2 = [int(x) / 1024 for x in gs[:4]]
+        y1, x1, y2, x2 = map(round, (y1*height, x1*width, y2*height, x2*width))
+
+        content = m.group()
+        if before:
+            response = response[len(before):]
+            content = content[len(before):]
+
+        xyxy_list.append([x1, y1, x2, y2])
+        class_name_list.append(name.strip())
+        response = response[len(content):]
+
+    xyxy = np.array(xyxy_list)
+    class_name = np.array(class_name_list)
+
+    if classes is None:
+        class_id = None
+    else:
+        class_id = np.array([classes.index(name) for name in class_name])
+
+    return sv.Detections(
+        xyxy=xyxy,
+        class_id=class_id,
+        data={&#x27;class_name&#x27;: class_name}
+    )
+
+# 从数据集加载第一个注释
+dataset_location = &quot;/home/Ubuntu/fracture-detection-4&quot;  # 替换为实际的数据集路径
+first = json.loads(open(f&quot;{dataset_location}/dataset/_annotations.train.jsonl&quot;).readline())
+print(first)
+
+# 打开图像文件
+image = Image.open(f&quot;{dataset_location}/dataset/{first.get(&#x27;image&#x27;)}&quot;)
+CLASSES = first.get(&#x27;prefix&#x27;).replace(&quot;detect &quot;, &quot;&quot;).split(&quot; ; &quot;)
+detections = from_pali_gemma(first.get(&#x27;suffix&#x27;), image.size, CLASSES)
+
+# 进行图像标注
+sv.BoundingBoxAnnotator().annotate(image, detections)
+</code></pre><p id="a5e9d297-89fd-4888-8752-ad0d5c345901" class="">
+</p><h3 id="2048b1de-5a11-4515-9c82-45c110bb24ce" class="">下载配置big_vision</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="85b65ff0-4567-4d5b-b60a-9d87578be4e5" class="code"><code class="language-Python">
+# 下载 big_vision 仓库：
+#AI超元域频道原创视频(视频禁止盗搬，违者必究！)
+
+
+git clone --quiet --branch=main --depth=1 https://github.com/google-research/big_vision big_vision_repo
+
+
+# 设置 PYTHONPATH 环境变量：
+export PYTHONPATH=$PYTHONPATH:$(pwd)/big_vision_repo
+</code></pre><p id="50ed95f6-86e0-4634-8dcd-6933a4ede5e7" class="">
+</p><h3 id="83582787-ce1d-42a8-937e-bbae59e80341" class="">下载模型</h3><p id="2d69d180-81d1-40ba-8f4e-03b5c79185c4" class="">
+</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="c086e2c2-b07b-4449-90c6-2e9343dd8b17" class="code"><code class="language-Python">
+#AI超元域频道原创视频(视频禁止盗搬运，违者必究！)
+
+#常规下载方式
+https://www.kaggle.com/api/v1/models/google/paligemma/jax/paligemma-3b-pt-224/1/download/paligemma-3b-pt-224.f16.npz
+
+#AI超元域频道提供的下载链接
+https://huggingface.co/leo009/paligemma-3b-pt-224.f16.npz/resolve/main/paligemma-3b-pt-224.f16.npz
+
+下载后我放在了这个路径:
+/home/Ubuntu/paligemma-3b-pt-224.f16.npz</code></pre><p id="eccd1ec7-6598-4a62-bd07-74129a8a8ba9" class="">
+</p><h3 id="c953934c-51ab-4de6-84ed-9a337b71478e" class="">下载<strong>paligemma_tokenizer.model</strong></h3><p id="98a52d9f-b4b1-4832-b166-fec2539e6ab4" class="">
+</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="4e07fec6-b174-4916-ac9b-97dbe9b809cc" class="code"><code class="language-Python">#AI超元域频道原创视频(视频禁止盗搬运，违者必究！)
+#常规下载方式
+pip install gsutil
+
+gsutil cp gs://big_vision/paligemma_tokenizer.model /home/Ubuntu/paligemma_tokenizer.model
+
+
+#AI超元域频道提供的下载链接
+https://huggingface.co/leo009/paligemma_tokenizer.model/resolve/main/paligemma_tokenizer.model
+
+#文件完整路径 /home/Ubuntu/paligemma_tokenizer.model
+
+</code></pre><p id="b37bc2d9-a21d-4906-a48a-54d56a9fa32c" class="">
+</p><h3 id="5b790d1c-67e2-4dd2-b3c1-bf8515eb9e4c" class="">加载模型和标记器</h3><p id="897be767-de7f-4ee9-9210-2fcdf529fb15" class="">
+</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="c2433457-c3fd-468e-b09f-022bc0cdf386" class="code"><code class="language-Python">#python load_model_and_tokenizer.py
+
+#AI超元域频道原创视频(视频禁止盗搬运，违者必究！)
+import os
+
+# 设置本地文件路径
+MODEL_PATH = &quot;/home/Ubuntu/paligemma-3b-pt-224.f16.npz&quot;
+TOKENIZER_PATH = &quot;/home/Ubuntu/paligemma_tokenizer.model&quot;
+
+# 加载模型示例
+def load_model(model_path):
+    # 这里需要根据具体模型文件格式加载模型
+    print(f&quot;Loading model from {model_path}...&quot;)
+    # 模型加载代码
+    pass
+
+# 加载标记器示例
+def load_tokenizer(tokenizer_path):
+    # 这里需要根据具体标记器文件格式加载标记器
+    print(f&quot;Loading tokenizer from {tokenizer_path}...&quot;)
+    # 标记器加载代码
+    pass
+
+# 加载模型和标记器
+load_model(MODEL_PATH)
+load_tokenizer(TOKENIZER_PATH)
+
+print(&quot;Model and tokenizer loaded successfully.&quot;)
+</code></pre><h3 id="b60c48d6-d4e1-45b7-95d5-6b1dc7c5f372" class="">训练</h3><p id="3ad74343-375f-4c07-8f47-c85a37a76ee0" class="">
+</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="82f1ecdc-168e-40b0-963a-266172432e6e" class="code"><code class="language-Shell">
+#AI超元域频道原创视频(视频禁止盗搬运，违者必究！)
+#安装依赖项
+pip install jaxlib tensorflow sentencepiece ml_collections ipython pillow
+
+pip install flax optax tensorflow-datasets
+
+pip install einops
+
+pip install jax[cuda12]
+</code></pre><p id="c4b81b21-cdf9-4ea1-99d1-a1832d477e77" class="">
+</p><p id="b503dd5d-2e97-40a4-a8bd-f28841f69d83" class="">
+</p><h2 id="0d9943ec-2a93-45f6-b674-22380368bdca" class="">🔥🔥🔥如有问题请联系我的徽信: stoeng</h2><p id="04d6811e-e2e6-4d21-b1be-cccb98240c06" class=""><br/><br/></p><h3 id="35a5da3b-ee76-4f98-bc23-cfce3ad445ba" class="">完整代码</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="82cbf995-4665-40fb-bb68-0eb927c93095" class="code"><code class="language-Python">
+#AI超元域频道原创视频(视频禁止盗搬运，违者必究！)
+
+import base64
+import functools
+import html
+import io
+import os
+import warnings
+
+import jax
+import jax.numpy as jnp
+import numpy as np
+import ml_collections
+
+import tensorflow as tf
+import sentencepiece
+
+from IPython.core.display import display, HTML
+
+import torch  # 确保导入 torch
+from PIL import Image
+
+# Import model definition from big_vision
+from big_vision.models.proj.paligemma import paligemma
+from big_vision.trainers.proj.paligemma import predict_fns
+
+# Import big vision utilities
+import big_vision.datasets.jsonl
+import big_vision.utils
+import big_vision.sharding
+
+# 设置本地文件路径
+MODEL_PATH = &quot;/home/Ubuntu/paligemma-3b-pt-224.f16.npz&quot;
+TOKENIZER_PATH = &quot;/home/Ubuntu/paligemma_tokenizer.model&quot;
+dataset_location = &quot;/home/Ubuntu/fracture-detection-4&quot;
+
+
+# 加载模型示例
+def load_model(model_path):
+    print(f&quot;Loading model from {model_path}...&quot;)
+    model = np.load(model_path)  # 使用 NumPy 加载模型
+    return model
+
+# 加载标记器示例
+def load_tokenizer(tokenizer_path):
+    print(f&quot;Loading tokenizer from {tokenizer_path}...&quot;)
+    with open(tokenizer_path, &#x27;rb&#x27;) as f:
+        tokenizer = f.read()  # 根据标记器的实际格式调整
+    return tokenizer
+
+# 加载模型和标记器
+model = load_model(MODEL_PATH)
+tokenizer = load_tokenizer(TOKENIZER_PATH)
+print(&quot;Model and tokenizer loaded successfully.&quot;)
+
+# 不要限制TF使用GPU或TPU
+# tf.config.set_visible_devices([], &quot;GPU&quot;)
+# tf.config.set_visible_devices([], &quot;TPU&quot;)
+
+# 检查是否有GPU可用
+gpus = tf.config.experimental.list_physical_devices(&#x27;GPU&#x27;)
+if gpus:
+    try:
+        # 设置GPU使用限制为按需增长，而不是预先分配所有的显存
+        for gpu in gpus:
+            tf.config.experimental.set_memory_growth(gpu, True)
+    except RuntimeError as e:
+        print(e)
+
+backend = jax.lib.xla_bridge.get_backend()
+print(f&quot;JAX version:  {jax.__version__}&quot;)
+print(f&quot;JAX platform: {backend.platform}&quot;)
+print(f&quot;JAX devices:  {jax.device_count()}&quot;)
+
+# 如果你希望JAX使用GPU，确保CUDA和cuDNN已正确安装并配置
+if backend.platform == &#x27;gpu&#x27;:
+    print(&quot;JAX is using GPU&quot;)
+else:
+    print(&quot;JAX is not using GPU, check your CUDA/cuDNN installation.&quot;)
+
+
+
+# @title Construct model and load params into RAM.
+
+# Define model
+model_config = ml_collections.FrozenConfigDict({
+    &quot;llm&quot;: {&quot;vocab_size&quot;: 257_152},
+    &quot;img&quot;: {&quot;variant&quot;: &quot;So400m/14&quot;, &quot;pool_type&quot;: &quot;none&quot;, &quot;scan&quot;: True, &quot;dtype_mm&quot;: &quot;float16&quot;}
+})
+model = paligemma.Model(**model_config)
+tokenizer = sentencepiece.SentencePieceProcessor(TOKENIZER_PATH)
+
+# 加载参数
+params = paligemma.load(None, MODEL_PATH, model_config)
+
+# 定义 `decode` 函数以从模型中采样输出。
+decode_fn = predict_fns.get_all(model)[&#x27;decode&#x27;]
+decode = functools.partial(decode_fn, devices=jax.devices(), eos_token=tokenizer.eos_id())
+
+
+
+# 将参数移至 GPU 内存
+#
+# 创建可训练参数的 pytree 掩码。
+def is_trainable_param(name, param):  # pylint: disable=unused-argument
+  if name.startswith(&quot;llm/layers/attn/&quot;):  return True
+  if name.startswith(&quot;llm/&quot;):              return False
+  if name.startswith(&quot;img/&quot;):              return False
+  raise ValueError(f&quot;Unexpected param name {name}&quot;)
+trainable_mask = big_vision.utils.tree_map_with_names(is_trainable_param, params)
+
+#
+# 如果有多个设备可用（例如，多块 GPU），可以将参数分片到这些设备上，以减少每个设备的 HBM 使用量。
+mesh = jax.sharding.Mesh(jax.devices(), (&quot;data&quot;))
+
+data_sharding = jax.sharding.NamedSharding(
+    mesh, jax.sharding.PartitionSpec(&quot;data&quot;))
+
+params_sharding = big_vision.sharding.infer_sharding(
+    params, strategy=[(&#x27;.*&#x27;, &#x27;fsdp(axis=&quot;data&quot;)&#x27;)], mesh=mesh)
+
+# Yes: Some donated buffers are not usable.
+warnings.filterwarnings(
+    &quot;ignore&quot;, message=&quot;Some donated buffers were not usable&quot;)
+
+@functools.partial(jax.jit, donate_argnums=(0,), static_argnums=(1,))
+def maybe_cast_to_f32(params, trainable):
+  return jax.tree.map(lambda p, m: p.astype(jnp.float32) if m else p,
+                      params, trainable)
+
+# Loading all params in simultaneous - albeit much faster and more succinct -
+# requires more RAM than the T4 colab runtimes have by default (12GB RAM).
+# Instead we do it param by param.
+params, treedef = jax.tree.flatten(params)
+sharding_leaves = jax.tree.leaves(params_sharding)
+trainable_leaves = jax.tree.leaves(trainable_mask)
+for idx, (sharding, trainable) in enumerate(zip(sharding_leaves, trainable_leaves)):
+  params[idx] = big_vision.utils.reshard(params[idx], sharding)
+  params[idx] = maybe_cast_to_f32(params[idx], trainable)
+  params[idx].block_until_ready()
+params = jax.tree.unflatten(treedef, params)
+
+# Print params to show what the model is made of.
+def parameter_overview(params):
+  for path, arr in big_vision.utils.tree_flatten_with_names(params)[0]:
+    print(f&quot;{path:80s} {str(arr.shape):22s} {arr.dtype}&quot;)
+
+print(&quot; == Model params == &quot;)
+parameter_overview(params)
+
+
+
+# @title Define preprocess functions to create inputs to the model.
+
+def preprocess_image(image, size=224):
+  # 模型已被训练处理不同纵横比的图像，这些图像被调整为 224x224，范围在 [-1, 1] 之间。
+  # 双线性和抗锯齿缩放选项有助于提高某些任务的质量。
+  image = np.asarray(image)
+  if image.ndim == 2:  # Convert image without last channel into greyscale.
+    image = np.stack((image,)*3, axis=-1)
+  image = image[..., :3]  # Remove alpha layer.
+  assert image.shape[-1] == 3
+
+  image = tf.constant(image)
+  image = tf.image.resize(image, (size, size), method=&#x27;bilinear&#x27;, antialias=True)
+  return image.numpy() / 127.5 - 1.0  # [0, 255]-&gt;[-1,1]
+
+def preprocess_tokens(prefix, suffix=None, seqlen=None):
+  # 模型已被训练处理由带有全注意力的前缀和带有因果注意力的后缀组成的标记化文本。
+  separator = &quot;\n&quot;
+  tokens = tokenizer.encode(prefix, add_bos=True) + tokenizer.encode(separator)
+  mask_ar = [0] * len(tokens)    # 0 to use full attention for prefix.
+  mask_loss = [0] * len(tokens)  # 0 to not use prefix tokens in the loss.
+
+  if suffix:
+    suffix = tokenizer.encode(suffix, add_eos=True)
+    tokens += suffix
+    mask_ar += [1] * len(suffix)    # 1 to use causal attention for suffix.
+    mask_loss += [1] * len(suffix)  # 1 to use suffix tokens in the loss.
+
+  mask_input = [1] * len(tokens)    # 1 if its a token, 0 if padding.
+  if seqlen:
+    padding = [0] * max(0, seqlen - len(tokens))
+    tokens = tokens[:seqlen] + padding
+    mask_ar = mask_ar[:seqlen] + padding
+    mask_loss = mask_loss[:seqlen] + padding
+    mask_input = mask_input[:seqlen] + padding
+
+  return jax.tree.map(np.array, (tokens, mask_ar, mask_loss, mask_input))
+
+def postprocess_tokens(tokens):
+  tokens = tokens.tolist()  # np.array to list[int]
+  try:  # Remove tokens at and after EOS if any.
+    eos_pos = tokens.index(tokenizer.eos_id())
+    tokens = tokens[:eos_pos]
+  except ValueError:
+    pass
+  return tokenizer.decode(tokens)
+
+
+
+# 函数用于遍历训练和验证样本。
+SEQLEN = 128
+
+# TODO: 考虑使用跳过 big_vision 和 tf.data 的数据迭代器？
+train_dataset = big_vision.datasets.jsonl.DataSource(
+    os.path.join(dataset_location, &quot;dataset/_annotations.train.jsonl&quot;),
+    fopen_keys={&quot;image&quot;: f&quot;{dataset_location}/dataset&quot;})
+
+val_dataset = big_vision.datasets.jsonl.DataSource(
+    os.path.join(dataset_location, &quot;dataset/_annotations.valid.jsonl&quot;),
+    fopen_keys={&quot;image&quot;: f&quot;{dataset_location}/dataset&quot;})
+
+
+def train_data_iterator():
+  &quot;&quot;&quot;无限循环遍历训练样本的迭代器。&quot;&quot;&quot;
+  # 对样本进行打乱并重复，这样可以进行多轮训练。
+  dataset = train_dataset.get_tfdata().shuffle(1_000).repeat()
+  for example in dataset.as_numpy_iterator():
+    image = Image.open(io.BytesIO(example[&quot;image&quot;]))
+    image = preprocess_image(image)
+
+    # prefix = &quot;caption en&quot;  # Could also be a different prefix per example.
+    prefix = example[&quot;prefix&quot;].decode().lower()
+    suffix = example[&quot;suffix&quot;].decode().lower()
+    tokens, mask_ar, mask_loss, _ = preprocess_tokens(prefix, suffix, SEQLEN)
+
+    yield {
+        &quot;image&quot;: np.asarray(image),
+        &quot;text&quot;: np.asarray(tokens),
+        &quot;mask_ar&quot;: np.asarray(mask_ar),
+        &quot;mask_loss&quot;: np.asarray(mask_loss),
+    }
+
+
+def validation_data_iterator():
+  &quot;&quot;&quot;遍历验证样本的单次迭代器。&quot;&quot;&quot;
+  for example in val_dataset.get_tfdata(ordered=True).as_numpy_iterator():
+    image = Image.open(io.BytesIO(example[&quot;image&quot;]))
+    image = preprocess_image(image)
+
+    # prefix = &quot;caption en&quot;  # 每个样本也可以使用不同的前缀。
+    prefix = example[&quot;prefix&quot;].decode().lower()
+    tokens, mask_ar, _, mask_input = preprocess_tokens(prefix, seqlen=SEQLEN)
+
+    yield {
+        &quot;image&quot;: np.asarray(image),
+        &quot;text&quot;: np.asarray(tokens),
+        &quot;mask_ar&quot;: np.asarray(mask_ar),
+        &quot;mask_input&quot;: np.asarray(mask_input),
+    }
+
+
+
+
+
+# 检查训练样本。
+def split_and_keep_second_part(s):
+  parts = s.split(&#x27;\n&#x27;, 1)
+  if len(parts) &gt; 1:
+    return parts[1]
+  return s
+
+def render_inline(image, resize=(128, 128)):
+  &quot;&quot;&quot;Convert image into inline html.&quot;&quot;&quot;
+  image = Image.fromarray(image)
+  image.resize(resize)
+  with io.BytesIO() as buffer:
+    image.save(buffer, format=&#x27;jpeg&#x27;)
+    image_b64 = str(base64.b64encode(buffer.getvalue()), &quot;utf-8&quot;)
+    return f&quot;data:image/jpeg;base64,{image_b64}&quot;
+
+def render_example(image, caption):
+  image = ((image + 1)/2 * 255).astype(np.uint8)  # [-1,1] -&gt; [0, 255]
+  h, w, _ = image.shape
+  try:
+      detections = from_pali_gemma(caption, (w, h), CLASSES)
+      image = sv.BoundingBoxAnnotator().annotate(image, detections)
+  except:
+      print(&quot;result render failed, result:&quot;, caption)
+  return f&quot;&quot;&quot;
+    &lt;div style=&quot;display: inline-flex; align-items: center; justify-content: center;&quot;&gt;
+        &lt;img style=&quot;width:128px; height:128px;&quot; src=&quot;{render_inline(image, resize=(64,64))}&quot; /&gt;
+        &lt;p style=&quot;width:256px; margin:10px; font-size:small;&quot;&gt;{html.escape(caption)}&lt;/p&gt;
+    &lt;/div&gt;
+    &quot;&quot;&quot;
+
+html_out = &quot;&quot;
+for idx, example in zip(range(8), train_data_iterator()):
+  caption = postprocess_tokens(example[&quot;text&quot;])  # detokenize model input.
+  caption = split_and_keep_second_part(caption)
+  html_out += render_example(example[&quot;image&quot;], caption)
+
+print(&quot;Training examples&quot;)
+display(HTML(html_out))
+
+#print(html_out)  # 直接打印HTML内容
+
+# 保存HTML内容到文件
+with open(&quot;/home/Ubuntu/Trainingexamples.html&quot;, &quot;w&quot;) as f:
+    f.write(html_out)
+print(&quot;HTML content saved to Trainingexamples.html&quot;)
+
+
+#------------------------------------------
+
+# 定义训练步骤和评估循环
+#
+# 使用简单随机梯度下降（SGD）的主要更新函数。
+#
+@functools.partial(jax.jit, donate_argnums=(0,))
+def update_fn(params, batch, learning_rate):
+  imgs, txts, mask_ar = batch[&quot;image&quot;], batch[&quot;text&quot;], batch[&quot;mask_ar&quot;]
+
+  def loss_fn(params):
+    text_logits, _ = model.apply({&quot;params&quot;: params}, imgs, txts[:, :-1], mask_ar[:, :-1], train=True)
+    logp = jax.nn.log_softmax(text_logits, axis=-1)
+
+    #  模型的输入是 txts[:, :-1]，但损失是定义为预测下一个标记 txts[:, 1:]。
+    # 此外，mask_loss[:, 1:] 表示哪些标记是损失的一部分（例如，前缀和填充标记不包括在内）。
+    mask_loss = batch[&quot;mask_loss&quot;][:, 1:]
+    targets = jax.nn.one_hot(txts[:, 1:], text_logits.shape[-1])
+
+    # 计算每个样本的损失，即每个标记困惑度的平均值。
+    # 由于每个样本的标记数量不同，我们进行归一化处理。
+    token_pplx = jnp.sum(logp * targets, axis=-1)  # sum across vocab_size.
+    example_loss = -jnp.sum(token_pplx * mask_loss, axis=-1)  # sum across seq_len.
+    example_loss /= jnp.clip(jnp.sum(mask_loss, -1), 1)  # weight by num of tokens.
+
+    # batch_loss: mean of per example loss.
+    return jnp.mean(example_loss)
+
+  loss, grads = jax.value_and_grad(loss_fn)(params)
+
+  # 使用随机梯度下降（SGD）将梯度应用于可训练参数.
+  def apply_grad(param, gradient, trainable):
+    if not trainable: return param
+    return param - learning_rate * gradient
+
+  params = jax.tree_util.tree_map(apply_grad, params, grads, trainable_mask)
+
+  return params, loss
+
+# 评估/推理循环。
+def make_predictions(data_iterator, *, num_examples=None,
+                     batch_size=4, seqlen=SEQLEN, sampler=&quot;greedy&quot;):
+  outputs = []
+  while True:
+    # 构建批次中的样本列表。
+    examples = []
+    try:
+      for _ in range(batch_size):
+        examples.append(next(data_iterator))
+        examples[-1][&quot;_mask&quot;] = np.array(True)  # Indicates true example.
+    except StopIteration:
+      if len(examples) == 0:
+        return outputs
+
+    #样本数量不足，无法完成一个批次。通过重复最后一个样本进行填充。
+    while len(examples) % batch_size:
+      examples.append(dict(examples[-1]))
+      examples[-1][&quot;_mask&quot;] = np.array(False)  # Indicates padding example.
+
+    # Convert list of examples into a dict of np.arrays and load onto devices.
+    batch = jax.tree.map(lambda *x: np.stack(x), *examples)
+    batch = big_vision.utils.reshard(batch, data_sharding)
+
+    # 进行模型预测
+    tokens = decode({&quot;params&quot;: params}, batch=batch,
+                    max_decode_len=seqlen, sampler=sampler)
+
+    # 将模型预测获取到设备并进行去标记化。
+    tokens, mask = jax.device_get((tokens, batch[&quot;_mask&quot;]))
+    tokens = tokens[mask]  # remove padding examples.
+    responses = [postprocess_tokens(t) for t in tokens]
+
+    # 附加到 html 输出。
+    for example, response in zip(examples, responses):
+      outputs.append((example[&quot;image&quot;], response))
+      if num_examples and len(outputs) &gt;= num_examples:
+        return outputs
+
+
+
+#没有微调的时候检查模型性能
+
+print(&quot;Model predictions&quot;)
+html_out = &quot;&quot;
+for image, caption in make_predictions(validation_data_iterator(), num_examples=8, batch_size=4):
+  html_out += render_example(image, caption)
+display(HTML(html_out))
+
+
+#print(html_out)  # 直接打印HTML内容
+
+# 保存HTML内容到文件
+with open(&quot;/home/Ubuntu/output_without_finetuning.html&quot;, &quot;w&quot;) as f:
+    f.write(html_out)
+print(&quot;HTML content saved to output_without_finetuning.html&quot;)
+
+
+
+
+
+# 使用余弦学习率调度器运行简短的训练循环。
+#
+# 注意：由于 XLA 编译 jax.jit 函数，在某些机器上第一次迭代可能会非常慢（可能需要几分钟）。
+
+BATCH_SIZE = 8
+TRAIN_EXAMPLES = 512
+# TRAIN_EXAMPLES = 256
+LEARNING_RATE = 0.01
+
+TRAIN_STEPS = TRAIN_EXAMPLES // BATCH_SIZE
+EVAL_STEPS = TRAIN_STEPS // 8
+
+train_data_it = train_data_iterator()
+
+sched_fn = big_vision.utils.create_learning_rate_schedule(
+    total_steps=TRAIN_STEPS+1, base=LEARNING_RATE,
+    decay_type=&quot;cosine&quot;, warmup_percent=0.10)
+
+for step in range(1, TRAIN_STEPS+1):
+  # 列出 N 个训练样本。
+  examples = [next(train_data_it) for _ in range(BATCH_SIZE)]
+
+  # 将示例列表转换为 np.arrays 的字典并加载到设备上。
+  batch = jax.tree.map(lambda *x: np.stack(x), *examples)
+  batch = big_vision.utils.reshard(batch, data_sharding)
+
+  # 训练步骤并报告训练损失
+  learning_rate = sched_fn(step)
+  params, loss = update_fn(params, batch, learning_rate)
+
+  loss = jax.device_get(loss)
+  print(f&quot;step: {step:2d}/{TRAIN_STEPS:2d}   lr: {learning_rate:.5f}   loss: {loss:.4f}&quot;)
+
+  if step == 1 or (step % EVAL_STEPS) == 0:
+    print(f&quot;Model predictions at step {step}&quot;)
+    html_out = &quot;&quot;
+    for image, caption in make_predictions(
+        validation_data_iterator(), num_examples=4, batch_size=4):
+      html_out += render_example(image, caption)
+    display(HTML(html_out))
+    # 保存HTML内容到文件
+    with open(&quot;/home/Ubuntu/output_training_loop.html&quot;, &quot;w&quot;) as f:
+        f.write(html_out)
+    print(&quot;HTML content saved to output_training_loop.html&quot;)
+
+
+
+print(&quot;Model predictions&quot;)
+html_out = &quot;&quot;
+for image, caption in make_predictions(validation_data_iterator(), batch_size=4):
+  html_out += render_example(image, caption)
+display(HTML(html_out))
+
+with open(&quot;/home/Ubuntu/output_Evaluate.html&quot;, &quot;w&quot;) as f:
+    f.write(html_out)
+print(&quot;HTML content saved to output_Evaluate.html&quot;)
+
+
+#保存微调后的模型
+flat, _ = big_vision.utils.tree_flatten_with_names(params)
+with open(&quot;/home/Ubuntu/fine-tuned-paligemma-3b-pt-224.f16.npz&quot;, &quot;wb&quot;) as f:
+  np.savez(f, **{k: v for k, v in flat})</code></pre><p id="4ba56d9b-7691-46c6-9d1d-0edc9e4ee1cc" class="">
+</p><h2 id="992a71ee-8fd0-4f29-a6e9-29572ba6c6b6" class="">如有问题请联系我的徽信: stoeng<br/><br/></h2><h1 id="7b3531eb-6dfb-4690-836b-0965f7b568df" class="">🔥🔥🔥本项目代码由AI超元域频道制作，观看更多大模型微调视频请访问我的频道⬇</h1><h1 id="21cf40df-07af-4582-b2ab-e43fcdccd747" class="">👉👉👉<a href="https://space.bilibili.com/3493277319825652">我的哔哩哔哩频道</a></h1><h1 id="4e1564d7-7fbd-4b11-baf9-0dd6edb5e800" class="">👉👉👉<a href="https://www.youtube.com/@AIsuperdomain">我的YouTube频道</a></h1></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
