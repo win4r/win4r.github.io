@@ -1,0 +1,826 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>本地部署+微调 stable diffusion 3 </title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="ea64c55f-7f83-4968-bd94-5c1609d21f9d" class="page sans"><header><h1 class="page-title">本地部署+微调 stable diffusion 3 </h1><p class="page-description"></p></header><div class="page-body"><p id="6fb55646-4976-45c0-873f-75f293559870" class="">
+</p><p id="0d446b73-e33d-42f2-ac20-e4a18722e40a" class="">
+</p><h3 id="b20ab2c9-bb6e-4c8b-9c59-dcb7e85f131f" class=""><strong><a href="https://github.com/Stability-AI/StableSwarmUI">StableSwarmUI</a></strong></h3><blockquote id="c5868db5-90ad-45b9-a139-514c0821089a" class="">StableSwarmUI是Stable Diffusion官方推出的一款WebUI框架<br/>让Stable Diffusion的使用变得更加简单和方便<br/></blockquote><figure id="91900c36-cfd9-4f0a-a194-ca5845f5e44d" class="image"><a href="https://github.com/Stability-AI/StableSwarmUI/blob/master/.github/images/stableswarmui.jpg?raw=true"><img src="https://github.com/Stability-AI/StableSwarmUI/blob/master/.github/images/stableswarmui.jpg?raw=true"/></a></figure><figure id="5297f7c7-ddac-4696-9ae9-a4b0177cdd7e" class="image"><a href="%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2+%E5%BE%AE%E8%B0%83%20stable%20diffusion%203%20ea64c55f7f834968bd945c1609d21f9d/Untitled.png"><img style="width:1645px" src="%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2+%E5%BE%AE%E8%B0%83%20stable%20diffusion%203%20ea64c55f7f834968bd945c1609d21f9d/Untitled.png"/></a></figure><h3 id="86b65081-79f0-4b48-b69a-7c512c9657c8" class="">prompt</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="06b85517-8685-4998-bbce-e48742061ff7" class="code"><code class="language-Plain Text">a female character with long, flowing hair that appears to be made of ethereal, swirling patterns resembling the Northern Lights or Aurora Borealis. The background is dominated by deep blues and purples, creating a mysterious and dramatic atmosphere. The character&#x27;s face is serene, with pale skin and striking features. She wears a dark-colored outfit with subtle patterns. The overall style of the artwork is reminiscent of fantasy or supernatural genres
+
+Digital art, portrait of an anthropomorphic roaring Tiger warrior with full armor, close up in the middle of a battle, behind him there is a banner with the text &quot;Open Source&quot;.
+
+photo of a dog and a cat both standing on a red box, with a blue ball in the middle with a parrot standing on top of the ball. The box has the text &quot;SD3&quot;
+
+selfie photo of a wizard with long beard and purple robes, he is apparently in the middle of Tokyo. Probably taken from a phone.
+
+A vibrant street wall covered in colorful graffiti, the centerpiece spells &quot;SD3 MEDIUM&quot;, in a storm of colors
+
+photo of a young woman with long, wavy brown hair tied in a bun and glasses. She has a fair complexion and is wearing subtle makeup, emphasizing her eyes and lips. She is dressed in a black top. The background appears to be an urban setting with a building facade, and the sunlight casts a warm glow on her face.
+
+anime art of a steampunk inventor in their workshop, surrounded by gears, gadgets, and steam. He is holding a blue potion and a red potion, one in each hand
+
+photo of picturesque scene of a road surrounded by lush green trees and shrubs. The road is wide and smooth, leading into the distance. On the right side of the road, there&#x27;s a blue sports car parked with the license plate spelling &quot;SD32B&quot;. The sky above is partly cloudy, suggesting a pleasant day. The trees have a mix of green and brown foliage. There are no people visible in the image. The overall composition is balanced, with the car serving as a focal point.
+
+photo of young man in a black suit, white shirt, and black tie. He has a neatly styled haircut and is looking directly at the camera with a neutral expression. The background consists of a textured wall with horizontal lines. The photograph is in black and white, emphasizing contrasts and shadows. The man appears to be in his late twenties or early thirties, with fair skin and short, dark hair.
+
+photo of a woman on the beach, shot from above. She is facing the sea, while wearing a white dress. She has long blonde hair</code></pre><h3 id="a42baca4-a8ee-4e1e-8925-d40065335f48" class="">安装</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="4e708cbd-6ae1-4e10-bf6e-07505f0bc2dd" class="code"><code class="language-Plain Text">wget https://github.com/Stability-AI/StableSwarmUI/releases/download/0.6.1-Beta/install-linux.sh -O install-linux.sh
+chmod +x install-linux.sh
+
+
+##windows
+git clone https://github.com/Stability-AI/StableSwarmUI
+##然后双击打开launch-windows.bat
+
+##模型下载链接 https://huggingface.co/leo009/stable-diffusion-3-medium/resolve/main/sd3_medium_incl_clips.safetensors</code></pre><p id="b6b7f4b7-2c1b-49bc-9380-2e258f762926" class="">
+</p><p id="486d7bfc-84b6-4891-a892-77ca497bd5fa" class="">
+</p><h3 id="9a47ddd6-11ed-4e55-8c4b-5aca57e1e1c8" class="">微调</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="ea82a6f3-1f52-48c3-9225-e81cff645765" class="code"><code class="language-JSON"># 创建名为 aila 的 Python 3.11 conda 环境
+conda create -n aila python=3.11 -y
+# 激活 aila 环境
+conda activate aila
+
+# 安装必要的 Python 库
+pip install peft datasets huggingface_hub wandb bitsandbytes pillow git+https://github.com/huggingface/transformers accelerate sentencepiece
+
+# 克隆 Hugging Face 的 diffusers 仓库
+git clone https://github.com/huggingface/diffusers
+# 进入 diffusers 目录
+cd diffusers
+# 以可编辑模式安装 diffusers 库
+pip install -e .
+# 进入 examples/dreambooth 目录
+cd examples/dreambooth
+# 安装 requirements_sd3.txt 中的依赖
+pip install -r requirements_sd3.txt
+
+# 登录 Hugging Face Hub
+huggingface-cli login
+# 配置 Accelerate 库的默认设置
+accelerate config default
+
+# 使用 Python 的 heredoc 语法执行 Python 代码块
+python - &lt;&lt;EOT
+from huggingface_hub import snapshot_download
+
+# 设置本地目录路径
+local_dir = &quot;/home/Ubuntu/dog&quot;
+# 从 Hugging Face Hub 下载 &quot;diffusers/dog-example&quot; 数据集到本地目录
+snapshot_download(
+    &quot;diffusers/dog-example&quot;,
+    local_dir=local_dir,
+    repo_type=&quot;dataset&quot;,
+    ignore_patterns=&quot;.gitattributes&quot;,
+)
+EOT
+
+# 设置预训练的 Stable Diffusion 3 模型名称
+export MODEL_NAME=&quot;stabilityai/stable-diffusion-3-medium-diffusers&quot;
+# 设置自定义数据集的目录路径
+export INSTANCE_DIR=&quot;/home/Ubuntu/dog&quot;
+# 设置微调后模型的输出目录
+export OUTPUT_DIR=&quot;trained-sd3-lora&quot;
+
+# 使用 Accelerate 启动 train_dreambooth_lora_sd3.py 训练脚本
+accelerate launch train_dreambooth_lora_sd3.py \
+  --pretrained_model_name_or_path=$MODEL_NAME \
+  --instance_data_dir=$INSTANCE_DIR \
+  --output_dir=$OUTPUT_DIR \
+  --mixed_precision=&quot;fp16&quot; \
+  --instance_prompt=&quot;a photo of sks dog&quot; \
+  --resolution=512 \
+  --train_batch_size=1 \
+  --gradient_accumulation_steps=4 \
+  --learning_rate=1e-5 \
+  --report_to=&quot;wandb&quot; \
+  --lr_scheduler=&quot;constant&quot; \
+  --lr_warmup_steps=0 \
+  --max_train_steps=500 \
+  --validation_prompt=&quot;A photo of sks dog in a bucket&quot; \
+  --validation_epochs=25 \
+  --seed=&quot;0&quot;   
+  #如果报错，则运行这行代码
+  
+ pip install numpy==1.24.3
+ mv /home/Ubuntu/dog/.huggingface /home/Ubuntu/
+</code></pre><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="c145b49a-75a2-4658-abb4-a87ab8b70abf" class="code"><code class="language-JSON">accelerate launch train_dreambooth_lora_sd3.py \
+  --pretrained_model_name_or_path=${MODEL_NAME}  \
+  --instance_data_dir=${INSTANCE_DIR} \
+  --output_dir=/home/Ubuntu/${OUTPUT_DIR} \
+  --mixed_precision=&quot;fp16&quot; \
+  --instance_prompt=&quot;a photo of sks dog&quot; \
+  --resolution=1024 \
+  --train_batch_size=1 \
+  --gradient_accumulation_steps=4 \
+  --learning_rate=1e-5 \
+  --report_to=&quot;wandb&quot; \
+  --lr_scheduler=&quot;constant&quot; \
+  --lr_warmup_steps=0 \
+  --max_train_steps=500 \
+  --weighting_scheme=&quot;logit_normal&quot; \
+  --validation_prompt=&quot;A photo of sks dog in a bucket&quot; \
+  --validation_epochs=25 \
+  --seed=&quot;0&quot; 
+</code></pre><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="47f1735d-53ce-48a1-bc1a-7ef59bfa5121" class="code"><code class="language-JSON">##load lora
+##path /home/Ubuntu/diffusers/examples/dreambooth
+
+import os
+import torch
+from diffusers import AutoPipelineForText2Image
+from PIL import Image
+
+model_id = &quot;stabilityai/stable-diffusion-xl-base-1.0&quot;
+pipeline = AutoPipelineForText2Image.from_pretrained(model_id, torch_dtype=torch.float16).to(&quot;cuda&quot;)
+
+lora_path = &quot;/home/Ubuntu/trained-sd3-lora/pytorch_lora_weights.safetensors&quot;
+
+if os.path.exists(lora_path):
+    pipeline.load_lora_weights(lora_path)
+else:
+    print(f&quot;LoRA 权重文件 {lora_path} 不存在。&quot;)
+
+# 使用 LoRA 生成图像
+prompt = &quot;A photo of sks dog in a bucket&quot;
+image = pipeline(prompt, num_inference_steps=50).images[0]
+
+# 将图片保存到文件
+image.save(&quot;output.png&quot;)
+print(f&quot;生成的图片已保存到 output.png&quot;)
+
+
+
+</code></pre><p id="5d229974-bb33-4b24-82d6-5976e84e1ad7" class="">
+</p><p id="14651eb2-fa6b-46cd-acfd-c8aab0864de4" class="">
+</p><h2 id="123b17a4-ff83-420b-9628-3b0ecfa608af" class=""><strong>👉👉👉如有问题请联系我的徽信 stoeng</strong></h2><h2 id="ba0b770b-f7ea-4051-8d72-3e26655c57a9" class=""><strong>🔥🔥🔥本项目代码由AI超元域频道制作，观看更多大模型微调视频请访问我的频道⬇</strong></h2><h3 id="6cf44a2e-42b9-4f5b-8eec-4c0dbce04694" class=""><strong>👉👉👉</strong><strong><a href="https://space.bilibili.com/3493277319825652">我的哔哩哔哩频道</a></strong><strong></strong></h3><h3 id="68b9816d-f82a-4331-8bfe-ed26fde46906" class=""><strong>👉👉👉</strong><strong><a href="https://www.youtube.com/@AIsuperdomain">我的YouTube频道</a></strong></h3><h3 id="03823aaf-66d8-46a6-9e23-5c2a4b6f474e" class=""><strong>👉👉👉</strong><strong><a href="https://github.com/win4r/AISuperDomain">我的开源项目</a></strong></h3><h3 id="2b17e6b3-7012-4468-ad0a-185bb9806644" class="">超参数设置解释</h3><blockquote id="48e88ef9-f0ff-4fc3-a39d-ddda67a30d93" class=""><ol type="1" id="012da309-754b-40fe-bd75-11af22c67c0c" class="numbered-list" start="1"><li>-mixed_precision=&quot;fp16&quot;:使用半精度(FP16)进行混合精度训练。这可以减少内存使用并加速训练过程,同时保持模型性能。</li></ol><ol type="1" id="a74ca778-53e5-4e11-bb26-0317019ea613" class="numbered-list" start="2"><li>-instance_prompt=&quot;a photo of sks dog&quot;:这是你为模型提供的实例提示,用于指导模型生成特定主题(sks狗)的图像。</li></ol><ol type="1" id="94af72bb-5192-4621-9e08-3abddb93fa39" class="numbered-list" start="3"><li>-resolution=1024:生成图像的分辨率设置为1024x1024。更高的分辨率可以生成更细节的图像,但也需要更多的计算资源和时间。</li></ol><ol type="1" id="e118f7d4-4976-4b52-924e-5cc6340fe963" class="numbered-list" start="4"><li>-train_batch_size=1:训练批量大小设置为1。这可能是由于GPU内存限制或者为了更稳定的训练。</li></ol><ol type="1" id="e6677e12-85bc-4a1e-a59f-24a6aeff68ce" class="numbered-list" start="5"><li>-gradient_accumulation_steps=4:梯度累积步数设置为4。这意味着每4个训练步骤更新一次模型参数。这可以模拟更大的批量大小,在内存有限的情况下很有用。</li></ol><ol type="1" id="c36c7084-4411-46c1-8455-ef32e63d9bc3" class="numbered-list" start="6"><li>-learning_rate=1e-5:学习率设置为1×10^(-5),这是一个较小的值,有助于模型稳定学习并逐步适应新数据。</li></ol><ol type="1" id="26487ca7-d183-44c6-bd03-346c85f637db" class="numbered-list" start="7"><li>-report_to=&quot;wandb&quot;:使用Weights &amp; Biases (wandb)来记录和跟踪训练过程。</li></ol><ol type="1" id="4ae3157f-efd8-4a58-ab66-980ba62a9286" class="numbered-list" start="8"><li>-lr_scheduler=&quot;constant&quot;:使用恒定的学习率调度器,即在整个训练过程中保持学习率不变。</li></ol><ol type="1" id="659c7eec-f6fa-4652-8dee-212b3f7279f7" class="numbered-list" start="9"><li>-lr_warmup_steps=0:学习率预热步数设置为0,表示不使用学习率预热。</li></ol><ol type="1" id="b842aa31-aa1b-4ca2-9506-4670a16126e4" class="numbered-list" start="10"><li>-max_train_steps=500:最大训练步数设置为500,控制模型训练的总迭代次数。</li></ol><ol type="1" id="30ac2b69-8fa2-4f5b-9885-393a176434a8" class="numbered-list" start="11"><li>-weighting_scheme=&quot;logit_normal&quot;:使用logit_normal权重方案。权重方案决定了如何组合各项损失计算最终的训练目标。</li></ol><ol type="1" id="db05858d-2ff2-4261-a885-3136715199a5" class="numbered-list" start="12"><li>-validation_prompt=&quot;A photo of sks dog in a bucket&quot;:验证提示,用于在训练过程中评估模型性能。</li></ol><ol type="1" id="d02c0b3e-bccc-45ff-afa3-36e59907bd6a" class="numbered-list" start="13"><li>-validation_epochs=25:每25个训练epoch进行一次验证。</li></ol><ol type="1" id="123e348a-d77e-4713-8df1-cec0113f69c2" class="numbered-list" start="14"><li>-seed=&quot;0&quot;:设置随机种子为0,用于确保训练的可重复性。</li></ol><p id="676199fd-eddc-454b-97e2-720b92e814a1" class="">这些超参数设置的优势在于:</p><ol type="1" id="93d4d3b2-807e-4c19-9e38-6dd78e9ea921" class="numbered-list" start="1"><li>使用混合精度训练和较小的批量大小,可以减少内存使用并加速训练。</li></ol><ol type="1" id="191639ce-4b42-41a8-897a-2e7d317e5dba" class="numbered-list" start="2"><li>较低的学习率有助于模型稳定学习并逐步适应新数据。</li></ol><ol type="1" id="c75b12c0-2314-4863-8293-d42e9bdf6b61" class="numbered-list" start="3"><li>使用wandb可以方便地跟踪和可视化训练过程。</li></ol><ol type="1" id="496e0799-4c77-4ab1-ab6c-b9d15a01a519" class="numbered-list" start="4"><li>恒定的学习率调度器简单易用。</li></ol><ol type="1" id="710373e1-9c57-4173-be01-b13878ac578d" class="numbered-list" start="5"><li>使用验证提示和定期验证,可以监控模型在训练过程中的性能。</li></ol><ol type="1" id="d8484319-83f2-4635-a638-60e530f65bac" class="numbered-list" start="6"><li>设置随机种子保证了训练的可重复性。</li></ol></blockquote><h3 id="42b0f84c-1bd7-4193-a2e4-f601bff85daa" class="">wandb介绍</h3><blockquote id="1079277a-c4bd-4ba6-88a1-1e5d62ebcb8f" class=""><a href="https://wandb.ai/site">https://wandb.ai/site</a><p id="24c79a71-483d-4660-8f23-df1786e4a121" class="">wandb是一个强大的机器学习平台，为实验提供跟踪、可视化和协作功能。<br/>可以记录训练指标，生成可视化图表，自动优化超参数，并进行模型版本控制。<br/></p></blockquote><figure id="19ea0826-4839-439a-b236-7b0ef1aeb37c" class="image"><a href="%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2+%E5%BE%AE%E8%B0%83%20stable%20diffusion%203%20ea64c55f7f834968bd945c1609d21f9d/Untitled%201.png"><img style="width:708px" src="%E6%9C%AC%E5%9C%B0%E9%83%A8%E7%BD%B2+%E5%BE%AE%E8%B0%83%20stable%20diffusion%203%20ea64c55f7f834968bd945c1609d21f9d/Untitled%201.png"/></a></figure><p id="6b6b24ed-7f13-4bf0-bbe2-95c3eb6ac584" class="">
+</p><p id="92598a76-626d-490e-a4da-ab78c46cdb9f" class="">
+</p><p id="d711b6e0-ff79-4bd7-abd8-b27cdaa59870" class="">
+</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
