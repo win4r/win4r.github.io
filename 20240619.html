@@ -1,0 +1,1121 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>本地配置开源大模型实现混合智能体，MoA+ollama打造真正超越gpt4o的AI agent</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="9bbdb6b5-be3d-4884-87c1-83c4ffe44f60" class="page sans"><header><h1 class="page-title">本地配置开源大模型实现混合智能体，MoA+ollama打造真正超越gpt4o的AI agent</h1><p class="page-description"></p></header><div class="page-body"><p id="0791e582-35b6-4eeb-b26d-52061aba8da1" class="">
+</p><h3 id="92a5384a-bb67-4aa4-b27d-fbe12f2f9f48" class="">视频中的模型组合</h3><blockquote id="f8a08ce0-4851-414c-b7be-e75666a6f443" class="">phi3 3.8b<br/>llama3 8b<br/>mistral 7b<br/></blockquote><h3 id="c634e3bb-69cb-4025-89f7-5a1ded9b6e92" class="">论文:<a href="https://arxiv.org/abs/2406.04692">https://arxiv.org/abs/2406.04692</a></h3><p id="e07e3e70-2e2a-454a-b629-dde4ed35e0c6" class="">
+</p><h2 id="4622280f-9b98-4cf1-91d3-7445f69c10e9" class="">项目地址</h2><h3 id="6be0a1df-5476-47b4-8cae-c89885657da2" class="">1.支持ollama等各种API接口的MoA  <a href="https://github.com/win4r/MoA">https://github.com/win4r/MoA</a></h3><h3 id="98ecbbdf-e156-49d8-8972-85f8a3731efd" class="">2.官方版MoA(只支持togetherAPI) <a href="https://github.com/togethercomputer/MoA">https://github.com/togethercomputer/MoA</a></h3><p id="91c02fdb-7259-4e73-b03d-fd06b528431f" class="">
+</p><h3 id="5793b6fb-50de-42a8-86b4-abc90a6ff976" class="">论文简介:</h3><blockquote id="7b138e83-ba73-4466-bae3-285152be17af" class="">论文提出了一种称为混合智能体(Mixture-of-Agents,MoA)的方法,利用多个大语言模型(LLM)的集体智慧来提高自然语言理解和生成任务的性能。<ol type="1" id="ef50cfcc-afdc-4e9b-b243-0572a3989d58" class="numbered-list" start="1"><li>MoA采用了分层结构,每一层包含多个LLM智能体。每个智能体都将前一层所有智能体的输出作为辅助信息来生成自己的回答。通过迭代地综合和优化回答,MoA可以充分利用不同LLM的独特优势。</li></ol><ol type="1" id="0537154d-013d-410b-8309-cef8dfd93d49" class="numbered-list" start="2"><li>实验发现,即使其他模型提供的辅助回答质量较低,LLM也倾向于生成更好的回答,体现出LLM具有内在的协作性。MoA正是利用了这种协作性。</li></ol><ol type="1" id="037a281f-7b84-40df-bc5b-30fa1ee050f3" class="numbered-list" start="3"><li>在AlpacaEval 2.0、MT-Bench和FLASK等基准测试中,MoA取得了目前最佳的性能,仅使用开源LLM就超过了GPT-4。例如在AlpacaEval 2.0上,MoA达到了65.1%的得分,而GPT-4 Omni为57.5%。</li></ol><ol type="1" id="8489b055-e7d5-4548-8f31-d0cef61540ec" class="numbered-list" start="4"><li>进一步的分析表明,MoA并非简单地从辅助回答中选择最佳答案,而是对它们进行了复杂的综合;使用更多不同的LLM作为提议者可以提高MoA的性能。</li></ol><ol type="1" id="38fa77e5-74a2-4d6c-8292-b72a0e6fe225" class="numbered-list" start="5"><li>通过预算分析,MoA的几种实现可以达到与GPT-4 Turbo相当的性能,同时成本却降低了一半。</li></ol><p id="14b37687-a52a-498c-b47b-cb43b9c90c68" class="">展示了如何通过混合智能体的框架来发挥多个LLM的协同效应,在提高性能的同时兼顾了计算成本,为后续研究指明了一个很有前景的方向。</p></blockquote><p id="609d2dc1-c3af-4c17-bd62-e75c62d6dfc6" class="">
+</p><h3 id="99aea84b-e4dc-434d-a217-3333ecd68a2c" class="">MoA 的核心思想</h3><blockquote id="fc8a8c8f-3c72-4751-87a9-33a1e5253198" class="">MoA 的核心思想是“混合智能体”，即通过结合多个大型语言模型 (LLM) 的优势来实现更强大的性能。传统的 LLM 通常在某些任务上表现出色，而在其他任务上可能存在不足。MoA 则通过将不同 LLM 的能力进行整合，从而在各种任务上都达到更高的水平。</blockquote><p id="541ac729-c39d-4b50-9b44-53f594e3ea76" class="">
+</p><h3 id="3063720f-f5ed-4248-9498-9e657fe31ce3" class="">工作原理</h3><blockquote id="dc417c1b-ea54-4d94-91ba-018b1ad71cf8" class=""><strong>MoA 的工作原理</strong><p id="c00446e1-8a40-4db7-9f87-8e715719edc3" class="">MoA 采用了一种分层的架构，每一层都包含多个 LLM 代理。这些代理协同工作，共同处理输入并生成响应。MoA 的工作流程通常包括以下步骤：</p><ol type="1" id="eaf30c35-d124-4469-831d-5683033d3782" class="numbered-list" start="1"><li><strong>输入处理：</strong> 将用户的输入发送给 MoA 的第一层。</li></ol><ol type="1" id="06628469-6fe9-4101-bd21-0b9877a98a66" class="numbered-list" start="2"><li><strong>分层处理：</strong> 每一层的 LLM 代理都会对输入进行处理，并生成中间结果。</li></ol><ol type="1" id="85266a69-ccd9-49a7-bfff-5d78cb85107e" class="numbered-list" start="3"><li><strong>结果聚合：</strong> 将每一层的中间结果进行聚合，生成最终的响应。</li></ol></blockquote><p id="2577be16-9274-4903-baa7-54d24e174113" class="">
+</p><h3 id="f316dddb-1d21-48e9-8c39-dd1e84e553bf" class="">流程</h3><figure id="a6a586cb-b9cc-4c81-b392-9a8aa7e5fccc" class="image"><a href="%E6%9C%AC%E5%9C%B0%E9%85%8D%E7%BD%AE%E5%BC%80%E6%BA%90%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%AE%9E%E7%8E%B0%E6%B7%B7%E5%90%88%E6%99%BA%E8%83%BD%E4%BD%93%EF%BC%8CMoA+ollama%E6%89%93%E9%80%A0%E7%9C%9F%E6%AD%A3%E8%B6%85%E8%B6%8Agpt4o%E7%9A%84AI%20agent%209bbdb6b5be3d488487c183c4ffe44f60/Untitled.png"><img style="width:708px" src="%E6%9C%AC%E5%9C%B0%E9%85%8D%E7%BD%AE%E5%BC%80%E6%BA%90%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%AE%9E%E7%8E%B0%E6%B7%B7%E5%90%88%E6%99%BA%E8%83%BD%E4%BD%93%EF%BC%8CMoA+ollama%E6%89%93%E9%80%A0%E7%9C%9F%E6%AD%A3%E8%B6%85%E8%B6%8Agpt4o%E7%9A%84AI%20agent%209bbdb6b5be3d488487c183c4ffe44f60/Untitled.png"/></a></figure><h3 id="95185914-6703-48f0-abe4-3745b3782201" class="">MoA 的优势</h3><blockquote id="ef37b3c8-7776-48ad-9f99-235193d5b267" class=""><ul id="8bf5b2df-2b92-4b82-9c07-30c1739ea90a" class="bulleted-list"><li style="list-style-type:disc"><strong>性能提升：</strong> 通过结合多个 LLM 的优势，MoA 在各种任务上都实现了显著的性能提升，甚至在某些基准测试中超越了 GPT-4o。</li></ul><ul id="455a70c9-c185-49d9-bc2d-1d7609aa2b6f" class="bulleted-list"><li style="list-style-type:disc"><strong>灵活性：</strong> MoA 可以灵活地选择和组合不同的 LLM，从而适应不同的应用场景。</li></ul><ul id="80d91f70-583f-41bc-8af0-a3a4e3238197" class="bulleted-list"><li style="list-style-type:disc"><strong>可扩展性：</strong> MoA 可以方便地添加新的 LLM，从而进一步提升性能。</li></ul></blockquote><p id="7513181f-fcc9-40d0-b77b-e549f69bd6cd" class="">
+</p><h3 id="89475680-3e21-49bc-8920-04cb387ae17e" class=""><strong>MoA 的应用</strong></h3><blockquote id="94179003-5195-4f17-b702-d71e40a2155b" class=""><ul id="7e677a30-465b-4db5-b3e0-c9beab2bafb9" class="bulleted-list"><li style="list-style-type:disc"><strong>文本生成：</strong> MoA 可以生成更准确、更流畅、更富有创造性的文本。</li></ul><ul id="0197313d-5be0-45d4-af3b-83dbae818548" class="bulleted-list"><li style="list-style-type:disc"><strong>机器翻译：</strong> MoA 可以实现更高质量的机器翻译。</li></ul><ul id="961fe41e-e05c-4b25-8fc5-c192d0da5c8e" class="bulleted-list"><li style="list-style-type:disc"><strong>对话系统：</strong> MoA 可以构建更智能、更人性化的对话系统。</li></ul></blockquote><p id="d729857a-9e50-4be2-8f5f-c78f29bb841e" class="">
+</p><h3 id="671523da-1afa-4d88-8a00-e2e770795d63" class="">API注册</h3><p id="8498193f-debc-4de9-943a-2ca7cf8acf3f" class="">together API:<a href="https://api.together.ai/settings/billing">https://api.together.ai/settings/billing</a></p><p id="99e1cb21-5f74-47bf-a574-828a094e73fb" class="">groq API:<a href="https://console.groq.com/keys">https://console.groq.com/keys</a></p><p id="c9fd00a0-178b-42dd-a36f-79260fd5a72a" class="">
+</p><h3 id="59a1a9fa-a5a1-49ae-a63a-7253c284eb75" class="">ollama API</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="74be82b3-53f0-4208-866d-f77d76d4101f" class="code"><code class="language-Python">    &quot;model&quot;: &quot;codestral:22b&quot;,
+    &quot;base_url&quot;: &quot;http://localhost:11434/v1&quot;,
+    &quot;api_key&quot;: &quot;ollama&quot;,</code></pre><h3 id="0eddcf46-945f-455a-81a8-48113bc1fc8a" class="">ollama拉取并运行模型</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="a244cff9-72cb-4ad1-b2fe-3b2eab5a23aa" class="code"><code class="language-Python">ollama run llama3:instruct
+ollama run mistral:instruct
+ollama run phi3:instruct</code></pre><h3 id="68d0f0d8-7703-44d4-a5f1-4cf4c67b23a5" class="">配置命令</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="f3805b5e-d3c2-4ebe-a8de-49a11d9500ac" class="code"><code class="language-Shell">##下载官方的，不支持ollama
+git clone https://github.com/togethercomputer/MoA.git   
+
+cd MoA
+
+pip install -r requirements.txt
+
+cd alpaca_eval
+
+pip install -e .
+
+cd FastChat
+
+pip install -e &quot;.[model_worker,llm_judge]&quot;
+
+cd ..
+
+export TOGETHER_API_KEY=&lt;API KEY&gt;
+
+export OPENAI_API_KEY=&lt;API KEY&gt;
+
+##自定义部分
+export GROQ_API_KEY=&lt;API KEY&gt;
+
+
+python bot.py
+</code></pre><p id="86b65b0e-3dd1-41e9-a671-ee3c3d248277" class="">
+</p><h3 id="b9f82565-285d-4273-b5d5-32adf6bfeb5d" class="">测试问题</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="f95a21db-ed3c-4519-8c96-7f6699e4a90a" class="code"><code class="language-Python">How can I dive deeper into machine learning?
+
+Implement a Snake game using Python.</code></pre><p id="23005a4e-c8e3-47f8-8834-21b650913b2d" class="">
+</p><p id="7a16d5f0-1c01-4423-8f8c-b1348d3311b3" class="">
+</p><p id="d61cbabe-e05f-48cd-ab11-1101e8322bd2" class="">
+</p><p id="2357fee1-967b-4ab7-b775-a44d61af6ca0" class="">bot.py</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="b78c9ad7-165d-4a4a-837f-33d971be8a06" class="code"><code class="language-Python">import datasets
+from functools import partial
+from loguru import logger
+from utils import (
+    generate_together_stream,
+    generate_with_references,
+    DEBUG,
+)
+import typer
+from rich import print
+from rich.console import Console
+from rich.markdown import Markdown
+from rich.prompt import Prompt
+from datasets.utils.logging import disable_progress_bar
+from time import sleep
+
+disable_progress_bar()
+
+console = Console()
+
+welcome_message = &quot;&quot;&quot;
+# Welcome to the Together AI MoA (Mixture-of-Agents) interactive demo!
+
+Mixture of Agents (MoA) is a novel approach that leverages the collective strengths of multiple LLMs to enhance performance, achieving state-of-the-art results. By employing a layered architecture where each layer comprises several LLM agents, MoA significantly outperforms GPT-4 Omni’s 57.5% on AlpacaEval 2.0 with a score of 65.1%, using only open-source models!
+
+This demo uses the following LLMs as reference models, then passes the results to the aggregate model for the final response:
+- llama3-8b-8192
+- llama3-70b-8192
+- mixtral-8x7b-32768
+- gemma-7b-it
+
+&quot;&quot;&quot;
+
+default_reference_models = [
+    &quot;llama3-8b-8192&quot;,###[modify]
+    &quot;llama3-70b-8192&quot;,###[modify]
+    &quot;mixtral-8x7b-32768&quot;,###[modify]
+    &quot;gemma-7b-it&quot;,###[modify]
+]
+
+
+def process_fn(
+    item,
+    temperature=0.7,
+    max_tokens=2048,
+):
+    &quot;&quot;&quot;
+    Processes a single item (e.g., a conversational turn) using specified model parameters to generate a response.
+
+    Args:
+        item (dict): A dictionary containing details about the conversational turn. It should include:
+                     - &#x27;references&#x27;: a list of reference responses that the model may use for context.
+                     - &#x27;model&#x27;: the identifier of the model to use for generating the response.
+                     - &#x27;instruction&#x27;: the user&#x27;s input or prompt for which the response is to be generated.
+        temperature (float): Controls the randomness and creativity of the generated response. A higher temperature
+                             results in more varied outputs. Default is 0.7.
+        max_tokens (int): The maximum number of tokens to generate. This restricts the length of the model&#x27;s response.
+                          Default is 2048.
+
+    Returns:
+        dict: A dictionary containing the &#x27;output&#x27; key with the generated response as its value.
+    &quot;&quot;&quot;
+
+    references = item.get(&quot;references&quot;, [])
+    model = item[&quot;model&quot;]
+    messages = item[&quot;instruction&quot;]
+
+    output = generate_with_references(
+        model=model,
+        messages=messages,
+        references=references,
+        temperature=temperature,
+        max_tokens=max_tokens,
+    )
+    if DEBUG:
+        logger.info(
+            f&quot;model: {model}, instruction: {item[&#x27;instruction&#x27;]}, output: {output[:20]}&quot;
+        )
+
+    print(f&quot;\nFinished querying [bold]{model}.[/bold]&quot;)
+
+    return {&quot;output&quot;: output}
+
+
+def main(
+    model: str = &quot;llama3/llama3-8b-8192&quot;,
+    reference_models: list[str] = default_reference_models,
+    temperature: float = 0.7,
+    max_tokens: int = 512,
+    rounds: int = 1,
+    multi_turn=True,
+):
+    &quot;&quot;&quot;
+    Runs a continuous conversation between user and MoA.
+
+    Args:
+    - model (str): The primary model identifier used for generating the final response. This model aggregates the outputs from the reference models to produce the final response.
+    - reference_models (List[str]): A list of model identifiers that are used as references in the initial rounds of generation. These models provide diverse perspectives and are aggregated by the primary model.
+    - temperature (float): A parameter controlling the randomness of the response generation. Higher values result in more varied outputs. The default value is 0.7.
+    - max_tokens (int): The maximum number of tokens that can be generated in the response. This limits the length of the output from each model per turn. Default is 2048.
+    - rounds (int): The number of processing rounds to refine the responses. In each round, the input is processed through the reference models, and their outputs are aggregated. Default is 1.
+    - multi_turn (bool): Enables multi-turn interaction, allowing the conversation to build context over multiple exchanges. When True, the system maintains context and builds upon previous interactions. Default is True. When False, the system generates responses independently for each input.
+    &quot;&quot;&quot;
+    md = Markdown(welcome_message)
+    console.print(md)
+    sleep(0.75)
+    console.print(
+        &quot;\n[bold]To use this demo, answer the questions below to get started [cyan](press enter to use the defaults)[/cyan][/bold]:&quot;
+    )
+
+    data = {
+        &quot;instruction&quot;: [[] for _ in range(len(reference_models))],
+        &quot;references&quot;: [&quot;&quot;] * len(reference_models),
+        &quot;model&quot;: [m for m in reference_models],
+    }
+
+    num_proc = len(reference_models)
+
+    model = Prompt.ask(
+        &quot;\n1. What main model do you want to use?&quot;,
+        default=&quot;llama3-70b-8192&quot;,###[modify]
+    )
+    console.print(f&quot;Selected {model}.&quot;, style=&quot;yellow italic&quot;)
+    temperature = float(
+        Prompt.ask(
+            &quot;2. What temperature do you want to use? [cyan bold](0.7) [/cyan bold]&quot;,
+            default=0.7,
+            show_default=True,
+        )
+    )
+    console.print(f&quot;Selected {temperature}.&quot;, style=&quot;yellow italic&quot;)
+    max_tokens = int(
+        Prompt.ask(
+            &quot;3. What max tokens do you want to use? [cyan bold](512) [/cyan bold]&quot;,
+            default=512,
+            show_default=True,
+        )
+    )
+    console.print(f&quot;Selected {max_tokens}.&quot;, style=&quot;yellow italic&quot;)
+
+    while True:
+
+        try:
+            instruction = Prompt.ask(
+                &quot;\n[cyan bold]Prompt &gt;&gt;[/cyan bold] &quot;,
+                default=&quot;Top things to do in NYC&quot;,
+                show_default=True,
+            )
+        except EOFError:
+            break
+
+        if instruction == &quot;exit&quot; or instruction == &quot;quit&quot;:
+            print(&quot;Goodbye!&quot;)
+            break
+        if multi_turn:
+            for i in range(len(reference_models)):
+                data[&quot;instruction&quot;][i].append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: instruction})
+                data[&quot;references&quot;] = [&quot;&quot;] * len(reference_models)
+        else:
+            data = {
+                &quot;instruction&quot;: [[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: instruction}]]
+                * len(reference_models),
+                &quot;references&quot;: [&quot;&quot;] * len(reference_models),
+                &quot;model&quot;: [m for m in reference_models],
+            }
+
+        eval_set = datasets.Dataset.from_dict(data)
+
+        with console.status(&quot;[bold green]Querying all the models...&quot;) as status:
+            for i_round in range(rounds):
+                eval_set = eval_set.map(
+                    partial(
+                        process_fn,
+                        temperature=temperature,
+                        max_tokens=max_tokens,
+                    ),
+                    batched=False,
+                    num_proc=num_proc,
+                )
+                references = [item[&quot;output&quot;] for item in eval_set]
+                data[&quot;references&quot;] = references
+                eval_set = datasets.Dataset.from_dict(data)
+
+        console.print(
+            &quot;[cyan bold]Aggregating results &amp; querying the aggregate model...[/cyan bold]&quot;
+        )
+        output = generate_with_references(
+            model=model,
+            temperature=temperature,
+            max_tokens=max_tokens,
+            messages=data[&quot;instruction&quot;][0],
+            references=references,
+            generate_fn=generate_together_stream,
+        )
+
+        all_output = &quot;&quot;
+        print(&quot;\n&quot;)
+        console.log(Markdown(f&quot;## Final answer from {model}&quot;))
+
+        for chunk in output:
+            out = chunk.choices[0].delta.content
+            if out is not None:
+                console.print(out, end=&quot;&quot;)
+                all_output += out
+        print()
+
+        if DEBUG:
+            logger.info(
+                f&quot;model: {model}, instruction: {data[&#x27;instruction&#x27;][0]}, output: {all_output[:20]}&quot;
+            )
+        if multi_turn:
+            for i in range(len(reference_models)):
+                data[&quot;instruction&quot;][i].append(
+                    {&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: all_output}
+                )
+
+
+if __name__ == &quot;__main__&quot;:
+    typer.run(main)</code></pre><p id="e6828e76-560f-48eb-9d7a-7aa53f630ee7" class="">utils.py</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="16c37e2e-7846-4b7d-ba88-be479646010e" class="code"><code class="language-Python">import os
+import json
+import time
+import requests
+import openai
+import copy
+
+from loguru import logger
+
+
+DEBUG = int(os.environ.get(&quot;DEBUG&quot;, &quot;0&quot;))
+
+
+def generate_together(
+    model,
+    messages,
+    max_tokens=2048,
+    temperature=0.7,
+    streaming=False,
+):
+
+    output = None
+
+    for sleep_time in [1, 2, 4, 8, 16, 32]:
+
+        try:
+
+            endpoint = &quot;https://api.groq.com/openai/v1/chat/completions&quot;###[modify]
+
+            if DEBUG:
+                logger.debug(
+                    f&quot;Sending messages ({len(messages)}) (last message: `{messages[-1][&#x27;content&#x27;][:20]}...`) to `{model}`.&quot;
+                )
+
+            res = requests.post(
+                endpoint,
+                json={
+                    &quot;model&quot;: model,
+                    &quot;max_tokens&quot;: max_tokens,
+                    &quot;temperature&quot;: (temperature if temperature &gt; 1e-4 else 0),
+                    &quot;messages&quot;: messages,
+                },
+                headers={
+                    &quot;Authorization&quot;: f&quot;Bearer {os.environ.get(&#x27;TOGETHER_API_KEY&#x27;)}&quot;,
+                },
+            )
+            if &quot;error&quot; in res.json():
+                logger.error(res.json())
+                if res.json()[&quot;error&quot;][&quot;type&quot;] == &quot;invalid_request_error&quot;:
+                    logger.info(&quot;Input + output is longer than max_position_id.&quot;)
+                    return None
+
+            output = res.json()[&quot;choices&quot;][0][&quot;message&quot;][&quot;content&quot;]
+
+            break
+
+        except Exception as e:
+            logger.error(e)
+            if DEBUG:
+                logger.debug(f&quot;Msgs: `{messages}`&quot;)
+
+            logger.info(f&quot;Retry in {sleep_time}s..&quot;)
+            time.sleep(sleep_time)
+
+    if output is None:
+
+        return output
+
+    output = output.strip()
+
+    if DEBUG:
+        logger.debug(f&quot;Output: `{output[:20]}...`.&quot;)
+
+    return output
+
+
+def generate_together_stream(
+    model,
+    messages,
+    max_tokens=2048,
+    temperature=0.7,
+):
+    endpoint = &quot;https://api.groq.com/openai/v1&quot;###[modify]
+    client = openai.OpenAI(
+        api_key=os.environ.get(&quot;GROQ_API_KEY&quot;), base_url=endpoint ###[modify]
+    )
+    endpoint = &quot;https://api.groq.com/openai/chat/completions&quot; ###[modify]
+    response = client.chat.completions.create(
+        model=model,
+        messages=messages,
+        temperature=temperature if temperature &gt; 1e-4 else 0,
+        max_tokens=max_tokens,
+        stream=True,  # this time, we set stream=True
+    )
+
+    return response
+
+
+def generate_openai(
+    model,
+    messages,
+    max_tokens=2048,
+    temperature=0.7,
+):
+
+    client = openai.OpenAI(
+        api_key=os.environ.get(&quot;OPENAI_API_KEY&quot;),
+    )
+
+    for sleep_time in [1, 2, 4, 8, 16, 32]:
+        try:
+
+            if DEBUG:
+                logger.debug(
+                    f&quot;Sending messages ({len(messages)}) (last message: `{messages[-1][&#x27;content&#x27;][:20]}`) to `{model}`.&quot;
+                )
+
+            completion = client.chat.completions.create(
+                model=model,
+                messages=messages,
+                temperature=temperature,
+                max_tokens=max_tokens,
+            )
+            output = completion.choices[0].message.content
+            break
+
+        except Exception as e:
+            logger.error(e)
+            logger.info(f&quot;Retry in {sleep_time}s..&quot;)
+            time.sleep(sleep_time)
+
+    output = output.strip()
+
+    return output
+
+
+def inject_references_to_messages(
+    messages,
+    references,
+):
+
+    messages = copy.deepcopy(messages)
+
+    system = f&quot;&quot;&quot;You have been provided with a set of responses from various open-source models to the latest user query. Your task is to synthesize these responses into a single, high-quality response. It is crucial to critically evaluate the information provided in these responses, recognizing that some of it may be biased or incorrect. Your response should not simply replicate the given answers but should offer a refined, accurate, and comprehensive reply to the instruction. Ensure your response is well-structured, coherent, and adheres to the highest standards of accuracy and reliability.
+
+Responses from models:&quot;&quot;&quot;
+
+    for i, reference in enumerate(references):
+
+        system += f&quot;\n{i+1}. {reference}&quot;
+
+    if messages[0][&quot;role&quot;] == &quot;system&quot;:
+
+        messages[0][&quot;content&quot;] += &quot;\n\n&quot; + system
+
+    else:
+
+        messages = [{&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: system}] + messages
+
+    return messages
+
+
+def generate_with_references(
+    model,
+    messages,
+    references=[],
+    max_tokens=2048,
+    temperature=0.7,
+    generate_fn=generate_together,
+):
+
+    if len(references) &gt; 0:
+
+        messages = inject_references_to_messages(messages, references)
+
+    return generate_fn(
+        model=model,
+        messages=messages,
+        temperature=temperature,
+        max_tokens=max_tokens,
+    )
+</code></pre></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
