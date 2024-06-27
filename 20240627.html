@@ -1,0 +1,1736 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>phidata+crewAI+Claude 3.5 sonnet 代码由AI超元域频道编写</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(0, 0, 0, 0.06); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="07b1dd3f-419e-44fa-9e8d-d241903b464a" class="page sans"><header><h1 class="page-title">phidata+crewAI+Claude 3.5 sonnet 代码由AI超元域频道编写</h1><p class="page-description"></p></header><div class="page-body"><p id="ffea184a-7d03-4043-9a2f-9807b5acda9f" class="">
+</p><h3 id="7fd878d5-0a27-4613-97f6-4972fc91d640" class="">Claude API <a href="https://console.anthropic.com/settings/keys">https://console.anthropic.com/settings/keys</a></h3><p id="cb50cde6-96cb-426f-b7d3-d7004cb06f86" class="">
+</p><h3 id="cce83658-2c50-43c9-a799-2055b3ba63d6" class="">phidata配置</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="a862d9e1-4330-438d-a19b-1ca01ec84fa2" class="code"><code class="language-Python">python3 -m venv ~/.venvs/aienv
+source ~/.venvs/aienv/bin/activate
+pip install -U phidata
+export OPENAI_API_KEY=sk-***
+export ANTHROPIC_API_KEY=sk-***
+pip install -U pgvector pypdf &quot;psycopg[binary]&quot; sqlalchemy</code></pre><p id="33d9f78c-e672-4c69-81f7-1a72a636c0a8" class="">
+</p><p id="32a93385-9ac6-41f5-a8d2-befe44f3f216" class=""><strong>Run PgVector</strong></p><p id="620a0745-5805-4194-a4bc-9caa75766f44" class="">Install <strong><a href="https://docs.docker.com/desktop/install/mac-install/">docker desktop</a></strong> and run <strong>PgVector</strong> on port <strong>5532</strong> using:</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1c024c83-d76c-4efd-b3fc-9215fc4767f8" class="code"><code class="language-Python">docker run -d \
+  -e POSTGRES_DB=ai \
+  -e POSTGRES_USER=ai \
+  -e POSTGRES_PASSWORD=ai \
+  -e PGDATA=/var/lib/postgresql/data/pgdata \
+  -v pgvolume:/var/lib/postgresql/data \
+  -p 5532:5432 \
+  --name pgvector \
+  phidata/pgvector:16</code></pre><h3 id="fbf298fa-2428-49e4-90ec-ac420c3edff7" class="">pdf pgvector:</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="899a69a8-2cc3-4b72-aebf-1bb2a93cba84" class="code"><code class="language-Python">#python3 -m venv ~/.venvs/aienv
+#source ~/.venvs/aienv/bin/activate
+
+
+from phi.assistant import Assistant
+from phi.llm.openai import OpenAIChat
+from phi.tools.yfinance import YFinanceTools
+from phi.llm.groq import Groq
+
+
+from phi.knowledge.pdf import PDFKnowledgeBase, PDFReader
+from phi.vectordb.pgvector import PgVector2
+
+pdf_knowledge_base = PDFKnowledgeBase(
+    path=&quot;data/pdfs&quot;,
+    # Table name: ai.pdf_documents
+    vector_db=PgVector2(
+        collection=&quot;pdf_documents&quot;,
+        db_url=&quot;postgresql+psycopg://ai:ai@localhost:5532/ai&quot;,
+    ),
+    reader=PDFReader(chunk=True),
+)
+
+
+assistant = Assistant(
+    knowledge_base=pdf_knowledge_base,
+    add_references_to_prompt=True,
+)
+assistant.knowledge_base.load(recreate=False)
+
+assistant.print_response(&quot;show me some Question-answering prompts&quot;)
+
+</code></pre><h3 id="310d645a-cb3c-446a-b948-1e5c08f60ff0" class=""><strong>👉👉👉如有问题请联系我的徽信 stoeng</strong></h3><h2 id="6e9b8f25-2f38-4099-9053-c9b6c203ba52" class=""><strong>🔥🔥🔥本项目代码由AI超元域频道制作，观看更多大模型微调视频请访问我的频道⬇</strong></h2><h3 id="d8e415f3-b6cf-4d81-8311-3c9e224d0cd4" class=""><strong>👉👉👉</strong><strong><a href="https://space.bilibili.com/3493277319825652">我的哔哩哔哩频道</a></strong></h3><h3 id="45b93a09-5f83-4fbd-9b91-78e1834c3f27" class=""><strong>👉👉👉</strong><strong><a href="https://www.youtube.com/@AIsuperdomain">我的YouTube频道</a></strong></h3><h3 id="5dc096b6-37e3-424b-b152-85dcb500b2fa" class=""><strong>👉👉👉</strong>我的开源项目 <a href="https://github.com/win4r/AISuperDomain">https://github.com/win4r/AISuperDomain</a></h3><h2 id="ad357862-6df3-45aa-b85d-b165b21b78bd" class=""></h2><h3 id="b08c2b4e-3085-47c7-afef-48e76ef4cc80" class="">crewAI embdding 模型设置</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="c7fbb0a8-8e8c-411a-a946-4a372102cb69" class="code"><code class="language-Shell">from crewai_tools import PGSearchTool
+
+# Initialize the tool with the database URI and the target table name
+tool = PGSearchTool(db_uri=&#x27;postgresql://user:password@localhost:5432/mydatabase&#x27;, table_name=&#x27;employees&#x27;)
+
+#自定义模型
+tool = PGSearchTool(
+    config=dict(
+        llm=dict(
+            provider=&quot;ollama&quot;, # or google, openai, anthropic, llama2, ...
+            config=dict(
+                model=&quot;llama2&quot;,
+                # temperature=0.5,
+                # top_p=1,
+                # stream=true,
+            ),
+        ),
+        embedder=dict(
+            provider=&quot;google&quot;, # or openai, ollama, ...
+            config=dict(
+                model=&quot;models/embedding-001&quot;,
+                task_type=&quot;retrieval_document&quot;,
+                # title=&quot;Embeddings&quot;,
+            ),
+        ),
+    )
+)</code></pre><h3 id="9fe45336-564a-44ff-a966-2af6b6dde10e" class="">prompt Agent</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="0eb0f13b-4e62-4f47-8b2e-3d8762fbb073" class="code"><code class="language-Python">#安装依赖
+
+pip install crewai
+pip install &#x27;crewai[tools]&#x27;
+pip install anthropic
+pip install langchain_anthropic
+pip install langchain_openai</code></pre><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="c40b5a9c-658a-4844-9a0e-a3b941b71c1d" class="code"><code class="language-Python">import os
+import asyncio
+from crewai import Agent, Task, Crew
+from langchain_openai import ChatOpenAI
+from dotenv import load_dotenv
+from crewai_tools import PGSearchTool
+
+# 加载环境变量，确保API密钥等敏感信息不直接暴露在代码中
+load_dotenv()
+
+# 获取openai API密钥
+api_key = os.environ.get(&quot;OPENAI_API_KEY&quot;)
+if not api_key:
+    raise ValueError(&quot;OPENAI_API_KEY not found in environment variables&quot;)
+
+# 获取Claude API密钥
+anthropic_api_key = os.environ.get(&quot;ANTHROPIC_API_KEY&quot;)
+if not anthropic_api_key:
+    raise ValueError(&quot;ANTHROPIC_API_KEY not found in environment variables&quot;)
+
+# 初始化PGSearchTool，用于从PostgreSQL数据库中搜索相关内容
+search_tool = PGSearchTool(db_uri=&#x27;postgresql://ai:ai@localhost:5532/ai&#x27;, table_name=&#x27;pdf_documents&#x27;)
+
+def create_agents(task_type):
+    &quot;&quot;&quot;
+    创建四个不同角色的AI代理
+    :param task_type: 任务类型
+    :return: 包含四个Agent对象的列表
+    &quot;&quot;&quot;
+    # 初始化ChatOpenAI模型
+    #llm = ChatOpenAI(
+        #model_name=&quot;gpt-3.5-turbo&quot;,
+        #temperature=0.7,
+        #openai_api_key=api_key,
+    #)
+     llm=ChatAnthropic(
+        model=&quot;claude-3-5-sonnet-20240620&quot;,
+        anthropic_api_key = anthropic_api_key
+      )
+
+
+    # 创建Prompt分析师代理
+    prompt_analyst = Agent(
+        role=&#x27;Prompt Analyst&#x27;,
+        goal=f&#x27;Analyze existing prompts for {task_type} tasks and suggest improvements&#x27;,
+        backstory=&#x27;You are an expert in prompt engineering with years of experience in optimizing prompts for various AI models.&#x27;,
+        verbose=True,
+        allow_delegation=False,
+        llm=llm,
+        tools=[search_tool]
+    )
+
+    # 创建Prompt优化师代理
+    prompt_optimizer = Agent(
+        role=&#x27;Prompt Optimizer&#x27;,
+        goal=f&#x27;Optimize prompts for {task_type} tasks based on analysis and best practices&#x27;,
+        backstory=&#x27;You are a skilled prompt engineer who can refine and enhance prompts to improve AI model performance.&#x27;,
+        verbose=True,
+        allow_delegation=False,
+        llm=llm,
+        tools=[search_tool]
+    )
+
+    # 创建Prompt测试员代理
+    prompt_tester = Agent(
+        role=&#x27;Prompt Tester&#x27;,
+        goal=f&#x27;Test optimized prompts for {task_type} tasks and provide performance feedback&#x27;,
+        backstory=&#x27;You are an experienced QA specialist in AI, focusing on evaluating the effectiveness of prompts.&#x27;,
+        verbose=True,
+        allow_delegation=False,
+        llm=llm
+    )
+
+    # 创建最终优化专家代理
+    ultimate_optimizer = Agent(
+        role=&#x27;Ultimate Optimizer&#x27;,
+        goal=f&#x27;Provide the final, most optimized prompt for {task_type} tasks&#x27;,
+        backstory=&#x27;You are a seasoned AI prompt expert with a keen eye for detail and a deep understanding of user requirements.&#x27;,
+        verbose=True,
+        allow_delegation=False,
+        llm=llm
+    )
+
+    return [prompt_analyst, prompt_optimizer, prompt_tester, ultimate_optimizer]
+
+def create_tasks(agents, task_type, original_prompt, user_requirements):
+    &quot;&quot;&quot;
+    为每个代理创建相应的任务
+    :param agents: 代理列表
+    :param task_type: 任务类型
+    :param original_prompt: 原始提示词
+    :param user_requirements: 用户特定要求
+    :return: 任务列表
+    &quot;&quot;&quot;
+    tasks = [
+        # Prompt分析任务
+        Task(
+            description=f&#x27;&#x27;&#x27;Analyze the given prompt and similar examples from the database. Consider:
+            1. Clarity and specificity
+            2. Alignment with intended task ({task_type})
+            3. Potential ambiguities or misinterpretations
+            4. Structure and formatting
+            Original prompt: &quot;{original_prompt}&quot;
+            Use the search tool to find relevant prompt examples for {task_type} tasks.
+            Present your analysis in Markdown format.&#x27;&#x27;&#x27;,
+            agent=agents[0],
+            expected_output=&quot;A detailed analysis of the prompt and relevant examples in Markdown format&quot;
+        ),
+        # Prompt优化任务
+        Task(
+            description=f&#x27;&#x27;&#x27;Based on the analysis, optimize the prompt. Your optimization should:
+            1. Improve clarity and reduce ambiguity
+            2. Enhance alignment with the {task_type} task
+            3. Incorporate effective elements from example prompts
+            4. Consider the following specific requirements: {user_requirements}
+            Original prompt: &quot;{original_prompt}&quot;
+            Use the search tool to find best practices for {task_type} prompts.
+            Provide the optimized prompt with explanations for your changes.&#x27;&#x27;&#x27;,
+            agent=agents[1],
+            expected_output=&quot;An optimized prompt with explanations for changes made&quot;
+        ),
+        # Prompt测试任务
+        Task(
+            description=f&#x27;&#x27;&#x27;Test the optimized prompt against the original. Your test should:
+            1. Compare potential performance on the {task_type} task
+            2. Evaluate clarity and ease of understanding
+            3. Assess potential for misuse or unintended outputs
+            4. Verify that it meets the following requirements: {user_requirements}
+            Original prompt: &quot;{original_prompt}&quot;
+            Optimized prompt: [Insert optimized prompt from previous task]
+            Present your findings in a clear, Markdown-formatted report.&#x27;&#x27;&#x27;,
+            agent=agents[2],
+            expected_output=&quot;A comprehensive test report comparing the original and optimized prompts in Markdown format&quot;
+        ),
+        # 最终优化任务
+        Task(
+            description=f&#x27;&#x27;&#x27;Review all previous outputs and provide the ultimate optimized prompt. Your task includes:
+            1. Analyzing the initial prompt, optimized prompt, and test results
+            2. Ensuring all user requirements are met: {user_requirements}
+            3. Further refining the prompt based on all available information
+            4. Providing a final, highly optimized prompt for the {task_type} task
+            Present your final optimized prompt along with a brief explanation of your refinements.&#x27;&#x27;&#x27;,
+            agent=agents[3],
+            expected_output=&quot;The final, most optimized prompt with explanations for refinements&quot;
+        )
+    ]
+    return tasks
+
+async def main():
+    &quot;&quot;&quot;
+    主函数，处理用户输入并启动优化流程
+    &quot;&quot;&quot;
+    print(&quot;Welcome to the Prompt Optimization Assistant!&quot;)
+
+    # 获取用户输入
+    original_prompt = input(&quot;Please enter the prompt you want to optimize: &quot;)
+    task_type = input(&quot;What type of task is this prompt for? &quot;)
+    user_requirements = input(&quot;Please enter any specific requirements for the optimized prompt: &quot;)
+
+    print(f&quot;\nThank you! Starting the optimization process for a {task_type} prompt with the following requirements: {user_requirements}\n&quot;)
+
+    # 创建代理和任务
+    agents = create_agents(task_type)
+    tasks = create_tasks(agents, task_type, original_prompt, user_requirements)
+
+    # 创建并启动Crew
+    crew = Crew(
+        agents=agents,
+        tasks=tasks,
+        verbose=2
+    )
+
+    # 异步执行Crew的kickoff方法
+    result = await asyncio.to_thread(crew.kickoff)
+
+if __name__ == &quot;__main__&quot;:
+    # 运行主函数
+    asyncio.run(main())</code></pre><h3 id="92235da3-e113-4ffb-a544-9abce2960226" class="">game agent</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="6d3c4bb9-427f-456f-b20d-18edb3274eca" class="code"><code class="language-Shell">import os
+import asyncio
+import subprocess
+import tempfile
+import random
+from crewai import Agent, Task, Crew
+from langchain_openai import ChatOpenAI
+from dotenv import load_dotenv
+from crewai_tools import PGSearchTool
+import pygame
+
+# 加载环境变量
+load_dotenv()
+
+# 获取API密钥
+api_key = os.environ.get(&quot;OPENAI_API_KEY&quot;)
+if not api_key:
+    raise ValueError(&quot;OPENAI_API_KEY not found in environment variables&quot;)
+
+# 初始化PGSearchTool
+search_tool = PGSearchTool(db_uri=&#x27;postgresql://ai:ai@localhost:5532/ai&#x27;, table_name=&#x27;pdf_documents&#x27;)
+
+def create_agents(game_type, programming_language):
+    llm = ChatOpenAI(
+        model_name=&quot;gpt-3.5-turbo&quot;,
+        temperature=0.7,
+        openai_api_key=api_key,
+    )
+
+    game_designer = Agent(
+        role=&#x27;Game Designer&#x27;,
+        goal=f&#x27;Design engaging and innovative {game_type} game concepts&#x27;,
+        backstory=f&#x27;You are a creative game designer with years of experience in various genres, specializing in {programming_language}-based game development.&#x27;,
+        verbose=True,
+        allow_delegation=False,
+        llm=llm,
+        tools=[search_tool]
+    )
+
+    programmer = Agent(
+        role=&#x27;Programmer&#x27;,
+        goal=f&#x27;Implement game mechanics and features efficiently using {programming_language}&#x27;,
+        backstory=f&#x27;You are a skilled programmer with expertise in {programming_language} for game development.&#x27;,
+        verbose=True,
+        allow_delegation=False,
+        llm=llm,
+        tools=[search_tool]
+    )
+
+    artist = Agent(
+        role=&#x27;Artist&#x27;,
+        goal=f&#x27;Create visually appealing and cohesive game assets compatible with {programming_language}&#x27;,
+        backstory=f&#x27;You are a talented digital artist specializing in game art and animation, with experience in creating assets for {programming_language} projects.&#x27;,
+        verbose=True,
+        allow_delegation=False,
+        llm=llm
+    )
+
+    code_optimizer = Agent(
+        role=&#x27;Code Optimizer&#x27;,
+        goal=&#x27;Optimize and complete game code to ensure it is runnable and efficient&#x27;,
+        backstory=f&#x27;You are an experienced software engineer specializing in {game_type} game development and code optimization in {programming_language}.&#x27;,
+        verbose=True,
+        allow_delegation=False,
+        llm=llm,
+        tools=[search_tool]
+    )
+
+    code_validator = Agent(
+        role=&#x27;Code Validator&#x27;,
+        goal=f&#x27;Validate and test the AI-generated {programming_language} code for the {game_type} game&#x27;,
+        backstory=f&#x27;You are an expert in {programming_language} and game development, with a keen eye for code correctness and runtime errors.&#x27;,
+        verbose=True,
+        allow_delegation=False,
+        llm=llm
+    )
+
+    qa_tester = Agent(
+        role=&#x27;QA Tester&#x27;,
+        goal=f&#x27;Ensure game quality and identify bugs in {programming_language}-based games&#x27;,
+        backstory=f&#x27;You are a meticulous QA tester with a keen eye for detail and user experience, specializing in {programming_language} projects.&#x27;,
+        verbose=True,
+        allow_delegation=False,
+        llm=llm
+    )
+
+    project_manager = Agent(
+        role=&#x27;Project Manager&#x27;,
+        goal=f&#x27;Ensure all requirements are met and provide the final, complete code for the {game_type} game&#x27;,
+        backstory=f&#x27;You are an experienced project manager with a strong background in {game_type} game development and {programming_language}.&#x27;,
+        verbose=True,
+        allow_delegation=False,
+        llm=llm
+    )
+
+    return [game_designer, programmer, artist, code_optimizer, code_validator, qa_tester, project_manager]
+
+def create_tasks(agents, game_type, programming_language, user_requirements):
+    tasks = [
+        Task(
+            description=f&#x27;&#x27;&#x27;Design a {game_type} game concept with unique mechanics. Include:
+            1. Detailed game mechanics
+            2. Level progression and difficulty scaling
+            3. Scoring system
+            4. Power-ups and obstacles (if applicable)
+            5. Win/lose conditions
+            Incorporate the following user requirements: {user_requirements}
+            Use the search tool to find relevant game design patterns and innovative mechanics for {game_type} games.
+            Present your design in standard Markdown format.&#x27;&#x27;&#x27;,
+            agent=agents[0],
+            expected_output=f&quot;A detailed game design document for a {game_type} game in Markdown format&quot;
+        ),
+        Task(
+            description=f&#x27;&#x27;&#x27;Implement the core gameplay mechanics for the {game_type} game using {programming_language}. Your code should include:
+            1. All necessary imports
+            2. Game initialization
+            3. Main game loop
+            4. Player input handling
+            5. Core game mechanics implementation
+            6. Collision detection (if applicable)
+            7. Scoring system
+            8. Basic UI elements (score display, game over screen)
+            Ensure to implement the following user requirements: {user_requirements}
+            Use the search tool to find best practices and efficient implementations for {game_type} games in {programming_language}.
+            Provide a complete, runnable code with comments explaining key parts. Ensure the code follows best practices for {programming_language}.&#x27;&#x27;&#x27;,
+            agent=agents[1],
+            expected_output=f&quot;A complete, runnable {programming_language} code for the {game_type} game with comments&quot;
+        ),
+        Task(
+            description=f&#x27;&#x27;&#x27;Create character designs and environment assets for the {game_type} game, optimized for use with {programming_language}. Include:
+            1. Main character design (if applicable)
+            2. Enemy designs (if applicable)
+            3. Item designs
+            4. Obstacle designs
+            5. Background designs for different levels
+            6. UI element designs (buttons, score display, etc.)
+            Consider the following user requirements in your designs: {user_requirements}
+            Describe your designs in detail and provide placeholder images or ASCII art representations.&#x27;&#x27;&#x27;,
+            agent=agents[2],
+            expected_output=f&quot;Detailed descriptions and ASCII art representations of game assets for the {game_type} game&quot;
+        ),
+        Task(
+            description=f&#x27;&#x27;&#x27;Review, optimize, and complete the code provided by the Programmer for the {game_type} game. Your task includes:
+            1. Ensuring all game mechanics are properly implemented
+            2. Adding any missing features based on the Game Designer&#x27;s concept
+            3. Optimizing the code for performance
+            4. Implementing the Artist&#x27;s designs into the game
+            5. Adding sound effects and background music (if applicable)
+            6. Implementing a simple menu system
+            7. Adding comments and docstrings for better code readability
+            8. Ensuring the following user requirements are met: {user_requirements}
+            Use the search tool to find advanced optimization techniques and additional features for {game_type} games.
+            Provide the full, optimized, and runnable code with explanations for your changes and additions.&#x27;&#x27;&#x27;,
+            agent=agents[3],
+            expected_output=f&quot;An optimized and complete {programming_language} code for the {game_type} game with explanations&quot;
+        ),
+        Task(
+            description=f&#x27;&#x27;&#x27;Validate and test the optimized {programming_language} code for the {game_type} game. Your task includes:
+            1. Reviewing the code for syntax errors
+            2. Attempting to run the code in a controlled environment
+            3. Identifying and reporting any runtime errors or exceptions
+            4. Verifying that all game features described in the design document are present in the code
+            5. Suggesting fixes for any identified issues
+            Provide a detailed report of your findings, including any errors encountered and suggestions for improvement.&#x27;&#x27;&#x27;,
+            agent=agents[4],
+            expected_output=f&quot;A validation report for the {game_type} game code, including any errors found and suggestions for fixes&quot;
+        ),
+        Task(
+            description=f&#x27;&#x27;&#x27;Develop a comprehensive test plan and conduct initial gameplay testing for the {game_type} game. Your report should include:
+            1. Test cases for all game mechanics and features
+            2. Performance testing results
+            3. User experience evaluation
+            4. Bug report with severity ratings
+            5. Suggestions for improvements and additional features
+            6. Verification that the following user requirements are met: {user_requirements}
+            Present your findings in a clear, Markdown-formatted report. Include steps to reproduce any bugs found and screenshots if possible.&#x27;&#x27;&#x27;,
+            agent=agents[5],
+            expected_output=f&quot;A comprehensive test report for the {game_type} game in Markdown format&quot;
+        ),
+        Task(
+            description=f&#x27;&#x27;&#x27;Review all previous tasks and their outputs. Ensure that all user requirements are met and all suggested improvements have been incorporated. Your task includes:
+            1. Reviewing the game design, code, and test reports
+            2. Identifying any missing features or unresolved issues
+            3. Coordinating with other agents to address any shortcomings
+            4. Compiling the final, complete code for the {game_type} game
+            5. Providing a summary of the development process and final product
+            Deliver the complete, final code for the {game_type} game, ensuring it meets all requirements and incorporates all necessary improvements.&#x27;&#x27;&#x27;,
+            agent=agents[6],
+            expected_output=f&quot;The final, complete {programming_language} code for the {game_type} game, along with a summary of the development process&quot;
+        ),
+    ]
+    return tasks
+
+def run_code(code, programming_language):
+    with tempfile.NamedTemporaryFile(mode=&#x27;w&#x27;, suffix=f&#x27;.{programming_language}&#x27;, delete=False) as temp_file:
+        temp_file.write(code)
+        temp_file_path = temp_file.name
+
+    try:
+        if programming_language == &#x27;python&#x27;:
+            result = subprocess.run([&#x27;python&#x27;, temp_file_path], capture_output=True, text=True, timeout=10)
+        else:
+            return f&quot;Unsupported programming language: {programming_language}&quot;
+
+        return result.stdout if result.returncode == 0 else f&quot;Error: {result.stderr}&quot;
+    except subprocess.TimeoutExpired:
+        return &quot;Error: Code execution timed out&quot;
+    finally:
+        os.unlink(temp_file_path)
+
+async def main():
+    print(&quot;Welcome to the Game Development Assistant!&quot;)
+
+    # 获取用户需求
+    game_type = input(&quot;What type of game would you like to develop? &quot;)
+    programming_language = input(&quot;What programming language would you like to use? &quot;)
+    user_requirements = input(&quot;Please enter your specific requirements for the game (e.g., difficulty levels, special features, theme preferences): &quot;)
+
+    print(f&quot;\nThank you! Starting the development process for a {game_type} game using {programming_language} with the following requirements: {user_requirements}\n&quot;)
+
+    agents = create_agents(game_type, programming_language)
+    tasks = create_tasks(agents, game_type, programming_language, user_requirements)
+
+    crew = Crew(
+        agents=agents,
+        tasks=tasks,
+        verbose=2
+    )
+
+    result = await asyncio.to_thread(crew.kickoff)
+
+    # print(&quot;\n\nFinal Results:&quot;)
+    # for task in crew.tasks:
+    #     print(f&quot;\n\n## {task.agent.role}&#x27;s Task&quot;)
+    #     print(f&quot;\n### Description\n\n{task.description}&quot;)
+    #     print(f&quot;\n### Output\n\n{task.output}&quot;)
+    #
+    #     # 如果是Project Manager的任务,尝试运行最终代码
+    #     if task.agent.role == &#x27;Project Manager&#x27;:
+    #         print(&quot;\n### Final Code Execution Result&quot;)
+    #         final_code = str(task.output)
+    #         execution_result = run_code(final_code, programming_language)
+    #         print(execution_result)
+
+if __name__ == &quot;__main__&quot;:
+    asyncio.run(main())</code></pre><p id="d9208bb0-1ce8-4eca-bc47-2577d7d69535" class="">
+</p><p id="c56c534b-ac1b-416c-b538-2a66ab41130b" class="">提示词案例</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="07919308-6069-4c42-b0d5-1a70befcf74b" class="code"><code class="language-Python">游戏
+implement a snake game with python
+
+game development
+
+Include requirements for game mechanics, user interface, scoring system, difficulty levels, and make it suitable for beginners in Python programming. Also, specify the use of Pygame library for graphics
+
+小说：
+Story writing
+
+creative writing
+
+Generate a dialogue in a story</code></pre><p id="105df625-4d15-4d71-8b5b-8359c197c606" class="">
+</p><h3 id="a1f9e173-dacd-411a-929f-a9ccf3401aec" class="">执行结果</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="fac832e6-0f90-4bf1-bee1-9bc34b713d99" class="code"><code class="language-Shell">(aienv) charlesqin@charless-MacBook-Pro chainlit-test % python promptAgent.py
+Welcome to the Prompt Optimization Assistant!此项目代码由AI超元域开发.欢迎来到我的频道😊
+Please enter the prompt you want to optimize: Story writing
+What type of task is this prompt for? creative writing
+Please enter any specific requirements for the optimized prompt: Generate a dialogue in a story
+
+Thank you! Starting the optimization process for a creative writing prompt with the following requirements: Generate a dialogue in a story
+
+ [2024-06-26 19:06:12][DEBUG]: == Working Agent: Prompt Analyst
+ [2024-06-26 19:06:12][INFO]: == Starting Task: Analyze the given prompt and similar examples from the database. Consider:
+            1. Clarity and specificity
+            2. Alignment with intended task (creative writing)
+            3. Potential ambiguities or misinterpretations
+            4. Structure and formatting
+            Original prompt: &quot;Story writing&quot;
+            Use the search tool to find relevant prompt examples for creative writing tasks.
+            Present your analysis in Markdown format.
+
+
+&gt; Entering new CrewAgentExecutor chain...
+To analyze the given prompt and find relevant examples for creative writing tasks, I should first search the database for similar prompts.
+
+Action: Search a database&#x27;s table content
+Action Input: {&quot;search_query&quot;: &quot;creative writing prompts for story writing&quot;}
+ 
+
+Relevant Content:
+(&#x27;GPT_17_1&#x27;, &#x27;GPT&#x27;, {&#x27;page&#x27;: 17, &#x27;chunk&#x27;: 1, &#x27;chunk_size&#x27;: 875}, &#x27;Here are a few examples of prompts using this technique : Prompt : &quot;Let\&#x27;s think about the impact of climate change on agriculture&quot; Prompt : &quot;Let\&#x27;s discuss the current state of artiﬁcial intelligence&quot; Prompt : &quot;Let\&#x27;s talk about the beneﬁts and drawbacks of remote work&quot; Y ou can also add a open-end ed question , statement or a piece of text that you want the model to continue or build upon . Once you provide the promp t , the model will use its training data and algorithms to generate a response that is relevant to the prompt and will continue the conversation in a coherent way . This unique prompt helps ChatGPT to give answers in dif ferent perspectives and angles , resulting in more dynamic and informative passages . The steps to use the prompt are simple and easy to follow , and it can truly make a dif ference in your writing . Give it a try and see for yourself&#x27;,
+
+(&#x27;GPT_16_1&#x27;, &#x27;GPT&#x27;, {&#x27;page&#x27;: 16, &#x27;chunk&#x27;: 1, &#x27;chunk_size&#x27;: 1621}, &#x27;Chapter 6: &quot;Let’ s think about this” prompt The &quot;Let\&#x27;s think about this &quot; prompt is a technique used to encourage ChatGPT to generate text that is reﬂective and contemplative . This technique is useful for tasks such as writing essays , poetry , or creative writing . The prompt formula for the &quot;L et\&#x27;s think about this&quot; prompt i s simply the phrase &quot;Let\&#x27;s think about this&quot; followed by a topic or question . Example : Generating a reﬂective essay : T ask : W rite a reﬂective essay on the topic of personal growth Prompt formula : &quot;Let\&#x27;s think about this : personal growth&quot; Generating a poem : T ask : W rite a poem about the changing seasons Prompt formula : &quot;Let\&#x27;s think about this : the changing seasons&quot; This prompt is asking for a conversation or discussion about a speciﬁc topic or idea . The speaker is inviting ChatGPT to engage in a dialogue about the subject at hand . The model is p rovided with a prompt , which serves as the starting point for the conversation or text generation . The model then uses its train ing data and algorithms to ge nerate a response that is relevant to the prompt . This technique allows ChatGPT to generate conte xtually appropriate and co herent text based on the provided prompt . T o u se the &quot;Let ’ s think about this prompt&quot; technique with C hatGPT , you can follow these steps : 1. Identify the topic or idea you want to discuss . 2. Formulate a prompt that clearly states the topic or idea , and starts the conversation or text generation . 3. Preface the prompt with &quot;Let\&#x27;s think about&quot; or &quot;Let\&#x27;s discuss&quot; to indicate that you\&#x27;re initiating a conversation or discussion .&#x27;,
+
+(&#x27;GPT_21_1&#x27;, &#x27;GPT&#x27;, {&#x27;page&#x27;: 21, &#x27;chunk&#x27;: 1, &#x27;chunk_size&#x27;: 1006}, &#x27;T ask : Generate a poem Instructions : The poem should be related to the seed word &quot;love&quot; and should be written in the style of a sonnet . Role : Poet Prompt formula : &quot;Generate a sonnet related to the seed word \&#x27;love\&#x27; as a poet&quot; Example 2: T ext Completion T ask : Complete a sentence Instructions : The completion should be related to the seed word &quot;science&quot; and should be written in the style of a research paper Role : Researcher Prompt formula : &quot;Complete the following sentence in a way that is related to the seed w ord \&#x27;science\&#x27; and in the sty le of a research paper as a researcher : [ insert sentence ] &quot; Example 3: T ext Summarization T ask : Summarize a news article Instructions : The summary sh ould be related to the seed word &quot;politics&quot; and should be written in a neutral and unbiased tone Role : Journalist Prompt formula : &quot;Summarize the following news article in a way that is related to the seed word \&#x27;politics\&#x27; in a neutral and unbiased tone as a journalist : [ insert news article ] &quot;&#x27;,
+
+Thought: Now that I have some relevant examples and information about creative writing prompts, I can analyze the original prompt and suggest improvements.
+
+Final Answer:
+
+# Analysis of the Creative Writing Prompt: &quot;Story writing&quot;
+
+## Overview
+
+The original prompt &quot;Story writing&quot; is extremely brief and lacks specificity. While it does indicate the general task of writing a story, it fails to provide any guidance or structure for the creative process. Let&#x27;s analyze this prompt and suggest improvements based on the examples found in the database.
+
+## Analysis
+
+### 1. Clarity and Specificity
+
+The prompt &quot;Story writing&quot; lacks clarity and specificity. It does not provide any details about the desired outcome, such as the genre, length, or any specific elements to include in the story. This vagueness can lead to unfocused or inconsistent results.
+
+### 2. Alignment with Intended Task
+
+While the prompt does align with the intended task of creative writing, it does not offer any direction or inspiration to guide the writing process. This may result in writer&#x27;s block or generic storytelling.
+
+### 3. Potential Ambiguities or Misinterpretations
+
+The lack of detail in the prompt leaves it open to various interpretations. Writers might be unsure about the expected format, style, or content of the story. This ambiguity could lead to results that don&#x27;t meet the user&#x27;s expectations.
+
+### 4. Structure and Formatting
+
+The prompt has no structure or formatting to guide the writer. It does not follow any of the more effective prompt structures found in the database examples.
+
+## Improvements Based on Database Examples
+
+Drawing inspiration from the examples found in the database, we can suggest the following improvements to the prompt:
+
+1. **Use the &quot;Let&#x27;s think about this&quot; technique:**
+   Instead of simply stating &quot;Story writing,&quot; we could use a more engaging prompt like:
+   &quot;Let&#x27;s think about this: A story that explores the theme of personal growth&quot;
+
+2. **Incorporate specific instructions and roles:**
+   We can add more structure and guidance to the prompt:
+   &quot;As a creative writer, generate a short story related to the seed word &#x27;love&#x27;. The story should be written in the style of magical realism and be approximately 500 words long.&quot;
+
+3. **Provide a starting point or sentence to complete:**
+   To help overcome writer&#x27;s block, we could offer a beginning sentence:
+   &quot;Complete the following story opener in a suspenseful and intriguing way: &#x27;The old clock struck midnight, and suddenly, everything in the room began to change...&#x27;&quot;
+
+4. **Include multiple elements for a more complex prompt:**
+   We can combine various aspects to create a more comprehensive prompt:
+   &quot;Task: Write a short story
+   Instructions: The story should incorporate the themes of friendship and adventure, and should be set in a futuristic city.
+   Role: Science fiction author
+   Prompt: Generate a 1000-word science fiction story that explores the power of friendship in a technologically advanced metropolis. Include at least one plot twist and end with a cliffhanger.&quot;
+
+## Conclusion
+
+The original prompt &quot;Story writing&quot; is too vague and lacks the necessary elements to guide an effective creative writing process. By incorporating techniques such as the &quot;Let&#x27;s think about this&quot; approach, providing specific instructions, and including elements like themes, genres, and story structures, we can create much more effective prompts for creative writing tasks. These improved prompts will likely result in more focused, engaging, and diverse stories that better meet the user&#x27;s expectations and spark creativity.
+
+&gt; Finished chain.
+ [2024-06-26 19:06:29][DEBUG]: == [Prompt Analyst] Task output: # Analysis of the Creative Writing Prompt: &quot;Story writing&quot;
+
+## Overview
+
+The original prompt &quot;Story writing&quot; is extremely brief and lacks specificity. While it does indicate the general task of writing a story, it fails to provide any guidance or structure for the creative process. Let&#x27;s analyze this prompt and suggest improvements based on the examples found in the database.
+
+## Analysis
+
+### 1. Clarity and Specificity
+
+The prompt &quot;Story writing&quot; lacks clarity and specificity. It does not provide any details about the desired outcome, such as the genre, length, or any specific elements to include in the story. This vagueness can lead to unfocused or inconsistent results.
+
+### 2. Alignment with Intended Task
+
+While the prompt does align with the intended task of creative writing, it does not offer any direction or inspiration to guide the writing process. This may result in writer&#x27;s block or generic storytelling.
+
+### 3. Potential Ambiguities or Misinterpretations
+
+The lack of detail in the prompt leaves it open to various interpretations. Writers might be unsure about the expected format, style, or content of the story. This ambiguity could lead to results that don&#x27;t meet the user&#x27;s expectations.
+
+### 4. Structure and Formatting
+
+The prompt has no structure or formatting to guide the writer. It does not follow any of the more effective prompt structures found in the database examples.
+
+## Improvements Based on Database Examples
+
+Drawing inspiration from the examples found in the database, we can suggest the following improvements to the prompt:
+
+1. **Use the &quot;Let&#x27;s think about this&quot; technique:**
+   Instead of simply stating &quot;Story writing,&quot; we could use a more engaging prompt like:
+   &quot;Let&#x27;s think about this: A story that explores the theme of personal growth&quot;
+
+2. **Incorporate specific instructions and roles:**
+   We can add more structure and guidance to the prompt:
+   &quot;As a creative writer, generate a short story related to the seed word &#x27;love&#x27;. The story should be written in the style of magical realism and be approximately 500 words long.&quot;
+
+3. **Provide a starting point or sentence to complete:**
+   To help overcome writer&#x27;s block, we could offer a beginning sentence:
+   &quot;Complete the following story opener in a suspenseful and intriguing way: &#x27;The old clock struck midnight, and suddenly, everything in the room began to change...&#x27;&quot;
+
+4. **Include multiple elements for a more complex prompt:**
+   We can combine various aspects to create a more comprehensive prompt:
+   &quot;Task: Write a short story
+   Instructions: The story should incorporate the themes of friendship and adventure, and should be set in a futuristic city.
+   Role: Science fiction author
+   Prompt: Generate a 1000-word science fiction story that explores the power of friendship in a technologically advanced metropolis. Include at least one plot twist and end with a cliffhanger.&quot;
+
+## Conclusion
+
+The original prompt &quot;Story writing&quot; is too vague and lacks the necessary elements to guide an effective creative writing process. By incorporating techniques such as the &quot;Let&#x27;s think about this&quot; approach, providing specific instructions, and including elements like themes, genres, and story structures, we can create much more effective prompts for creative writing tasks. These improved prompts will likely result in more focused, engaging, and diverse stories that better meet the user&#x27;s expectations and spark creativity.
+
+
+ [2024-06-26 19:06:29][DEBUG]: == Working Agent: Prompt Optimizer
+ [2024-06-26 19:06:29][INFO]: == Starting Task: Based on the analysis, optimize the prompt. Your optimization should:
+            1. Improve clarity and reduce ambiguity
+            2. Enhance alignment with the creative writing task
+            3. Incorporate effective elements from example prompts
+            4. Consider the following specific requirements: Generate a dialogue in a story
+            Original prompt: &quot;Story writing&quot;
+            Use the search tool to find best practices for creative writing prompts.
+            Provide the optimized prompt with explanations for your changes.
+
+
+&gt; Entering new CrewAgentExecutor chain...
+Thought: To optimize the prompt for generating a dialogue in a story, I should first search for best practices in creative writing prompts, particularly those related to dialogue. This will help me create a more effective and engaging prompt.
+
+Action: Search a database&#x27;s table content
+Action Input: {&quot;search_query&quot;: &quot;creative writing prompts for dialogue&quot;}
+ 
+
+Relevant Content:
+(&#x27;GPT_33_1&#x27;, &#x27;GPT&#x27;, {&#x27;page&#x27;: 33, &#x27;chunk&#x27;: 1, &#x27;chunk_size&#x27;: 1460}, &#x27;Chapter 16: Dialogue prompts Dialogue prom pts is a technique that allows a model to generate text that simulates a convers ation between two or more entities . By providing the model with a context and a set of characters or entities , along w ith their roles and b ackgrounds , and asking the model to generate dialogue between them Therefore , the model should be provided with a context a nd a set of chara cters or entities , along with their roles and backgrounds . The model should also be provided with information about the desired output , such as the type of conversation or dialogue and a ny speciﬁc requirements or constraints . Prompt Examples and their Formula : Example 1: Dialogue generation T ask : Generate a conversation between two characters Instructions : The conversation should be natural and relevant to the given context Prompt formu la : &quot;Generate a conversation between the following chara cters [ insert characters ] in the following context [ insert context ] &quot; Example 2: Story writing T ask : Generate a dialogue in a story Instructions : The dialogue should be consistent with the characters and events of the story Prompt formula : &quot;Generate a dialogue between the following characters [ insert characters ] in the following story [ insert story ] &quot; Example 3: Chatbot development T ask : Generate a dialogue for a customer service chatbot Instructions : Th e dialogue should be professional and prov ide accurate information&#x27;,
+
+(&#x27;GPT_17_1&#x27;, &#x27;GPT&#x27;, {&#x27;page&#x27;: 17, &#x27;chunk&#x27;: 1, &#x27;chunk_size&#x27;: 875}, &#x27;Here are a few examples of prompts using this technique : Prompt : &quot;Let\&#x27;s think about the impact of climate change on agriculture&quot; Prompt : &quot;Let\&#x27;s discuss the current state of artiﬁcial intelligence&quot; Prompt : &quot;Let\&#x27;s talk about the beneﬁts and drawbacks of remote work&quot; Y ou can also add a open-end ed question , statement or a piece of text that you want the model to continue or build upon . Once you provide the promp t , the model will use its training data and algorithms to generate a response that is relevant to the prompt and will continue the conversation in a coherent way . This unique prompt helps ChatGPT to give answers in dif ferent perspectives and angles , resulting in more dynamic and informative passages . The steps to use the prompt are simple and easy to follow , and it can truly make a dif ference in your writing . Give it a try and see for yourself&#x27;,
+
+(&#x27;GPT_16_1&#x27;, &#x27;GPT&#x27;, {&#x27;page&#x27;: 16, &#x27;chunk&#x27;: 1, &#x27;chunk_size&#x27;: 1621}, &#x27;Chapter 6: &quot;Let’ s think about this” prompt The &quot;Let\&#x27;s think about this &quot; prompt is a technique used to encourage ChatGPT to generate text that is reﬂective and contemplative . This technique is useful for tasks such as writing essays , poetry , or creative writing . The prompt formula for the &quot;L et\&#x27;s think about this&quot; prompt i s simply the phrase &quot;Let\&#x27;s think about this&quot; followed by a topic or question . Example : Generating a reﬂective essay : T ask : W rite a reﬂective essay on the topic of personal growth Prompt formula : &quot;Let\&#x27;s think about this : personal growth&quot; Generating a poem : T ask : W rite a poem about the changing seasons Prompt formula : &quot;Let\&#x27;s think about this : the changing seasons&quot; This prompt is asking for a conversation or discussion about a speciﬁc topic or idea . The speaker is inviting ChatGPT to engage in a dialogue about the subject at hand . The model is p rovided with a prompt , which serves as the starting point for the conversation or text generation . The model then uses its train ing data and algorithms to ge nerate a response that is relevant to the prompt . This technique allows ChatGPT to generate conte xtually appropriate and co herent text based on the provided prompt . T o u se the &quot;Let ’ s think about this prompt&quot; technique with C hatGPT , you can follow these steps : 1. Identify the topic or idea you want to discuss . 2. Formulate a prompt that clearly states the topic or idea , and starts the conversation or text generation . 3. Preface the prompt with &quot;Let\&#x27;s think about&quot; or &quot;Let\&#x27;s discuss&quot; to indicate that you\&#x27;re initiating a conversation or discussion .&#x27;,
+
+Thought: Based on the search results, I now have some valuable insights on creating effective prompts for dialogue in creative writing. I&#x27;ll use this information to optimize the original prompt &quot;Story writing&quot; for generating dialogue in a story.
+
+Thought: I now know the final answer
+
+Final Answer: Here&#x27;s an optimized prompt for generating dialogue in a story, along with explanations for the changes made:
+
+Optimized Prompt:
+&quot;Let&#x27;s think about this: A compelling dialogue between two characters in a story.
+
+Task: Generate a conversation between two characters in a short story.
+Instructions: 
+1. Create two distinct characters with brief backgrounds.
+2. Establish a context or setting for their interaction.
+3. Write a natural and engaging dialogue that reveals their personalities and advances the story.
+4. The conversation should be approximately 300 words long.
+5. Include both spoken words and brief descriptions of non-verbal cues or actions.
+
+Prompt: Generate a dialogue between [Character 1] and [Character 2] in the following context: [Insert context]. Ensure the conversation flows naturally, reveals character traits, and moves the story forward.&quot;
+
+Explanations for changes:
+
+1. Added &quot;Let&#x27;s think about this&quot; technique: This encourages more reflective and creative thinking, as suggested in the search results. It sets the stage for a more thoughtful approach to dialogue creation.
+
+2. Specified the task: Instead of the vague &quot;Story writing,&quot; the prompt now clearly states that we&#x27;re generating a conversation between characters in a short story. This provides a clear focus for the creative process.
+
+3. Included detailed instructions: The instructions break down the task into manageable steps, guiding the writer through the process of creating characters, establishing context, and writing dialogue. This structure helps to ensure that all necessary elements are included.
+
+4. Provided specific requirements: By specifying the approximate word count and asking for non-verbal cues, we encourage a more detailed and vivid dialogue scene.
+
+5. Used a flexible prompt formula: The prompt allows for customization by inserting specific characters and context. This adaptability makes the prompt more versatile for various story scenarios.
+
+6. Emphasized natural conversation and character development: By instructing to make the dialogue natural and revealing of character traits, we encourage more authentic and engaging writing.
+
+7. Linked dialogue to story progression: The instruction to move the story forward ensures that the dialogue serves a purpose in the overall narrative, rather than being isolated conversation.
+
+These changes transform the original vague prompt into a structured, detailed guide for creating meaningful dialogue in a story. The optimized prompt provides clear direction while still allowing for creativity, making it more likely to produce engaging and effective story dialogue.
+
+&gt; Finished chain.
+ [2024-06-26 19:06:46][DEBUG]: == [Prompt Optimizer] Task output: Here&#x27;s an optimized prompt for generating dialogue in a story, along with explanations for the changes made:
+
+Optimized Prompt:
+&quot;Let&#x27;s think about this: A compelling dialogue between two characters in a story.
+
+Task: Generate a conversation between two characters in a short story.
+Instructions: 
+1. Create two distinct characters with brief backgrounds.
+2. Establish a context or setting for their interaction.
+3. Write a natural and engaging dialogue that reveals their personalities and advances the story.
+4. The conversation should be approximately 300 words long.
+5. Include both spoken words and brief descriptions of non-verbal cues or actions.
+
+Prompt: Generate a dialogue between [Character 1] and [Character 2] in the following context: [Insert context]. Ensure the conversation flows naturally, reveals character traits, and moves the story forward.&quot;
+
+Explanations for changes:
+
+1. Added &quot;Let&#x27;s think about this&quot; technique: This encourages more reflective and creative thinking, as suggested in the search results. It sets the stage for a more thoughtful approach to dialogue creation.
+
+2. Specified the task: Instead of the vague &quot;Story writing,&quot; the prompt now clearly states that we&#x27;re generating a conversation between characters in a short story. This provides a clear focus for the creative process.
+
+3. Included detailed instructions: The instructions break down the task into manageable steps, guiding the writer through the process of creating characters, establishing context, and writing dialogue. This structure helps to ensure that all necessary elements are included.
+
+4. Provided specific requirements: By specifying the approximate word count and asking for non-verbal cues, we encourage a more detailed and vivid dialogue scene.
+
+5. Used a flexible prompt formula: The prompt allows for customization by inserting specific characters and context. This adaptability makes the prompt more versatile for various story scenarios.
+
+6. Emphasized natural conversation and character development: By instructing to make the dialogue natural and revealing of character traits, we encourage more authentic and engaging writing.
+
+7. Linked dialogue to story progression: The instruction to move the story forward ensures that the dialogue serves a purpose in the overall narrative, rather than being isolated conversation.
+
+These changes transform the original vague prompt into a structured, detailed guide for creating meaningful dialogue in a story. The optimized prompt provides clear direction while still allowing for creativity, making it more likely to produce engaging and effective story dialogue.
+
+
+ [2024-06-26 19:06:46][DEBUG]: == Working Agent: Prompt Tester
+ [2024-06-26 19:06:46][INFO]: == Starting Task: Test the optimized prompt against the original. Your test should:
+            1. Compare potential performance on the creative writing task
+            2. Evaluate clarity and ease of understanding
+            3. Assess potential for misuse or unintended outputs
+            4. Verify that it meets the following requirements: Generate a dialogue in a story
+            Original prompt: &quot;Story writing&quot;
+            Optimized prompt: [Insert optimized prompt from previous task]
+            Present your findings in a clear, Markdown-formatted report.
+
+
+&gt; Entering new CrewAgentExecutor chain...
+Thought: I now can give a great answer
+
+Final Answer:
+
+# Prompt Test Report: Original vs. Optimized Prompt for Dialogue Generation
+
+## 1. Comparison of Potential Performance
+
+### Original Prompt: &quot;Story writing&quot;
+- Extremely vague and open-ended
+- Provides no guidance or structure for the task
+- Likely to result in inconsistent or unfocused outputs
+- May lead to confusion about the specific goal (dialogue generation)
+
+### Optimized Prompt:
+```
+&quot;Let&#x27;s think about this: A compelling dialogue between two characters in a story.
+
+Task: Generate a conversation between two characters in a short story.
+Instructions: 
+1. Create two distinct characters with brief backgrounds.
+2. Establish a context or setting for their interaction.
+3. Write a natural and engaging dialogue that reveals their personalities and advances the story.
+4. The conversation should be approximately 300 words long.
+5. Include both spoken words and brief descriptions of non-verbal cues or actions.
+
+Prompt: Generate a dialogue between [Character 1] and [Character 2] in the following context: [Insert context]. Ensure the conversation flows naturally, reveals character traits, and moves the story forward.&quot;
+```
+
+- Clearly defines the task and expected outcome
+- Provides a structured approach to dialogue creation
+- Encourages thoughtful character development and context-setting
+- Specifies length and includes non-verbal elements for added depth
+- Likely to produce more consistent, focused, and engaging dialogue
+
+## 2. Clarity and Ease of Understanding
+
+### Original Prompt:
+- Extremely unclear and ambiguous
+- Requires significant interpretation and guesswork
+- Difficult to understand the specific task or expectations
+
+### Optimized Prompt:
+- Clear and concise task description
+- Step-by-step instructions make the process easy to follow
+- Specific requirements (word count, non-verbal cues) provide clear guidelines
+- Easy to understand for both human writers and AI models
+
+## 3. Potential for Misuse or Unintended Outputs
+
+### Original Prompt:
+- High potential for misuse due to lack of specificity
+- May result in irrelevant or inappropriate content
+- No safeguards against generating offensive or harmful material
+
+### Optimized Prompt:
+- Lower risk of misuse due to clear focus on dialogue generation
+- Structured approach reduces likelihood of irrelevant outputs
+- Still potential for generating inappropriate content, but context-setting step allows for some control
+- No explicit safeguards against offensive or harmful material, which could be added for improvement
+
+## 4. Verification of Requirements
+
+Requirement: Generate a dialogue in a story
+
+### Original Prompt:
+- Does not explicitly meet the requirement
+- May or may not result in dialogue generation, depending on interpretation
+
+### Optimized Prompt:
+- Fully meets the requirement
+- Explicitly focuses on generating dialogue between two characters in a story context
+- Provides clear instructions for creating a compelling and story-advancing dialogue
+
+## Conclusion
+
+The optimized prompt significantly outperforms the original in all aspects of this evaluation. It provides clear guidance, encourages creativity within a structured framework, and is much more likely to produce the desired outcome of generating engaging dialogue in a story context. While there is still room for improvement in terms of safeguarding against potential misuse, the optimized prompt represents a substantial enhancement over the original and is well-suited for creative writing tasks focused on dialogue generation.
+
+&gt; Finished chain.
+ [2024-06-26 19:06:57][DEBUG]: == [Prompt Tester] Task output: # Prompt Test Report: Original vs. Optimized Prompt for Dialogue Generation
+
+## 1. Comparison of Potential Performance
+
+### Original Prompt: &quot;Story writing&quot;
+- Extremely vague and open-ended
+- Provides no guidance or structure for the task
+- Likely to result in inconsistent or unfocused outputs
+- May lead to confusion about the specific goal (dialogue generation)
+
+### Optimized Prompt:
+```
+&quot;Let&#x27;s think about this: A compelling dialogue between two characters in a story.
+
+Task: Generate a conversation between two characters in a short story.
+Instructions: 
+1. Create two distinct characters with brief backgrounds.
+2. Establish a context or setting for their interaction.
+3. Write a natural and engaging dialogue that reveals their personalities and advances the story.
+4. The conversation should be approximately 300 words long.
+5. Include both spoken words and brief descriptions of non-verbal cues or actions.
+
+Prompt: Generate a dialogue between [Character 1] and [Character 2] in the following context: [Insert context]. Ensure the conversation flows naturally, reveals character traits, and moves the story forward.&quot;
+```
+
+- Clearly defines the task and expected outcome
+- Provides a structured approach to dialogue creation
+- Encourages thoughtful character development and context-setting
+- Specifies length and includes non-verbal elements for added depth
+- Likely to produce more consistent, focused, and engaging dialogue
+
+## 2. Clarity and Ease of Understanding
+
+### Original Prompt:
+- Extremely unclear and ambiguous
+- Requires significant interpretation and guesswork
+- Difficult to understand the specific task or expectations
+
+### Optimized Prompt:
+- Clear and concise task description
+- Step-by-step instructions make the process easy to follow
+- Specific requirements (word count, non-verbal cues) provide clear guidelines
+- Easy to understand for both human writers and AI models
+
+## 3. Potential for Misuse or Unintended Outputs
+
+### Original Prompt:
+- High potential for misuse due to lack of specificity
+- May result in irrelevant or inappropriate content
+- No safeguards against generating offensive or harmful material
+
+### Optimized Prompt:
+- Lower risk of misuse due to clear focus on dialogue generation
+- Structured approach reduces likelihood of irrelevant outputs
+- Still potential for generating inappropriate content, but context-setting step allows for some control
+- No explicit safeguards against offensive or harmful material, which could be added for improvement
+
+## 4. Verification of Requirements
+
+Requirement: Generate a dialogue in a story
+
+### Original Prompt:
+- Does not explicitly meet the requirement
+- May or may not result in dialogue generation, depending on interpretation
+
+### Optimized Prompt:
+- Fully meets the requirement
+- Explicitly focuses on generating dialogue between two characters in a story context
+- Provides clear instructions for creating a compelling and story-advancing dialogue
+
+## Conclusion
+
+The optimized prompt significantly outperforms the original in all aspects of this evaluation. It provides clear guidance, encourages creativity within a structured framework, and is much more likely to produce the desired outcome of generating engaging dialogue in a story context. While there is still room for improvement in terms of safeguarding against potential misuse, the optimized prompt represents a substantial enhancement over the original and is well-suited for creative writing tasks focused on dialogue generation.
+
+
+ [2024-06-26 19:06:57][DEBUG]: == Working Agent: Ultimate Optimizer
+ [2024-06-26 19:06:57][INFO]: == Starting Task: Review all previous outputs and provide the ultimate optimized prompt. Your task includes:
+            1. Analyzing the initial prompt, optimized prompt, and test results
+            2. Ensuring all user requirements are met: Generate a dialogue in a story
+            3. Further refining the prompt based on all available information
+            4. Providing a final, highly optimized prompt for the creative writing task
+            Present your final optimized prompt along with a brief explanation of your refinements.
+
+
+&gt; Entering new CrewAgentExecutor chain...
+Thought: I now can give a great answer
+
+Final Answer: Here is the ultimate optimized prompt for generating dialogue in a story, along with explanations for the refinements:
+
+```
+Creative Writing Task: Craft an Engaging Dialogue Scene
+
+Your mission is to write a captivating dialogue scene between two characters that brings a story to life. Follow these steps to create a rich, meaningful exchange:
+
+1. Character Creation:
+   - Introduce two distinct characters with names, ages, and brief backgrounds
+   - Highlight one key personality trait for each character
+
+2. Setting the Scene:
+   - Describe the location and time of day in 1-2 sentences
+   - Mention any relevant objects or environmental factors
+
+3. Dialogue Objectives:
+   - Define a clear purpose for the conversation (e.g., reveal a secret, resolve a conflict)
+   - Identify one key emotion or tension underlying the exchange
+
+4. Writing the Dialogue:
+   - Craft a natural conversation of 250-300 words
+   - Use a mix of short and long responses to create rhythm
+   - Include at least 3 instances of non-verbal communication (gestures, facial expressions, etc.)
+   - Ensure each character&#x27;s dialogue reflects their unique voice and background
+
+5. Advancing the Story:
+   - Introduce at least one new piece of information or plot development
+   - End the scene with a subtle hook or unresolved tension
+
+6. Formatting:
+   - Use quotation marks for spoken words
+   - Start a new paragraph for each speaker change
+   - Integrate brief action or description between dialogue lines
+
+Remember: Show, don&#x27;t tell. Let the characters&#x27; words and actions reveal their thoughts and feelings.
+
+Now, write a dialogue scene between [Character 1] and [Character 2] in [Setting], where they must [Dialogue Objective]. Begin your scene with a brief introduction of the characters and setting before diving into the dialogue.
+```
+
+Explanations for refinements:
+
+1. Structured Approach: The prompt is organized into clear, numbered steps, making it easy to follow and ensuring all important elements are addressed.
+
+2. Character Development: Added more specific instructions for character creation, including names and key traits, to help establish distinct personalities.
+
+3. Setting Context: Expanded on the setting description to create a more vivid backdrop for the dialogue.
+
+4. Dialogue Objectives: Introduced a specific purpose for the conversation and underlying emotion, adding depth and direction to the exchange.
+
+5. Detailed Writing Instructions: Provided more specific guidelines on dialogue length, pacing, and the inclusion of non-verbal cues to create a more dynamic scene.
+
+6. Story Advancement: Added explicit instructions to introduce new information and end with a hook, ensuring the dialogue serves a purpose in the larger narrative.
+
+7. Formatting Guidelines: Included specific formatting instructions to improve readability and professional presentation.
+
+8. &quot;Show, Don&#x27;t Tell&quot; Reminder: Emphasized this key writing principle to encourage more engaging and descriptive dialogue.
+
+9. Flexible Framework: The prompt allows for customization of characters, setting, and objectives, making it adaptable to various story types and genres.
+
+10. Balance of Structure and Creativity: While providing a clear framework, the prompt still leaves room for creative expression and unique interpretations.
+
+This optimized prompt addresses all the requirements of generating dialogue in a story context while providing a comprehensive guide for creating rich, meaningful exchanges between characters. It builds upon the strengths of the previous optimization while adding more specific instructions and creative elements to further enhance the quality of the output.
+
+&gt; Finished chain.
+ [2024-06-26 19:07:11][DEBUG]: == [Ultimate Optimizer] Task output: Here is the ultimate optimized prompt for generating dialogue in a story, along with explanations for the refinements:
+
+```
+Creative Writing Task: Craft an Engaging Dialogue Scene
+
+Your mission is to write a captivating dialogue scene between two characters that brings a story to life. Follow these steps to create a rich, meaningful exchange:
+
+1. Character Creation:
+   - Introduce two distinct characters with names, ages, and brief backgrounds
+   - Highlight one key personality trait for each character
+
+2. Setting the Scene:
+   - Describe the location and time of day in 1-2 sentences
+   - Mention any relevant objects or environmental factors
+
+3. Dialogue Objectives:
+   - Define a clear purpose for the conversation (e.g., reveal a secret, resolve a conflict)
+   - Identify one key emotion or tension underlying the exchange
+
+4. Writing the Dialogue:
+   - Craft a natural conversation of 250-300 words
+   - Use a mix of short and long responses to create rhythm
+   - Include at least 3 instances of non-verbal communication (gestures, facial expressions, etc.)
+   - Ensure each character&#x27;s dialogue reflects their unique voice and background
+
+5. Advancing the Story:
+   - Introduce at least one new piece of information or plot development
+   - End the scene with a subtle hook or unresolved tension
+
+6. Formatting:
+   - Use quotation marks for spoken words
+   - Start a new paragraph for each speaker change
+   - Integrate brief action or description between dialogue lines
+
+Remember: Show, don&#x27;t tell. Let the characters&#x27; words and actions reveal their thoughts and feelings.
+
+Now, write a dialogue scene between [Character 1] and [Character 2] in [Setting], where they must [Dialogue Objective]. Begin your scene with a brief introduction of the characters and setting before diving into the dialogue.
+```
+
+Explanations for refinements:
+
+1. Structured Approach: The prompt is organized into clear, numbered steps, making it easy to follow and ensuring all important elements are addressed.
+
+2. Character Development: Added more specific instructions for character creation, including names and key traits, to help establish distinct personalities.
+
+3. Setting Context: Expanded on the setting description to create a more vivid backdrop for the dialogue.
+
+4. Dialogue Objectives: Introduced a specific purpose for the conversation and underlying emotion, adding depth and direction to the exchange.
+
+5. Detailed Writing Instructions: Provided more specific guidelines on dialogue length, pacing, and the inclusion of non-verbal cues to create a more dynamic scene.
+
+6. Story Advancement: Added explicit instructions to introduce new information and end with a hook, ensuring the dialogue serves a purpose in the larger narrative.
+
+7. Formatting Guidelines: Included specific formatting instructions to improve readability and professional presentation.
+
+8. &quot;Show, Don&#x27;t Tell&quot; Reminder: Emphasized this key writing principle to encourage more engaging and descriptive dialogue.
+
+9. Flexible Framework: The prompt allows for customization of characters, setting, and objectives, making it adaptable to various story types and genres.
+
+10. Balance of Structure and Creativity: While providing a clear framework, the prompt still leaves room for creative expression and unique interpretations.
+
+This optimized prompt addresses all the requirements of generating dialogue in a story context while providing a comprehensive guide for creating rich, meaningful exchanges between characters. It builds upon the strengths of the previous optimization while adding more specific instructions and creative elements to further enhance the quality of the output.
+
+</code></pre></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
