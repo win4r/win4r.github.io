@@ -1,0 +1,1417 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>llama-agents+chainlit打造超级智能体</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(0, 0, 0, 0.06); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="aa772a1e-8c79-4537-90f1-3a41d34aa4de" class="page sans"><header><h1 class="page-title">llama-agents+chainlit打造超级智能体</h1><p class="page-description"></p></header><div class="page-body"><p id="0564f643-c40c-4d5b-a3a2-444798da8333" class="">
+</p><figure id="b5c2496c-7d81-4c5b-8b60-9a039656040f"><div class="source">https://github.com/run-llama/llama-agents</div></figure><p id="5b0d0651-97c3-4a28-97a2-5146d9475117" class="">
+</p><p id="0701b0c4-d5c3-4a12-9491-3428a8fe92a3" class=""><a href="https://www.llamaindex.ai/blog/introducing-llama-agents-a-powerful-framework-for-building-production-multi-agent-ai-systems">https://www.llamaindex.ai/blog/introducing-llama-agents-a-powerful-framework-for-building-production-multi-agent-ai-systems</a></p><p id="14a23123-1273-4706-8fe1-b37e059aa1ed" class="">
+</p><h3 id="c08b75b2-3caf-44de-b13c-3ee7c015e925" class="">chainlit安装</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1f1d7541-e411-470b-b659-e6d18d2151d4" class="code"><code class="language-Shell">安装
+pip install chainlit
+
+#运行
+chainlit run app-ui.py -w</code></pre><h3 id="82ecec14-05c0-4703-b382-43b7bbcb35ba" class="">yfinance安装</h3><blockquote id="2a52f8e5-16f5-4206-a65b-22c92ddbbae9" class="">yfinance 是一个 Python 库，用于从 Yahoo Finance 下载市场数据。它提供了一种线程化和 Python 化的方式来获取股票、ETF、共同基金、货币、期权等金融工具的历史和实时数据。</blockquote><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="a82ab3bd-aa0b-489d-ac27-b358752180be" class="code"><code class="language-Python">pip install yfinance</code></pre><h3 id="83e828c2-3591-48bb-8bc8-8c6e13ae7349" class="">llama-agents安装</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="4a60fef3-d70b-4f06-8583-b685354596c1" class="code"><code class="language-Shell">
+pip install llama-agents llama-index-agent-openai llama-index-embeddings-openai llama-index-program-openai
+
+#.env文件中放入api key
+OPENAI_API_KEY=sk-xxx
+ANTHROPIC_API_KEY=sk-xxx
+
+
+https://docs.llamaindex.ai/en/stable/api_reference/llms/ollama/
+
+
+
+
+
+
+</code></pre><h3 id="75bc72b4-2f49-4f43-94fa-750d0dd413ac" class="">ollama接口支持示例</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="384e261f-0cd7-4493-8a40-a3bf7d9e98ab" class="code"><code class="language-Shell">
+from llama_index.llms.ollama import Ollama
+
+ollama_llm = Ollama(model=&quot;gemma2&quot;, request_timeout=120.0)
+
+tool = FunctionTool.from_defaults(fn=&lt;function&gt;)
+
+agent1 = ReActAgent.from_tools([tool], llm=ollama_llm)
+agent2 = ReActAgent.from_tools([], llm=ollama_llm)
+
+
+</code></pre><h2 id="354c8cd7-5e02-4f95-9cae-18fa5e90d381" class=""><strong>👉👉👉如有问题请联系我的徽信 stoeng</strong></h2><h2 id="341af8bb-da2b-4aff-a63e-8cafa5772cbc" class=""><strong>🔥🔥🔥本项目代码由AI超元域频道制作，观看更多大模型微调视频请访问我的频道⬇</strong></h2><h3 id="6c6cd992-8dc6-4dd6-a187-aec285d79163" class=""><strong>👉👉👉</strong><strong><a href="https://space.bilibili.com/3493277319825652">我的哔哩哔哩频道</a></strong></h3><h3 id="09ede402-0d19-4202-affb-6a42ba371bef" class=""><strong>👉👉👉</strong><strong><a href="https://www.youtube.com/@AIsuperdomain">我的YouTube频道</a></strong></h3><h3 id="f2187cca-a4a6-4260-8166-88392f3c512b" class=""><strong>👉👉👉我的开源项目 </strong><strong><a href="https://github.com/win4r/AISuperDomain">https://github.com/win4r/AISuperDomain</a></strong></h3><h2 id="7c9ffe43-86d7-47ae-88b2-a6d907904676" class=""></h2><h3 id="5264d5e1-01a4-422f-a9c3-e8d7282e9639" class="">Anthropic接口支持示例</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="f694fa31-d827-4cfb-9452-6cf8b79d7713" class="code"><code class="language-Python">import os
+from dotenv import load_dotenv
+import yfinance as yf
+from llama_agents.launchers.local import LocalLauncher
+from llama_agents.services import AgentService, ToolService
+from llama_agents.tools import MetaServiceTool
+from llama_agents.control_plane.server import ControlPlaneServer
+from llama_agents.message_queues.simple import SimpleMessageQueue
+from llama_agents.orchestrators.agent import AgentOrchestrator
+from llama_index.core.agent import FunctionCallingAgentWorker
+from llama_index.core.tools import FunctionTool
+from llama_index.llms.openai import OpenAI
+from llama_index.llms.anthropic import Anthropic
+
+from llama_index.llms.ollama import Ollama
+
+
+# 加载.env文件
+load_dotenv()
+
+# 从环境变量中获取API密钥
+api_key = os.getenv(&quot;ANTHROPIC_API_KEY&quot;)
+
+# 确保API密钥已设置
+if not api_key:
+    raise ValueError(&quot;ANTHROPIC_API_KEY not found in .env file&quot;)
+
+# 设置OpenAI API密钥
+os.environ[&quot;ANTHROPIC_API_KEY&quot;] = api_key
+
+# 其余代码保持不变
+def get_stock_price(symbol: str) -&gt; str:
+    &quot;&quot;&quot;获取给定股票代码的当前价格&quot;&quot;&quot;
+    try:
+        stock = yf.Ticker(symbol)
+        data = stock.history(period=&quot;1d&quot;)
+        if not data.empty:
+            current_price = data[&#x27;Close&#x27;].iloc[-1]
+            return f&quot;The current price of {symbol} is ${current_price:.2f}&quot;
+        else:
+            return f&quot;Unable to fetch the current price for {symbol}. The stock data is empty.&quot;
+    except Exception as e:
+        return f&quot;Error fetching stock price for {symbol}: {str(e)}&quot;
+
+def get_company_info(symbol: str) -&gt; str:
+    &quot;&quot;&quot;获取给定股票代码的公司信息&quot;&quot;&quot;
+    try:
+        stock = yf.Ticker(symbol)
+        info = stock.info
+        return f&quot;{info[&#x27;longName&#x27;]} ({symbol}) is in the {info.get(&#x27;sector&#x27;, &#x27;Unknown&#x27;)} sector. {info.get(&#x27;longBusinessSummary&#x27;, &#x27;&#x27;)[:200]}...&quot;
+    except Exception as e:
+        return f&quot;Error fetching company info for {symbol}: {str(e)}&quot;
+
+stock_price_tool = FunctionTool.from_defaults(fn=get_stock_price)
+company_info_tool = FunctionTool.from_defaults(fn=get_company_info)
+
+# 指定 OpenAI 模型
+llm = Anthropic(model=&quot;claude-3-sonnet-20240229&quot;)
+
+
+# create our multi-agent framework components
+message_queue = SimpleMessageQueue()
+tool_service = ToolService(
+    message_queue=message_queue,
+    tools=[stock_price_tool, company_info_tool],
+    running=True,
+    step_interval=0.5,
+)
+control_plane = ControlPlaneServer(
+    message_queue=message_queue,
+    orchestrator=AgentOrchestrator(llm=llm),
+)
+meta_tools = [
+    MetaServiceTool(
+        tool_metadata=tool.metadata,
+        message_queue=message_queue,
+        tool_service_name=tool_service.service_name,
+    ) for tool in [stock_price_tool, company_info_tool]
+]
+worker1 = FunctionCallingAgentWorker.from_tools(
+    meta_tools,
+    llm=llm,
+)
+agent1 = worker1.as_agent()
+agent_server_1 = AgentService(
+    agent=agent1,
+    message_queue=message_queue,
+    description=&quot;Useful for getting stock information.&quot;,
+    service_name=&quot;stock_info_agent&quot;,
+)
+# launch it
+launcher = LocalLauncher(
+    [agent_server_1, tool_service],
+    control_plane,
+    message_queue,
+)
+result = launcher.launch_single(&quot;What&#x27;s the current price of AAPL and what does the company do?&quot;)
+print(f&quot;Result: {result}&quot;)</code></pre><h3 id="c05cdafc-565f-43ad-9031-6322e3fcf70c" class="">股票分析：<br/><br/></h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="3f8469df-6f88-4d27-9a17-4fcbe96607ed" class="code"><code class="language-Python"># 导入所需的库
+import os
+import logging
+from dotenv import load_dotenv
+import yfinance as yf
+from llama_agents.launchers.local import LocalLauncher
+from llama_agents.services import AgentService, ToolService
+from llama_agents.tools import MetaServiceTool
+from llama_agents.control_plane.server import ControlPlaneServer
+from llama_agents.message_queues.simple import SimpleMessageQueue
+from llama_agents.orchestrators.agent import AgentOrchestrator
+from llama_index.core.agent import FunctionCallingAgentWorker
+from llama_index.core.tools import FunctionTool
+from llama_index.llms.openai import OpenAI
+
+# 设置日志级别为INFO
+logging.basicConfig(level=logging.INFO)
+
+# 加载.env文件中的环境变量
+load_dotenv()
+
+# 从环境变量中获取OpenAI API密钥
+api_key = os.getenv(&quot;OPENAI_API_KEY&quot;)
+
+# 确保API密钥已设置,否则抛出异常
+if not api_key:
+    raise ValueError(&quot;OPENAI_API_KEY not found in .env file&quot;)
+
+# 设置OpenAI API密钥为环境变量
+os.environ[&quot;OPENAI_API_KEY&quot;] = api_key
+
+# 定义获取股票当前价格的函数
+def get_stock_price(symbol: str) -&gt; str:
+    &quot;&quot;&quot;获取给定股票代码的当前价格&quot;&quot;&quot;
+    try:
+        stock = yf.Ticker(symbol)
+        data = stock.history(period=&quot;1d&quot;)
+        if not data.empty:
+            current_price = data[&#x27;Close&#x27;].iloc[-1]
+            return f&quot;The current price of {symbol} is ${current_price:.2f}&quot;
+        else:
+            return f&quot;Unable to fetch the current price for {symbol}. The stock data is empty.&quot;
+    except Exception as e:
+        logging.error(f&quot;Error fetching stock price for {symbol}: {str(e)}&quot;)
+        return f&quot;Error fetching stock price for {symbol}: {str(e)}&quot;
+
+# 定义获取公司信息的函数
+def get_company_info(symbol: str) -&gt; str:
+    &quot;&quot;&quot;获取给定股票代码的公司信息&quot;&quot;&quot;
+    try:
+        stock = yf.Ticker(symbol)
+        info = stock.info
+        return f&quot;{info[&#x27;longName&#x27;]} ({symbol}) is in the {info.get(&#x27;sector&#x27;, &#x27;Unknown&#x27;)} sector. {info.get(&#x27;longBusinessSummary&#x27;, &#x27;&#x27;)[:200]}...&quot;
+    except Exception as e:
+        logging.error(f&quot;Error fetching company info for {symbol}: {str(e)}&quot;)
+        return f&quot;Error fetching company info for {symbol}: {str(e)}&quot;
+
+# 定义获取财务比率的函数
+def get_financial_ratios(symbol: str) -&gt; str:
+    &quot;&quot;&quot;获取给定股票的关键财务比率&quot;&quot;&quot;
+    try:
+        stock = yf.Ticker(symbol)
+        info = stock.info
+        pe_ratio = info.get(&#x27;trailingPE&#x27;, &#x27;N/A&#x27;)
+        pb_ratio = info.get(&#x27;priceToBook&#x27;, &#x27;N/A&#x27;)
+        dividend_yield = info.get(&#x27;dividendYield&#x27;, &#x27;N/A&#x27;)
+        if dividend_yield != &#x27;N/A&#x27;:
+            dividend_yield = f&quot;{dividend_yield * 100:.2f}%&quot;
+        return f&quot;{symbol} financial ratios: P/E: {pe_ratio}, P/B: {pb_ratio}, Dividend Yield: {dividend_yield}&quot;
+    except Exception as e:
+        logging.error(f&quot;Error fetching financial ratios for {symbol}: {str(e)}&quot;)
+        return f&quot;Error fetching financial ratios for {symbol}: {str(e)}&quot;
+
+# 定义获取分析师推荐的函数
+def get_analyst_recommendations(symbol: str) -&gt; str:
+    &quot;&quot;&quot;获取分析师对给定股票的推荐&quot;&quot;&quot;
+    try:
+        stock = yf.Ticker(symbol)
+        recommendations = stock.recommendations
+        if recommendations is not None and not recommendations.empty:
+            latest_rec = recommendations.iloc[-1]
+            return f&quot;Latest analyst recommendation for {symbol}: {latest_rec[&#x27;To Grade&#x27;]} as of {latest_rec.name.date()}&quot;
+        else:
+            return f&quot;No analyst recommendations available for {symbol}&quot;
+    except Exception as e:
+        logging.error(f&quot;Error fetching analyst recommendations for {symbol}: {str(e)}&quot;)
+        return f&quot;Unable to fetch analyst recommendations for {symbol} due to an error: {str(e)}&quot;
+
+# 定义获取最新新闻的函数
+def get_recent_news(symbol: str) -&gt; str:
+    &quot;&quot;&quot;获取与给定股票相关的最新新闻&quot;&quot;&quot;
+    try:
+        stock = yf.Ticker(symbol)
+        news = stock.news
+        if news:
+            latest_news = news[0]
+            return f&quot;Latest news for {symbol}: {latest_news[&#x27;title&#x27;]} - {latest_news[&#x27;link&#x27;]}&quot;
+        else:
+            return f&quot;No recent news available for {symbol}&quot;
+    except Exception as e:
+        logging.error(f&quot;Error fetching recent news for {symbol}: {str(e)}&quot;)
+        return f&quot;Error fetching recent news for {symbol}: {str(e)}&quot;
+
+# 定义获取行业比较的函数
+def get_industry_comparison(symbol: str) -&gt; str:
+    &quot;&quot;&quot;获取股票与行业平均水平的比较&quot;&quot;&quot;
+    try:
+        stock = yf.Ticker(symbol)
+        info = stock.info
+        sector = info.get(&#x27;sector&#x27;, &#x27;Unknown&#x27;)
+        industry = info.get(&#x27;industry&#x27;, &#x27;Unknown&#x27;)
+        pe_ratio = info.get(&#x27;trailingPE&#x27;, &#x27;N/A&#x27;)
+        industry_pe = info.get(&#x27;industryPE&#x27;, &#x27;N/A&#x27;)
+
+        comparison = f&quot;{symbol} is in the {sector} sector, specifically in the {industry} industry. &quot;
+        if pe_ratio != &#x27;N/A&#x27; and industry_pe != &#x27;N/A&#x27;:
+            if pe_ratio &lt; industry_pe:
+                comparison += f&quot;Its P/E ratio ({pe_ratio:.2f}) is lower than the industry average ({industry_pe:.2f}), which could indicate it&#x27;s undervalued compared to its peers.&quot;
+            elif pe_ratio &gt; industry_pe:
+                comparison += f&quot;Its P/E ratio ({pe_ratio:.2f}) is higher than the industry average ({industry_pe:.2f}), which could indicate it&#x27;s overvalued compared to its peers.&quot;
+            else:
+                comparison += f&quot;Its P/E ratio ({pe_ratio:.2f}) is in line with the industry average ({industry_pe:.2f}).&quot;
+        else:
+            comparison += &quot;Unable to compare P/E ratio with industry average due to lack of data.&quot;
+
+        return comparison
+    except Exception as e:
+        logging.error(f&quot;Error fetching industry comparison for {symbol}: {str(e)}&quot;)
+        return f&quot;Unable to fetch industry comparison for {symbol} due to an error: {str(e)}&quot;
+
+# 创建工具对象,每个工具对应一个函数
+stock_price_tool = FunctionTool.from_defaults(fn=get_stock_price)
+company_info_tool = FunctionTool.from_defaults(fn=get_company_info)
+financial_ratios_tool = FunctionTool.from_defaults(fn=get_financial_ratios)
+analyst_recommendations_tool = FunctionTool.from_defaults(fn=get_analyst_recommendations)
+recent_news_tool = FunctionTool.from_defaults(fn=get_recent_news)
+industry_comparison_tool = FunctionTool.from_defaults(fn=get_industry_comparison)
+
+# 指定使用的OpenAI模型
+llm = OpenAI(model=&quot;gpt-4o&quot;, temperature=0)
+
+# 创建消息队列
+message_queue = SimpleMessageQueue()
+
+# 创建工具服务,包含所有定义的工具
+tool_service = ToolService(
+    message_queue=message_queue,
+    tools=[stock_price_tool, company_info_tool, financial_ratios_tool, analyst_recommendations_tool, recent_news_tool,
+           industry_comparison_tool],
+    running=True,
+    step_interval=0.5,
+)
+
+# 创建控制平面服务器
+control_plane = ControlPlaneServer(
+    message_queue=message_queue,
+    orchestrator=AgentOrchestrator(llm=llm),
+)
+
+# 创建元工具列表,每个元工具对应一个实际工具
+meta_tools = [
+    MetaServiceTool(
+        tool_metadata=tool.metadata,
+        message_queue=message_queue,
+        tool_service_name=tool_service.service_name,
+    ) for tool in
+    [stock_price_tool, company_info_tool, financial_ratios_tool, analyst_recommendations_tool, recent_news_tool,
+     industry_comparison_tool]
+]
+
+# 创建代理工作器,设置系统提示
+worker1 = FunctionCallingAgentWorker.from_tools(
+    meta_tools,
+    llm=llm,
+    system_prompt=&quot;&quot;&quot;你是一个专业的股票分析师。你的任务是分析给定的股票,并根据所有可用信息提供是否购买的建议。
+    请使用所有可用工具来收集相关信息,然后给出全面的分析和明确的建议。
+    考虑当前价格、公司信息、财务比率、分析师推荐、最新新闻和行业比较。
+    解释你的推荐理由,并提供一个清晰的&quot;买入&quot;、&quot;持有&quot;或&quot;卖出&quot;建议。
+    如果某些信息无法获取,请在分析中说明,并基于可用信息给出最佳判断。
+    &quot;&quot;&quot;
+)
+
+# 将工作器转换为代理
+agent1 = worker1.as_agent()
+
+# 创建代理服务
+agent_server_1 = AgentService(
+    agent=agent1,
+    message_queue=message_queue,
+    description=&quot;Useful for analyzing stocks and providing investment recommendations.&quot;,
+    service_name=&quot;stock_analysis_agent&quot;,
+)
+
+# 创建本地启动器
+launcher = LocalLauncher(
+    [agent_server_1, tool_service],
+    control_plane,
+    message_queue,
+)
+
+# 执行股票分析
+result = launcher.launch_single(&quot;&quot;&quot;
+分析 AAPL 股票是否值得购买。
+请考虑以下因素:
+1. 当前股价
+2. 公司基本信息
+3. 关键财务比率（如 P/E、P/B、股息收益率）
+4. 分析师推荐
+5. 最新相关新闻
+6. 与行业平均水平的比较
+根据这些信息，给出你的投资建议（买入、持有或卖出）并详细解释理由。
+如果某些信息无法获取，请在分析中说明，并基于可用信息给出最佳判断。
+&quot;&quot;&quot;)
+
+# 打印分析结果
+print(f&quot;Result: {result}&quot;)</code></pre><h3 id="d2334930-f09e-46c1-aea3-da605989e7b9" class="">RAG</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="ca0475f3-b25d-4248-95e7-1b52de020691" class="code"><code class="language-Python">import os
+import logging
+from dotenv import load_dotenv
+
+# 导入必要的 llama_index 模块
+from llama_index.core import (
+    SimpleDirectoryReader,
+    VectorStoreIndex,
+    StorageContext,
+    load_index_from_storage,
+)
+from llama_index.core.tools import QueryEngineTool, ToolMetadata
+# 导入 llama_agents 相关模块
+from llama_agents import (
+    AgentService,
+    ToolService,
+    LocalLauncher,
+    MetaServiceTool,
+    ControlPlaneServer,
+    SimpleMessageQueue,
+    AgentOrchestrator,
+)
+from llama_index.core.agent import FunctionCallingAgentWorker
+from llama_index.llms.openai import OpenAI
+
+# 加载 .env 文件中的环境变量
+load_dotenv()
+
+# 从环境变量中获取 OpenAI API 密钥
+api_key = os.getenv(&quot;OPENAI_API_KEY&quot;)
+
+# 确保 API 密钥已设置,否则抛出异常
+if not api_key:
+    raise ValueError(&quot;OPENAI_API_KEY not found in .env file&quot;)
+
+# 设置 OpenAI API 密钥为环境变量
+os.environ[&quot;OPENAI_API_KEY&quot;] = api_key
+
+# 设置 llama_agents 的日志级别为 INFO
+logging.getLogger(&quot;llama_agents&quot;).setLevel(logging.INFO)
+
+# 加载并索引数据
+def load_and_index_data():
+    try:
+        # 尝试从已保存的存储中加载索引
+        storage_context = StorageContext.from_defaults(persist_dir=&quot;./storage/lyft&quot;)
+        lyft_index = load_index_from_storage(storage_context)
+
+        storage_context = StorageContext.from_defaults(persist_dir=&quot;./storage/uber&quot;)
+        uber_index = load_index_from_storage(storage_context)
+    except:
+        # 如果索引不存在,则创建新的索引
+        lyft_docs = SimpleDirectoryReader(input_files=[&quot;./data/10k/lyft_2021.pdf&quot;]).load_data()
+        uber_docs = SimpleDirectoryReader(input_files=[&quot;./data/10k/uber_2021.pdf&quot;]).load_data()
+
+        lyft_index = VectorStoreIndex.from_documents(lyft_docs)
+        uber_index = VectorStoreIndex.from_documents(uber_docs)
+
+        # 保存新创建的索引
+        lyft_index.storage_context.persist(persist_dir=&quot;./storage/lyft&quot;)
+        uber_index.storage_context.persist(persist_dir=&quot;./storage/uber&quot;)
+
+    return lyft_index, uber_index
+
+# 设置查询引擎和工具
+def setup_query_engines_and_tools(lyft_index, uber_index):
+    # 创建 Lyft 和 Uber 的查询引擎
+    lyft_engine = lyft_index.as_query_engine(similarity_top_k=3)
+    uber_engine = uber_index.as_query_engine(similarity_top_k=3)
+
+    # 创建查询引擎工具列表
+    query_engine_tools = [
+        QueryEngineTool(
+            query_engine=lyft_engine,
+            metadata=ToolMetadata(
+                name=&quot;lyft_10k&quot;,
+                description=&quot;Provides information about Lyft financials for year 2021. &quot;
+                            &quot;Use a detailed plain text question as input to the tool.&quot;,
+            ),
+        ),
+        QueryEngineTool(
+            query_engine=uber_engine,
+            metadata=ToolMetadata(
+                name=&quot;uber_10k&quot;,
+                description=&quot;Provides information about Uber financials for year 2021. &quot;
+                            &quot;Use a detailed plain text question as input to the tool.&quot;,
+            ),
+        ),
+    ]
+
+    return query_engine_tools
+
+# 设置代理和服务
+async def setup_agents_and_services(query_engine_tools):
+    # 创建消息队列
+    message_queue = SimpleMessageQueue()
+    # 创建控制平面服务器
+    control_plane = ControlPlaneServer(
+        message_queue=message_queue,
+        orchestrator=AgentOrchestrator(llm=OpenAI(model=&quot;gpt-4o&quot;)),
+    )
+
+    # 创建工具服务
+    tool_service = ToolService(
+        message_queue=message_queue,
+        tools=query_engine_tools,
+        running=True,
+        step_interval=0.5,
+    )
+
+    # 创建元工具列表
+    meta_tools = [
+        await MetaServiceTool.from_tool_service(
+            t.metadata.name,
+            message_queue=message_queue,
+            tool_service=tool_service,
+        )
+        for t in query_engine_tools
+    ]
+
+    # 创建函数调用代理工作器
+    worker1 = FunctionCallingAgentWorker.from_tools(
+        meta_tools,
+        llm=OpenAI(),
+    )
+    # 将工作器转换为代理
+    agent1 = worker1.as_agent()
+    # 创建代理服务
+    agent_server_1 = AgentService(
+        agent=agent1,
+        message_queue=message_queue,
+        description=&quot;Used to answer questions over Uber and Lyft 10K documents&quot;,
+        service_name=&quot;uber_lyft_10k_analyst_agent&quot;,
+    )
+
+    # 创建本地启动器
+    launcher = LocalLauncher(
+        [agent_server_1, tool_service],
+        control_plane,
+        message_queue,
+    )
+
+    return launcher
+
+# 主函数,用于运行整个脚本
+async def main():
+    # 加载并索引数据
+    lyft_index, uber_index = load_and_index_data()
+    # 设置查询引擎和工具
+    query_engine_tools = setup_query_engines_and_tools(lyft_index, uber_index)
+    # 设置代理和服务
+    launcher = await setup_agents_and_services(query_engine_tools)
+
+    # 示例查询
+    queries = [
+        &quot;What are the risk factors for Uber?&quot;,
+        &quot;What was Lyft&#x27;s revenue growth in 2021?&quot;,
+    ]
+
+    # 执行查询并打印结果
+    for query in queries:
+        print(f&quot;Query: {query}&quot;)
+        result = await launcher.alaunch_single(query)  # 使用 alaunch_single 而不是 launch_single
+        print(f&quot;Result: {result}\n&quot;)
+
+# 运行主函数
+if __name__ == &quot;__main__&quot;:
+    import asyncio
+
+    loop = asyncio.get_event_loop()
+    loop.run_until_complete(main())
+    loop.close()</code></pre><h3 id="d015bd4a-4299-43fd-abc3-d5b92827b256" class="">chainlit+llama-agents</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="e2b34b0b-6777-4724-af59-dcf8a93c07f5" class="code"><code class="language-Python">import chainlit as cl
+import os
+import logging
+from dotenv import load_dotenv
+import yfinance as yf
+from llama_agents.launchers.local import LocalLauncher
+from llama_agents.services import AgentService, ToolService
+from llama_agents.tools import MetaServiceTool
+from llama_agents.control_plane.server import ControlPlaneServer
+from llama_agents.message_queues.simple import SimpleMessageQueue
+from llama_agents.orchestrators.agent import AgentOrchestrator
+from llama_index.core.agent import FunctionCallingAgentWorker
+from llama_index.core.tools import FunctionTool
+from llama_index.llms.openai import OpenAI
+
+# 设置日志
+logging.basicConfig(level=logging.INFO)
+
+# 加载.env文件
+load_dotenv()
+
+# 从环境变量中获取API密钥
+api_key = os.getenv(&quot;OPENAI_API_KEY&quot;)
+
+# 确保API密钥已设置
+if not api_key:
+    raise ValueError(&quot;OPENAI_API_KEY not found in .env file&quot;)
+
+# 设置OpenAI API密钥
+os.environ[&quot;OPENAI_API_KEY&quot;] = api_key
+
+
+# 定义所有需要的函数
+def get_stock_price(symbol: str) -&gt; str:
+    &quot;&quot;&quot;获取给定股票代码的当前价格&quot;&quot;&quot;
+    try:
+        stock = yf.Ticker(symbol)
+        data = stock.history(period=&quot;1d&quot;)
+        if not data.empty:
+            current_price = data[&#x27;Close&#x27;].iloc[-1]
+            return f&quot;The current price of {symbol} is ${current_price:.2f}&quot;
+        else:
+            return f&quot;Unable to fetch the current price for {symbol}. The stock data is empty.&quot;
+    except Exception as e:
+        logging.error(f&quot;Error fetching stock price for {symbol}: {str(e)}&quot;)
+        return f&quot;Error fetching stock price for {symbol}: {str(e)}&quot;
+
+
+def get_company_info(symbol: str) -&gt; str:
+    &quot;&quot;&quot;获取给定股票代码的公司信息&quot;&quot;&quot;
+    try:
+        stock = yf.Ticker(symbol)
+        info = stock.info
+        return f&quot;{info[&#x27;longName&#x27;]} ({symbol}) is in the {info.get(&#x27;sector&#x27;, &#x27;Unknown&#x27;)} sector. {info.get(&#x27;longBusinessSummary&#x27;, &#x27;&#x27;)[:200]}...&quot;
+    except Exception as e:
+        logging.error(f&quot;Error fetching company info for {symbol}: {str(e)}&quot;)
+        return f&quot;Error fetching company info for {symbol}: {str(e)}&quot;
+
+
+def get_financial_ratios(symbol: str) -&gt; str:
+    &quot;&quot;&quot;获取给定股票的关键财务比率&quot;&quot;&quot;
+    try:
+        stock = yf.Ticker(symbol)
+        info = stock.info
+        pe_ratio = info.get(&#x27;trailingPE&#x27;, &#x27;N/A&#x27;)
+        pb_ratio = info.get(&#x27;priceToBook&#x27;, &#x27;N/A&#x27;)
+        dividend_yield = info.get(&#x27;dividendYield&#x27;, &#x27;N/A&#x27;)
+        if dividend_yield != &#x27;N/A&#x27;:
+            dividend_yield = f&quot;{dividend_yield * 100:.2f}%&quot;
+        return f&quot;{symbol} financial ratios: P/E: {pe_ratio}, P/B: {pb_ratio}, Dividend Yield: {dividend_yield}&quot;
+    except Exception as e:
+        logging.error(f&quot;Error fetching financial ratios for {symbol}: {str(e)}&quot;)
+        return f&quot;Error fetching financial ratios for {symbol}: {str(e)}&quot;
+
+
+def get_analyst_recommendations(symbol: str) -&gt; str:
+    &quot;&quot;&quot;获取分析师对给定股票的推荐&quot;&quot;&quot;
+    try:
+        stock = yf.Ticker(symbol)
+        recommendations = stock.recommendations
+        if recommendations is not None and not recommendations.empty:
+            latest_rec = recommendations.iloc[-1]
+            return f&quot;Latest analyst recommendation for {symbol}: {latest_rec[&#x27;To Grade&#x27;]} as of {latest_rec.name.date()}&quot;
+        else:
+            return f&quot;No analyst recommendations available for {symbol}&quot;
+    except Exception as e:
+        logging.error(f&quot;Error fetching analyst recommendations for {symbol}: {str(e)}&quot;)
+        return f&quot;Unable to fetch analyst recommendations for {symbol} due to an error: {str(e)}&quot;
+
+
+def get_recent_news(symbol: str) -&gt; str:
+    &quot;&quot;&quot;获取与给定股票相关的最新新闻&quot;&quot;&quot;
+    try:
+        stock = yf.Ticker(symbol)
+        news = stock.news
+        if news:
+            latest_news = news[0]
+            return f&quot;Latest news for {symbol}: {latest_news[&#x27;title&#x27;]} - {latest_news[&#x27;link&#x27;]}&quot;
+        else:
+            return f&quot;No recent news available for {symbol}&quot;
+    except Exception as e:
+        logging.error(f&quot;Error fetching recent news for {symbol}: {str(e)}&quot;)
+        return f&quot;Error fetching recent news for {symbol}: {str(e)}&quot;
+
+
+def get_industry_comparison(symbol: str) -&gt; str:
+    &quot;&quot;&quot;获取股票与行业平均水平的比较&quot;&quot;&quot;
+    try:
+        stock = yf.Ticker(symbol)
+        info = stock.info
+        sector = info.get(&#x27;sector&#x27;, &#x27;Unknown&#x27;)
+        industry = info.get(&#x27;industry&#x27;, &#x27;Unknown&#x27;)
+        pe_ratio = info.get(&#x27;trailingPE&#x27;, &#x27;N/A&#x27;)
+        industry_pe = info.get(&#x27;industryPE&#x27;, &#x27;N/A&#x27;)
+
+        comparison = f&quot;{symbol} is in the {sector} sector, specifically in the {industry} industry. &quot;
+        if pe_ratio != &#x27;N/A&#x27; and industry_pe != &#x27;N/A&#x27;:
+            if pe_ratio &lt; industry_pe:
+                comparison += f&quot;Its P/E ratio ({pe_ratio:.2f}) is lower than the industry average ({industry_pe:.2f}), which could indicate it&#x27;s undervalued compared to its peers.&quot;
+            elif pe_ratio &gt; industry_pe:
+                comparison += f&quot;Its P/E ratio ({pe_ratio:.2f}) is higher than the industry average ({industry_pe:.2f}), which could indicate it&#x27;s overvalued compared to its peers.&quot;
+            else:
+                comparison += f&quot;Its P/E ratio ({pe_ratio:.2f}) is in line with the industry average ({industry_pe:.2f}).&quot;
+        else:
+            comparison += &quot;Unable to compare P/E ratio with industry average due to lack of data.&quot;
+
+        return comparison
+    except Exception as e:
+        logging.error(f&quot;Error fetching industry comparison for {symbol}: {str(e)}&quot;)
+        return f&quot;Unable to fetch industry comparison for {symbol} due to an error: {str(e)}&quot;
+
+
+# 创建全局变量来存储launcher
+global_launcher = None
+
+
+@cl.on_chat_start
+async def start():
+    global global_launcher
+
+    # 创建工具对象,每个工具对应一个函数
+    stock_price_tool = FunctionTool.from_defaults(fn=get_stock_price)
+    company_info_tool = FunctionTool.from_defaults(fn=get_company_info)
+    financial_ratios_tool = FunctionTool.from_defaults(fn=get_financial_ratios)
+    analyst_recommendations_tool = FunctionTool.from_defaults(fn=get_analyst_recommendations)
+    recent_news_tool = FunctionTool.from_defaults(fn=get_recent_news)
+    industry_comparison_tool = FunctionTool.from_defaults(fn=get_industry_comparison)
+
+    # 指定 OpenAI 模型
+    llm = OpenAI(model=&quot;gpt-4o&quot;, temperature=0)
+
+    # 创建多代理框架组件
+    message_queue = SimpleMessageQueue()
+    tool_service = ToolService(
+        message_queue=message_queue,
+        tools=[stock_price_tool, company_info_tool, financial_ratios_tool, analyst_recommendations_tool,
+               recent_news_tool,
+               industry_comparison_tool],
+        running=True,
+        step_interval=0.5,
+    )
+    control_plane = ControlPlaneServer(
+        message_queue=message_queue,
+        orchestrator=AgentOrchestrator(llm=llm),
+    )
+    meta_tools = [
+        MetaServiceTool(
+            tool_metadata=tool.metadata,
+            message_queue=message_queue,
+            tool_service_name=tool_service.service_name,
+        ) for tool in
+        [stock_price_tool, company_info_tool, financial_ratios_tool, analyst_recommendations_tool, recent_news_tool,
+         industry_comparison_tool]
+    ]
+
+    # 创建代理工作器
+    worker1 = FunctionCallingAgentWorker.from_tools(
+        meta_tools,
+        llm=llm,
+        system_prompt=&quot;&quot;&quot;你是一个专业的股票分析师。你的任务是分析给定的股票,并根据所有可用信息提供是否购买的建议。
+        请使用所有可用工具来收集相关信息,然后给出全面的分析和明确的建议。
+        考虑当前价格、公司信息、财务比率、分析师推荐、最新新闻和行业比较。
+        解释你的推荐理由,并提供一个清晰的&quot;买入&quot;、&quot;持有&quot;或&quot;卖出&quot;建议。
+        如果某些信息无法获取,请在分析中说明,并基于可用信息给出最佳判断。
+        &quot;&quot;&quot;
+    )
+    agent1 = worker1.as_agent()
+    agent_server_1 = AgentService(
+        agent=agent1,
+        message_queue=message_queue,
+        description=&quot;Useful for analyzing stocks and providing investment recommendations.&quot;,
+        service_name=&quot;stock_analysis_agent&quot;,
+    )
+
+    # 启动
+    global_launcher = LocalLauncher(
+        [agent_server_1, tool_service],
+        control_plane,
+        message_queue,
+    )
+
+    await cl.Message(content=&quot;股票分析助手已准备就绪。请输入您想分析的股票代码。&quot;).send()
+
+
+@cl.on_message
+async def main(message: cl.Message):
+    stock_symbol = message.content.strip().upper()
+
+    prompt = f&quot;&quot;&quot;
+    分析 {stock_symbol} 股票是否值得购买。
+    请考虑以下因素:
+    1. 当前股价
+    2. 公司基本信息
+    3. 关键财务比率（如 P/E、P/B、股息收益率）
+    4. 分析师推荐
+    5. 最新相关新闻
+    6. 与行业平均水平的比较
+    根据这些信息，给出你的投资建议（买入、持有或卖出）并详细解释理由。
+    如果某些信息无法获取，请在分析中说明，并基于可用信息给出最佳判断。
+    &quot;&quot;&quot;
+
+    result = await global_launcher.alaunch_single(prompt)
+
+    await cl.Message(content=f&quot;对 {stock_symbol} 的分析结果：\n\n{result}&quot;).send()
+</code></pre></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
