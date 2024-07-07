@@ -1,0 +1,1355 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>GraphRAG+ollama+LM Studio+chainlit高级用法</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(0, 0, 0, 0.06); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="460d196e-ff85-4b7f-afda-2cb9182bd341" class="page sans"><header><h1 class="page-title">GraphRAG+ollama+LM Studio+chainlit高级用法</h1><p class="page-description"></p></header><div class="page-body"><p id="a4a965ea-3066-4a6d-a2a6-cb8be6c031a7" class="">
+</p><h3 id="7f257521-fa19-4ea3-a627-9ebc34a47849" class="">ollama下载模型</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2bc19a8c-98fe-414f-9b43-37b32c2c95a0" class="code"><code class="language-Python">ollama run gemma2:9b</code></pre><h3 id="ee77c337-f97c-4af3-9414-53f1fe4a86c0" class="">graphrag设置</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="3e815cff-129e-4c59-89d2-ec5ad75ed254" class="code"><code class="language-Python">pip install graphrag
+
+python -m graphrag.index --init --root ./ragpdf
+
+python -m graphrag.index --root ./ragpdf
+</code></pre><h3 id="07770e7c-f8d9-48cd-aa3f-3581f29540c8" class="">本地模型配置</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="30ab87dc-67de-4fe9-b0af-e836a8f324d5" class="code"><code class="language-Python">encoding_model: cl100k_base
+skip_workflows: []
+llm:
+  api_key: ollama
+  type: openai_chat # or azure_openai_chat
+  model: gemma2:latest
+  model_supports_json: true # recommended if this is available for your model.
+  api_base: http://localhost:11434/v1
+
+
+embeddings:
+  ## parallelization: override the global parallelization settings for embeddings
+  async_mode: threaded # or asyncio
+  llm:
+    api_key: lm-studio
+    type: openai_embedding # or azure_openai_embedding
+    model: nomic-ai/nomic-embed-text-v1.5-GGUF/nomic-embed-text-v1.5.Q5_K_M.gguf
+    api_base:  http://localhost:1234/v1</code></pre><p id="c75b7770-cff5-46aa-a308-d506f45af9ef" class="">
+</p><h3 id="3344d446-9744-4421-932c-cef9385e744d" class="">pdf转markdown，markdown转txt</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="9bd39a81-53e4-4c9b-a76d-3d28e02e1c8c" class="code"><code class="language-Python">#测试文档 https://github.com/win4r/mytest/blob/main/book.pdf
+
+pip install marker-pdf
+
+marker_single ./book.pdf ./pdftxt --batch_multiplier 2 --max_pages 60 --langs English
+
+#markdown转txt
+python markdown_to_text.py book.md book.txt
+</code></pre><h2 id="d289a3e0-496d-42f9-9c5d-9c37d7bf0150" class=""><strong>👉👉👉如有问题请联系我的徽信 stoeng</strong></h2><h2 id="4d2d3dca-ce7b-4ef4-b71e-732d1d3105fc" class=""><strong>🔥🔥🔥本项目代码由AI超元域频道制作，观看更多大模型微调视频请访问我的频道⬇</strong></h2><h3 id="67649d5d-36f6-4461-a90f-d5877c7b4c14" class=""><strong>👉👉👉</strong><strong><a href="https://space.bilibili.com/3493277319825652">我的哔哩哔哩频道</a></strong></h3><h3 id="7a7d5f66-4804-4138-a860-0d53ec6ed3ad" class=""><strong>👉👉👉</strong><strong><a href="https://www.youtube.com/@AIsuperdomain">我的YouTube频道</a></strong></h3><h3 id="2dc640a3-3a64-4530-8bad-63e6ca92340f" class=""><strong>👉👉👉我的开源项目 </strong><strong><a href="https://github.com/win4r/AISuperDomain">https://github.com/win4r/AISuperDomain</a></strong></h3><p id="0e8bd8d3-1c8f-49aa-9dc9-eadc68b1c2a2" class="">
+</p><h3 id="1ffcbd95-4cff-4ddd-9ff9-f09149b38760" class="">设置API key和模型名称</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="8d2f7a90-6b83-43a9-a60e-deb261c190e0" class="code"><code class="language-Python">export GRAPHRAG_API_KEY=&quot;sk-xggd2443fg&quot;
+export GRAPHRAG_LLM_MODEL=&quot;gpt-3.5-turbo&quot;
+export GRAPHRAG_EMBEDDING_MODEL=&quot;text-embedding-ada-002&quot;
+</code></pre><h3 id="247be7f4-ed71-4749-940c-1acccc7cce7a" class="">global search</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="03624240-816a-49d3-87e4-ad57df3bc4fe" class="code"><code class="language-Python">import os
+import asyncio
+import pandas as pd
+import tiktoken
+
+from graphrag.query.indexer_adapters import read_indexer_entities, read_indexer_reports
+from graphrag.query.llm.oai.chat_openai import ChatOpenAI
+from graphrag.query.llm.oai.typing import OpenaiApiType
+from graphrag.query.structured_search.global_search.community_context import (
+    GlobalCommunityContext,
+)
+from graphrag.query.structured_search.global_search.search import GlobalSearch
+
+async def main():
+    # 设置语言模型（LLM）
+    # 从环境变量中获取API密钥和模型名称
+    api_key = os.environ.get(&quot;GRAPHRAG_API_KEY&quot;)
+    llm_model = os.environ.get(&quot;GRAPHRAG_LLM_MODEL&quot;)
+
+    # 初始化ChatOpenAI实例
+    llm = ChatOpenAI(
+        api_key=api_key,
+        model=llm_model,
+        api_type=OpenaiApiType.OpenAI,  # 使用OpenAI API
+        max_retries=20,  # 最大重试次数
+    )
+
+    # 初始化token编码器
+    token_encoder = tiktoken.get_encoding(&quot;cl100k_base&quot;)
+
+    # 加载社区报告作为全局搜索的上下文
+    INPUT_DIR = &quot;./inputs/operation dulce&quot;  # 输入目录
+    COMMUNITY_REPORT_TABLE = &quot;create_final_community_reports&quot;  # 社区报告表名
+    ENTITY_TABLE = &quot;create_final_nodes&quot;  # 实体表名
+    ENTITY_EMBEDDING_TABLE = &quot;create_final_entities&quot;  # 实体嵌入表名
+
+    COMMUNITY_LEVEL = 2  # Leiden社区层次结构中的社区级别
+    # 读取parquet文件
+    entity_df = pd.read_parquet(f&quot;{INPUT_DIR}/{ENTITY_TABLE}.parquet&quot;)
+    report_df = pd.read_parquet(f&quot;{INPUT_DIR}/{COMMUNITY_REPORT_TABLE}.parquet&quot;)
+    entity_embedding_df = pd.read_parquet(f&quot;{INPUT_DIR}/{ENTITY_EMBEDDING_TABLE}.parquet&quot;)
+
+    # 读取索引器报告和实体
+    reports = read_indexer_reports(report_df, entity_df, COMMUNITY_LEVEL)
+    entities = read_indexer_entities(entity_df, entity_embedding_df, COMMUNITY_LEVEL)
+    print(f&quot;报告记录数: {len(report_df)}&quot;)
+    print(report_df.head())
+
+    # 基于社区报告构建全局上下文
+    context_builder = GlobalCommunityContext(
+        community_reports=reports,
+        entities=entities,  # 用于计算上下文排序的社区权重
+        token_encoder=token_encoder,
+    )
+
+    # 执行全局搜索
+    # 设置上下文构建器参数
+    context_builder_params = {
+        &quot;use_community_summary&quot;: False,  # 使用完整的社区报告，而不是摘要
+        &quot;shuffle_data&quot;: True,  # 随机打乱数据
+        &quot;include_community_rank&quot;: True,  # 包括社区排名
+        &quot;min_community_rank&quot;: 0,  # 最小社区排名
+        &quot;community_rank_name&quot;: &quot;rank&quot;,  # 社区排名的名称
+        &quot;include_community_weight&quot;: True,  # 包括社区权重
+        &quot;community_weight_name&quot;: &quot;occurrence weight&quot;,  # 社区权重的名称
+        &quot;normalize_community_weight&quot;: True,  # 标准化社区权重
+        &quot;max_tokens&quot;: 12_000,  # 最大token数
+        &quot;context_name&quot;: &quot;Reports&quot;,  # 上下文名称
+    }
+
+    # 设置map LLM参数
+    map_llm_params = {
+        &quot;max_tokens&quot;: 1000,  # 最大生成token数
+        &quot;temperature&quot;: 0.0,  # 温度参数，控制输出的随机性
+        &quot;response_format&quot;: {&quot;type&quot;: &quot;json_object&quot;},  # 响应格式为JSON对象
+    }
+
+    # 设置reduce LLM参数
+    reduce_llm_params = {
+        &quot;max_tokens&quot;: 2000,  # 最大生成token数
+        &quot;temperature&quot;: 0.0,  # 温度参数，控制输出的随机性
+    }
+
+    # 初始化全局搜索引擎
+    search_engine = GlobalSearch(
+        llm=llm,
+        context_builder=context_builder,
+        token_encoder=token_encoder,
+        max_data_tokens=12_000,  # 最大数据token数
+        map_llm_params=map_llm_params,
+        reduce_llm_params=reduce_llm_params,
+        allow_general_knowledge=False,  # 不允许使用通用知识
+        json_mode=True,  # 使用JSON模式
+        context_builder_params=context_builder_params,
+        concurrent_coroutines=32,  # 并发协程数
+        response_type=&quot;multiple paragraphs&quot;,  # 响应类型为多个段落
+    )
+
+    # 执行异步搜索
+    result = await search_engine.asearch(
+        &quot;这个故事中的主要冲突是什么，谁是主角和反派？&quot;
+    )
+
+    # 打印搜索结果
+    print(result.response)
+    print(&quot;上下文数据报告:&quot;)
+    print(result.context_data[&quot;reports&quot;])
+    print(f&quot;LLM调用次数: {result.llm_calls}. LLM tokens数: {result.prompt_tokens}&quot;)
+
+if __name__ == &quot;__main__&quot;:
+    asyncio.run(main())  # 运行异步主函数</code></pre><h3 id="5d004f63-5582-4a0d-a0cf-1f5198ef2e03" class="">local search</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="b27ab44a-10f1-4916-bf85-40cf2b34bac2" class="code"><code class="language-Python">import os
+import asyncio
+import pandas as pd
+import tiktoken
+
+from graphrag.query.context_builder.entity_extraction import EntityVectorStoreKey
+from graphrag.query.indexer_adapters import (
+    read_indexer_covariates,
+    read_indexer_entities,
+    read_indexer_relationships,
+    read_indexer_reports,
+    read_indexer_text_units,
+)
+from graphrag.query.input.loaders.dfs import store_entity_semantic_embeddings
+from graphrag.query.llm.oai.chat_openai import ChatOpenAI
+from graphrag.query.llm.oai.embedding import OpenAIEmbedding
+from graphrag.query.llm.oai.typing import OpenaiApiType
+from graphrag.query.question_gen.local_gen import LocalQuestionGen
+from graphrag.query.structured_search.local_search.mixed_context import LocalSearchMixedContext
+from graphrag.query.structured_search.local_search.search import LocalSearch
+from graphrag.vector_stores.lancedb import LanceDBVectorStore
+
+async def main():
+    # 设置输入目录和数据表名
+    INPUT_DIR = &quot;./inputs/operation dulce&quot;
+    LANCEDB_URI = f&quot;{INPUT_DIR}/lancedb&quot;
+    COMMUNITY_REPORT_TABLE = &quot;create_final_community_reports&quot;
+    ENTITY_TABLE = &quot;create_final_nodes&quot;
+    ENTITY_EMBEDDING_TABLE = &quot;create_final_entities&quot;
+    RELATIONSHIP_TABLE = &quot;create_final_relationships&quot;
+    COVARIATE_TABLE = &quot;create_final_covariates&quot;
+    TEXT_UNIT_TABLE = &quot;create_final_text_units&quot;
+    COMMUNITY_LEVEL = 2
+
+    # 读取实体数据
+    entity_df = pd.read_parquet(f&quot;{INPUT_DIR}/{ENTITY_TABLE}.parquet&quot;)
+    entity_embedding_df = pd.read_parquet(f&quot;{INPUT_DIR}/{ENTITY_EMBEDDING_TABLE}.parquet&quot;)
+    entities = read_indexer_entities(entity_df, entity_embedding_df, COMMUNITY_LEVEL)
+
+    # 设置和加载实体描述嵌入
+    description_embedding_store = LanceDBVectorStore(collection_name=&quot;entity_description_embeddings&quot;)
+    description_embedding_store.connect(db_uri=LANCEDB_URI)
+    store_entity_semantic_embeddings(entities=entities, vectorstore=description_embedding_store)
+
+    # 读取关系数据
+    relationship_df = pd.read_parquet(f&quot;{INPUT_DIR}/{RELATIONSHIP_TABLE}.parquet&quot;)
+    relationships = read_indexer_relationships(relationship_df)
+
+    # 读取协变量数据
+    covariate_df = pd.read_parquet(f&quot;{INPUT_DIR}/{COVARIATE_TABLE}.parquet&quot;)
+    claims = read_indexer_covariates(covariate_df)
+    covariates = {&quot;claims&quot;: claims}
+
+    # 读取社区报告数据
+    report_df = pd.read_parquet(f&quot;{INPUT_DIR}/{COMMUNITY_REPORT_TABLE}.parquet&quot;)
+    reports = read_indexer_reports(report_df, entity_df, COMMUNITY_LEVEL)
+
+    # 读取文本单元数据
+    text_unit_df = pd.read_parquet(f&quot;{INPUT_DIR}/{TEXT_UNIT_TABLE}.parquet&quot;)
+    text_units = read_indexer_text_units(text_unit_df)
+
+    # 设置LLM和嵌入模型
+    api_key = os.environ[&quot;GRAPHRAG_API_KEY&quot;]
+    llm_model = os.environ[&quot;GRAPHRAG_LLM_MODEL&quot;]
+    embedding_model = os.environ[&quot;GRAPHRAG_EMBEDDING_MODEL&quot;]
+
+    llm = ChatOpenAI(
+        api_key=api_key,
+        model=llm_model,
+        api_type=OpenaiApiType.OpenAI,
+        max_retries=20,
+    )
+
+    token_encoder = tiktoken.get_encoding(&quot;cl100k_base&quot;)
+
+    text_embedder = OpenAIEmbedding(
+        api_key=api_key,
+        api_base=None,
+        api_type=OpenaiApiType.OpenAI,
+        model=embedding_model,
+        deployment_name=embedding_model,
+        max_retries=20,
+    )
+
+    # 创建本地搜索上下文构建器
+    context_builder = LocalSearchMixedContext(
+        community_reports=reports,
+        text_units=text_units,
+        entities=entities,
+        relationships=relationships,
+        covariates=covariates,
+        entity_text_embeddings=description_embedding_store,
+        embedding_vectorstore_key=EntityVectorStoreKey.ID,
+        text_embedder=text_embedder,
+        token_encoder=token_encoder,
+    )
+
+    # 设置本地搜索参数
+    local_context_params = {
+        &quot;text_unit_prop&quot;: 0.5,
+        &quot;community_prop&quot;: 0.1,
+        &quot;conversation_history_max_turns&quot;: 5,
+        &quot;conversation_history_user_turns_only&quot;: True,
+        &quot;top_k_mapped_entities&quot;: 10,
+        &quot;top_k_relationships&quot;: 10,
+        &quot;include_entity_rank&quot;: True,
+        &quot;include_relationship_weight&quot;: True,
+        &quot;include_community_rank&quot;: False,
+        &quot;return_candidate_context&quot;: False,
+        &quot;embedding_vectorstore_key&quot;: EntityVectorStoreKey.ID,
+        &quot;max_tokens&quot;: 12_000,
+    }
+
+    llm_params = {
+        &quot;max_tokens&quot;: 2_000,
+        &quot;temperature&quot;: 0.0,
+    }
+
+    # 创建本地搜索引擎
+    search_engine = LocalSearch(
+        llm=llm,
+        context_builder=context_builder,
+        token_encoder=token_encoder,
+        llm_params=llm_params,
+        context_builder_params=local_context_params,
+        response_type=&quot;multiple paragraphs&quot;,
+    )
+
+    # 运行本地搜索示例
+    result = await search_engine.asearch(&quot;Tell me about Agent Mercer&quot;)
+    print(result.response)
+
+    result = await search_engine.asearch(&quot;Tell me about Dr. Jordan Hayes&quot;)
+    print(result.response)
+
+    # 创建问题生成器
+    question_generator = LocalQuestionGen(
+        llm=llm,
+        context_builder=context_builder,
+        token_encoder=token_encoder,
+        llm_params=llm_params,
+        context_builder_params=local_context_params,
+    )
+
+    # 生成候选问题
+    question_history = [
+        &quot;Tell me about Agent Mercer&quot;,
+        &quot;What happens in Dulce military base?&quot;,
+    ]
+    candidate_questions = await question_generator.agenerate(
+        question_history=question_history, context_data=None, question_count=5
+    )
+    print(candidate_questions.response)
+
+if __name__ == &quot;__main__&quot;:
+    asyncio.run(main())</code></pre><h3 id="ecf4f136-b9fe-41e9-bcb0-073f34127d95" class="">global-ui</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="57a52ca3-fd6d-45f4-b11a-e1c0712f1e29" class="code"><code class="language-Python">import os
+import asyncio
+import pandas as pd
+import tiktoken
+import chainlit as cl
+
+from graphrag.query.indexer_adapters import read_indexer_entities, read_indexer_reports
+from graphrag.query.llm.oai.chat_openai import ChatOpenAI
+from graphrag.query.llm.oai.typing import OpenaiApiType
+from graphrag.query.structured_search.global_search.community_context import GlobalCommunityContext
+from graphrag.query.structured_search.global_search.search import GlobalSearch
+
+# 全局变量
+search_engine = None
+
+
+@cl.on_chat_start
+async def on_chat_start():
+    global search_engine
+
+    # 从环境变量中获取API密钥和模型名称
+    api_key = os.environ.get(&quot;GRAPHRAG_API_KEY&quot;)
+    if not api_key:
+        await cl.Message(content=&quot;错误：GRAPHRAG_API_KEY 未设置&quot;).send()
+        raise ValueError(&quot;GRAPHRAG_API_KEY 环境变量未设置&quot;)
+
+    llm_model = os.environ.get(&quot;GRAPHRAG_LLM_MODEL&quot;, &quot;gpt-3.5-turbo&quot;)
+
+    # 初始化ChatOpenAI实例
+    llm = ChatOpenAI(
+        api_key=api_key,
+        model=llm_model,
+        api_type=OpenaiApiType.OpenAI,
+        max_retries=20,
+    )
+
+    # 初始化token编码器
+    token_encoder = tiktoken.get_encoding(&quot;cl100k_base&quot;)
+
+    # 加载社区报告作为全局搜索的上下文
+    INPUT_DIR = &quot;./inputs/operation dulce&quot;
+    COMMUNITY_REPORT_TABLE = &quot;create_final_community_reports&quot;
+    ENTITY_TABLE = &quot;create_final_nodes&quot;
+    ENTITY_EMBEDDING_TABLE = &quot;create_final_entities&quot;
+    COMMUNITY_LEVEL = 2
+
+    try:
+        # 读取parquet文件
+        entity_df = pd.read_parquet(f&quot;{INPUT_DIR}/{ENTITY_TABLE}.parquet&quot;)
+        report_df = pd.read_parquet(f&quot;{INPUT_DIR}/{COMMUNITY_REPORT_TABLE}.parquet&quot;)
+        entity_embedding_df = pd.read_parquet(f&quot;{INPUT_DIR}/{ENTITY_EMBEDDING_TABLE}.parquet&quot;)
+    except FileNotFoundError as e:
+        await cl.Message(content=f&quot;错误：找不到所需的parquet文件。{str(e)}&quot;).send()
+        return
+
+    # 读取索引器报告和实体
+    reports = read_indexer_reports(report_df, entity_df, COMMUNITY_LEVEL)
+    entities = read_indexer_entities(entity_df, entity_embedding_df, COMMUNITY_LEVEL)
+    await cl.Message(content=f&quot;报告记录数: {len(report_df)}&quot;).send()
+
+    # 基于社区报告构建全局上下文
+    context_builder = GlobalCommunityContext(
+        community_reports=reports,
+        entities=entities,
+        token_encoder=token_encoder,
+    )
+
+    # 设置上下文构建器参数
+    context_builder_params = {
+        &quot;use_community_summary&quot;: False,
+        &quot;shuffle_data&quot;: True,
+        &quot;include_community_rank&quot;: True,
+        &quot;min_community_rank&quot;: 0,
+        &quot;community_rank_name&quot;: &quot;rank&quot;,
+        &quot;include_community_weight&quot;: True,
+        &quot;community_weight_name&quot;: &quot;occurrence weight&quot;,
+        &quot;normalize_community_weight&quot;: True,
+        &quot;max_tokens&quot;: 12_000,
+        &quot;context_name&quot;: &quot;Reports&quot;,
+    }
+
+    # 设置map LLM参数
+    map_llm_params = {
+        &quot;max_tokens&quot;: 1000,
+        &quot;temperature&quot;: 0.0,
+        &quot;response_format&quot;: {&quot;type&quot;: &quot;json_object&quot;},
+    }
+
+    # 设置reduce LLM参数
+    reduce_llm_params = {
+        &quot;max_tokens&quot;: 2000,
+        &quot;temperature&quot;: 0.0,
+    }
+
+    # 初始化全局搜索引擎
+    search_engine = GlobalSearch(
+        llm=llm,
+        context_builder=context_builder,
+        token_encoder=token_encoder,
+        max_data_tokens=12_000,
+        map_llm_params=map_llm_params,
+        reduce_llm_params=reduce_llm_params,
+        allow_general_knowledge=False,
+        json_mode=True,
+        context_builder_params=context_builder_params,
+        concurrent_coroutines=32,
+        response_type=&quot;multiple paragraphs&quot;,
+    )
+
+    await cl.Message(content=&quot;全局搜索系统已准备就绪，请输入您的查询。&quot;).send()
+
+
+@cl.on_message
+async def main(message: cl.Message):
+    global search_engine
+
+    if search_engine is None:
+        await cl.Message(content=&quot;搜索引擎尚未初始化。请稍后再试。&quot;).send()
+        return
+
+    query = message.content
+    result = await search_engine.asearch(query)
+
+    # 发送搜索结果
+    await cl.Message(content=result.response).send()
+
+    # 发送上下文数据报告
+    context_data = f&quot;上下文数据报告数量: {len(result.context_data[&#x27;reports&#x27;])}&quot;
+    await cl.Message(content=context_data).send()
+
+    # 发送LLM调用信息
+    llm_info = f&quot;LLM调用次数: {result.llm_calls}. LLM tokens数: {result.prompt_tokens}&quot;
+    await cl.Message(content=llm_info).send()
+
+
+if __name__ == &quot;__main__&quot;:
+    cl.run()</code></pre><h3 id="ba191f94-7480-430c-a8c0-5a0d9357bd21" class="">local-ui</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="5ec0ef7b-53e6-4621-ba80-8ae518a62f8c" class="code"><code class="language-Python">import os
+import asyncio
+import pandas as pd
+import tiktoken
+import chainlit as cl
+
+from graphrag.query.context_builder.entity_extraction import EntityVectorStoreKey
+from graphrag.query.indexer_adapters import (
+    read_indexer_covariates,
+    read_indexer_entities,
+    read_indexer_relationships,
+    read_indexer_reports,
+    read_indexer_text_units,
+)
+from graphrag.query.input.loaders.dfs import store_entity_semantic_embeddings
+from graphrag.query.llm.oai.chat_openai import ChatOpenAI
+from graphrag.query.llm.oai.embedding import OpenAIEmbedding
+from graphrag.query.llm.oai.typing import OpenaiApiType
+from graphrag.query.question_gen.local_gen import LocalQuestionGen
+from graphrag.query.structured_search.local_search.mixed_context import LocalSearchMixedContext
+from graphrag.query.structured_search.local_search.search import LocalSearch
+from graphrag.vector_stores.lancedb import LanceDBVectorStore
+
+# 全局变量
+search_engine = None
+question_generator = None
+question_history = []
+
+
+@cl.on_chat_start
+async def on_chat_start():
+    global search_engine, question_generator
+
+    try:
+        # 设置输入目录和数据表名
+        INPUT_DIR = &quot;./inputs/operation dulce&quot;
+        LANCEDB_URI = f&quot;{INPUT_DIR}/lancedb&quot;
+        COMMUNITY_REPORT_TABLE = &quot;create_final_community_reports&quot;
+        ENTITY_TABLE = &quot;create_final_nodes&quot;
+        ENTITY_EMBEDDING_TABLE = &quot;create_final_entities&quot;
+        RELATIONSHIP_TABLE = &quot;create_final_relationships&quot;
+        COVARIATE_TABLE = &quot;create_final_covariates&quot;
+        TEXT_UNIT_TABLE = &quot;create_final_text_units&quot;
+        COMMUNITY_LEVEL = 2
+
+        # 读取实体数据
+        entity_df = pd.read_parquet(f&quot;{INPUT_DIR}/{ENTITY_TABLE}.parquet&quot;)
+        entity_embedding_df = pd.read_parquet(f&quot;{INPUT_DIR}/{ENTITY_EMBEDDING_TABLE}.parquet&quot;)
+        entities = read_indexer_entities(entity_df, entity_embedding_df, COMMUNITY_LEVEL)
+
+        # 设置和加载实体描述嵌入
+        description_embedding_store = LanceDBVectorStore(collection_name=&quot;entity_description_embeddings&quot;)
+        description_embedding_store.connect(db_uri=LANCEDB_URI)
+        store_entity_semantic_embeddings(entities=entities, vectorstore=description_embedding_store)
+
+        # 读取关系数据
+        relationship_df = pd.read_parquet(f&quot;{INPUT_DIR}/{RELATIONSHIP_TABLE}.parquet&quot;)
+        relationships = read_indexer_relationships(relationship_df)
+
+        # 读取协变量数据
+        covariate_df = pd.read_parquet(f&quot;{INPUT_DIR}/{COVARIATE_TABLE}.parquet&quot;)
+        claims = read_indexer_covariates(covariate_df)
+        covariates = {&quot;claims&quot;: claims}
+
+        # 读取社区报告数据
+        report_df = pd.read_parquet(f&quot;{INPUT_DIR}/{COMMUNITY_REPORT_TABLE}.parquet&quot;)
+        reports = read_indexer_reports(report_df, entity_df, COMMUNITY_LEVEL)
+
+        # 读取文本单元数据
+        text_unit_df = pd.read_parquet(f&quot;{INPUT_DIR}/{TEXT_UNIT_TABLE}.parquet&quot;)
+        text_units = read_indexer_text_units(text_unit_df)
+
+        # 设置LLM和嵌入模型
+        api_key = os.environ.get(&quot;GRAPHRAG_API_KEY&quot;)
+        if not api_key:
+            raise ValueError(&quot;GRAPHRAG_API_KEY 环境变量未设置&quot;)
+        llm_model = os.environ.get(&quot;GRAPHRAG_LLM_MODEL&quot;, &quot;gpt-3.5-turbo&quot;)
+        embedding_model = os.environ.get(&quot;GRAPHRAG_EMBEDDING_MODEL&quot;, &quot;text-embedding-3-small&quot;)
+
+        llm = ChatOpenAI(
+            api_key=api_key,
+            model=llm_model,
+            api_type=OpenaiApiType.OpenAI,
+            max_retries=20,
+        )
+
+        token_encoder = tiktoken.get_encoding(&quot;cl100k_base&quot;)
+
+        text_embedder = OpenAIEmbedding(
+            api_key=api_key,
+            api_base=None,
+            api_type=OpenaiApiType.OpenAI,
+            model=embedding_model,
+            deployment_name=embedding_model,
+            max_retries=20,
+        )
+
+        # 创建本地搜索上下文构建器
+        context_builder = LocalSearchMixedContext(
+            community_reports=reports,
+            text_units=text_units,
+            entities=entities,
+            relationships=relationships,
+            covariates=covariates,
+            entity_text_embeddings=description_embedding_store,
+            embedding_vectorstore_key=EntityVectorStoreKey.ID,
+            text_embedder=text_embedder,
+            token_encoder=token_encoder,
+        )
+
+        # 设置本地搜索参数
+        local_context_params = {
+            &quot;text_unit_prop&quot;: 0.5,
+            &quot;community_prop&quot;: 0.1,
+            &quot;conversation_history_max_turns&quot;: 5,
+            &quot;conversation_history_user_turns_only&quot;: True,
+            &quot;top_k_mapped_entities&quot;: 10,
+            &quot;top_k_relationships&quot;: 10,
+            &quot;include_entity_rank&quot;: True,
+            &quot;include_relationship_weight&quot;: True,
+            &quot;include_community_rank&quot;: False,
+            &quot;return_candidate_context&quot;: False,
+            &quot;embedding_vectorstore_key&quot;: EntityVectorStoreKey.ID,
+            &quot;max_tokens&quot;: 12_000,
+        }
+
+        llm_params = {
+            &quot;max_tokens&quot;: 2_000,
+            &quot;temperature&quot;: 0.0,
+        }
+
+        # 创建本地搜索引擎
+        search_engine = LocalSearch(
+            llm=llm,
+            context_builder=context_builder,
+            token_encoder=token_encoder,
+            llm_params=llm_params,
+            context_builder_params=local_context_params,
+            response_type=&quot;multiple paragraphs&quot;,
+        )
+
+        # 创建问题生成器
+        question_generator = LocalQuestionGen(
+            llm=llm,
+            context_builder=context_builder,
+            token_encoder=token_encoder,
+            llm_params=llm_params,
+            context_builder_params=local_context_params,
+        )
+
+        await cl.Message(
+            content=&quot;本地搜索系统和问题生成器已准备就绪。您可以开始提问，或输入 &#x27;/generate&#x27; 来生成新的问题。&quot;).send()
+
+    except Exception as e:
+        await cl.Message(content=f&quot;初始化过程中发生错误: {str(e)}&quot;).send()
+
+
+@cl.on_message
+async def main(message: cl.Message):
+    global search_engine, question_generator, question_history
+
+    if search_engine is None or question_generator is None:
+        await cl.Message(content=&quot;系统尚未完全初始化，请稍后再试。&quot;).send()
+        return
+
+    try:
+        if message.content.strip().lower() == &quot;/generate&quot;:
+            # 生成新问题
+            await cl.Message(content=&quot;正在生成问题，请稍候...&quot;).send()
+            candidate_questions = await question_generator.agenerate(
+                question_history=question_history, context_data=None, question_count=5
+            )
+            if isinstance(candidate_questions.response, list):
+                questions_text = &quot;\n&quot;.join([f&quot;{i + 1}. {q}&quot; for i, q in enumerate(candidate_questions.response)])
+            else:
+                questions_text = candidate_questions.response
+            await cl.Message(content=f&quot;以下是一些建议的问题：\n{questions_text}&quot;).send()
+        else:
+            # 执行搜索
+            await cl.Message(content=&quot;正在处理您的问题，请稍候...&quot;).send()
+            question_history.append(message.content)
+            result = await search_engine.asearch(message.content)
+
+            await cl.Message(content=result.response).send()
+
+            context_data = f&quot;上下文数据报告数量: {len(result.context_data[&#x27;reports&#x27;])}&quot;
+            await cl.Message(content=context_data).send()
+
+            llm_info = f&quot;LLM调用次数: {result.llm_calls}. LLM tokens数: {result.prompt_tokens}&quot;
+            await cl.Message(content=llm_info).send()
+    except Exception as e:
+        error_message = f&quot;处理您的请求时发生错误: {str(e)}&quot;
+        await cl.Message(content=error_message).send()
+        print(f&quot;Error in main function: {str(e)}&quot;)  # 为了调试目的，在控制台打印错误
+
+
+if __name__ == &quot;__main__&quot;:
+    cl.run()</code></pre><h3 id="8f21f5b9-7db9-4e11-81cf-7504dceb287b" class="">markdown_to_text.py</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="4faba08c-1142-4c21-83b8-69e1a695fec5" class="code"><code class="language-Python">##运行方式 python markdown_to_text.py book.md book.txt
+
+import markdown
+from bs4 import BeautifulSoup
+import re
+import argparse
+
+
+def markdown_to_text(markdown_content):
+    # Convert Markdown to HTML
+    html = markdown.markdown(markdown_content)
+
+    # Use BeautifulSoup to parse HTML and extract text
+    soup = BeautifulSoup(html, &#x27;html.parser&#x27;)
+    text = soup.get_text(separator=&#x27;\n\n&#x27;)
+
+    # Additional cleaning
+    text = re.sub(r&#x27;\n{3,}&#x27;, &#x27;\n\n&#x27;, text)  # Replace multiple newlines with double newlines
+    text = text.strip()  # Remove leading/trailing whitespace
+
+    return text
+
+
+def convert_file(input_file, output_file):
+    # Read the Markdown file
+    with open(input_file, &#x27;r&#x27;, encoding=&#x27;utf-8&#x27;) as f:
+        markdown_content = f.read()
+
+    # Convert to plain text
+    plain_text = markdown_to_text(markdown_content)
+
+    # Write the plain text to the output file
+    with open(output_file, &#x27;w&#x27;, encoding=&#x27;utf-8&#x27;) as f:
+        f.write(plain_text)
+
+
+if __name__ == &quot;__main__&quot;:
+    parser = argparse.ArgumentParser(description=&quot;Convert Markdown file to plain text&quot;)
+    parser.add_argument(&quot;input_file&quot;, help=&quot;Path to the input Markdown file&quot;)
+    parser.add_argument(&quot;output_file&quot;, help=&quot;Path to the output plain text file&quot;)
+    args = parser.parse_args()
+
+    convert_file(args.input_file, args.output_file)
+    print(f&quot;Conversion complete. Plain text saved to {args.output_file}&quot;)</code></pre><p id="ccae826b-093d-4b50-9142-6802d7df2089" class="">
+</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
