@@ -1,0 +1,1160 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>mistral large 2 &amp; ollama实现Tool-Use/function calling[openai和ollama]</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(0, 0, 0, 0.06); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="b27384bd-bb3c-483a-bb40-f502bd7b8d6a" class="page sans"><header><h1 class="page-title">mistral large 2 &amp; ollama实现Tool-Use/function calling[openai和ollama]</h1><p class="page-description"></p></header><div class="page-body"><p id="09fa051d-ed22-4d5d-9d3d-bf31882e51b4" class="">
+</p><h3 id="45ce96ef-97b7-4a77-a923-d7b9275364ad" class="">colab链接</h3><figure id="77bcdb85-976b-4deb-a2b3-c6bb1d751ee7"><a href="https://colab.research.google.com/drive/1EuFDiWuB6FXjhkf6zk1LrnHTLLSfgeo-?usp=sharing" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">Google Colab</div></div><div class="bookmark-href"><img src="https://ssl.gstatic.com/colaboratory-static/common/9a91b8ba1025a6ed5781f84f290a8cb5/img/favicon.ico" class="icon bookmark-icon"/>https://colab.research.google.com/drive/1EuFDiWuB6FXjhkf6zk1LrnHTLLSfgeo-?usp=sharing</div></div><img src="https://colab.research.google.com/img/colab_favicon_256px.png" class="bookmark-image"/></a></figure><p id="c598876e-dff6-4fd9-be5e-b1183d7a2da1" class="">
+</p><p id="c080c67f-0393-4e1c-b38d-622c533fabdf" class="">测试推理题目</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="adafb70b-845f-4121-9e74-3674b5da5620" class="code"><code class="language-Shell">在一个立方体房间里,四面墙壁分别朝向东南西北,每面墙上都有一扇门。
+东门的颜色是橙色，南门的颜色是紫色，西门的颜色是青色，北门的颜色是白色。
+房间中央有一个正方形转盘,转盘的四个角放置着4个不同颜色的立方体积木:红、蓝、绿、黄。
+此时红色立方体对着东门，蓝色立方体对着南门，绿色立方体对着西门，黄色立方体对着北门。
+现在开始计时，正方形转盘开始转动。
+每过五分钟，正方形转盘转动一周。
+当正方形转盘转动一周时，红色立方体和绿色立方体交换位置，蓝色立方体和黄色立方体交换位置；
+东门和南门的颜色交换，西门和北门的颜色交换。
+每过15分钟，时间就会倒流5分钟。
+就在计时到了第三十五分钟时，红、蓝、绿、黄立方体分别对应哪个方向的门，四个门分别是什么颜色？
+</code></pre><p id="bd72f9ed-f4ac-465d-a918-0d5fdf480ed7" class="">
+</p><p id="625e16e8-34d7-4c61-a676-8050c8d3a3be" class="">算法测试</p><p id="366fddb1-1aef-4e0e-b260-c568ace915ec" class=""><a href="https://leetcode.com/problems/number-of-subarrays-with-and-value-of-k/description/">https://leetcode.com/problems/number-of-subarrays-with-and-value-of-k/description/</a></p><p id="13592552-ca86-4a39-939c-bcde7a75b67c" class="">
+</p><p id="a2196c0a-2f0f-4ed2-955b-f1f93584114b" class="">
+</p><h3 id="480d8183-63d1-42f1-bc0f-413b6c2af27a" class="">openai 接口demo</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="827276b7-025d-4f64-b833-5b686b34ad47" class="code"><code class="language-Shell">#pip install openai
+
+import os
+from openai import OpenAI
+
+client = OpenAI(
+    api_key=os.environ.get(&quot;MISTRAL_API_KEY&quot;),
+    base_url=&quot;https://api.mistral.ai/v1&quot;
+)
+
+stream = client.chat.completions.create(
+    model=&quot;mistral-large-latest&quot;,
+    messages=[
+        {
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: &quot;三个人分披萨,每人分得三分之一。如果来了三倍的人,每人能分到多少??&quot;,
+        }
+    ],
+    stream=True
+)
+
+for chunk in stream:
+    if chunk.choices[0].delta.content is not None:
+        print(chunk.choices[0].delta.content, end=&quot;&quot;, flush=True)
+print()  # 添加一个换行</code></pre><h2 id="c8d918ad-fae7-4b11-bdec-be43d3a2b9d8" class=""><strong>👉👉👉如有问题请联系我的徽信 stoeng</strong></h2><h2 id="86606dc7-f6db-4f37-b2cc-8e6b153d6b3a" class=""><strong>🔥🔥🔥本项目代码由AI超元域频道制作，观看更多大模型微调视频请访问我的频道⬇</strong></h2><h3 id="d5cc3405-4e58-442d-b07d-951da968a768" class=""><strong>👉👉👉</strong><strong><a href="https://space.bilibili.com/3493277319825652">我的哔哩哔哩频道</a></strong></h3><h3 id="f2e70a30-fa51-40db-847c-e22f5f46569b" class=""><strong>👉👉👉</strong><strong><a href="https://www.youtube.com/@AIsuperdomain">我的YouTube频道</a></strong></h3><h3 id="07092e5b-c004-41ff-bcde-401c84ed0ed9" class=""><strong>👉👉👉我的开源项目 </strong><strong><a href="https://github.com/win4r/AISuperDomain">https://github.com/win4r/AISuperDomain</a></strong></h3><h3 id="deb08f39-fb00-4252-9947-a907a30c34ef" class="">mistral 接口demo</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="f2b55446-086b-40fa-9f07-f59e66472178" class="code"><code class="language-Shell">import os
+from mistralai.client import MistralClient
+from mistralai.models.chat_completion import ChatMessage
+
+api_key = os.environ[&quot;MISTRAL_API_KEY&quot;]
+model = &quot;mistral-large-latest&quot;
+
+client = MistralClient(api_key=api_key)
+
+chat_response = client.chat(
+    model=model,
+    messages=[ChatMessage(role=&quot;user&quot;, content=&quot;三个人分披萨,每人分得三分之一。如果来了三倍的人,每人能分到多少?&quot;)]
+)
+
+print(chat_response.choices[0].message.content)</code></pre><p id="62fdb596-e49d-48a9-aae9-ae8ea0a9cd13" class="">
+</p><h3 id="5823dde0-0e00-4198-94b2-7cc088077548" class="">ollama运行mistral-large</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="87af84a9-6d46-4b14-ae16-55595db3bfc0" class="code"><code class="language-Shell">curl -fsSL https://ollama.com/install.sh | sh
+
+ollama run mistral-large</code></pre><p id="e6fd343e-c7d4-4b27-92d2-b057a636bc0e" class="">
+</p><h3 id="432a00f8-ab9f-437f-9d01-67a03682cb12" class="">openai function calling实现计算器</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="dafe18d4-638c-4b40-928a-3a0092073b5a" class="code"><code class="language-Shell">import os
+from openai import OpenAI
+
+# 设置您的OpenAI API密钥
+os.environ[&quot;OPENAI_API_KEY&quot;] = &quot;ollama&quot;
+
+# 初始化OpenAI客户端，设置自定义base URL
+client = OpenAI(
+    api_key=os.environ.get(&quot;OPENAI_API_KEY&quot;),
+    base_url=&quot;http://localhost:11434/v1&quot;  # 替换为您的自定义端点
+)
+
+
+# 定义计算函数
+def add(a, b):
+    return a + b
+
+
+def subtract(a, b):
+    return a - b
+
+
+def multiply(a, b):
+    return a * b
+
+
+def divide(a, b):
+    if b == 0:
+        return &quot;错误：除数不能为零&quot;
+    return a / b
+
+
+# 定义可用的函数
+available_functions = {
+    &quot;add&quot;: add,
+    &quot;subtract&quot;: subtract,
+    &quot;multiply&quot;: multiply,
+    &quot;divide&quot;: divide,
+}
+
+# 定义函数描述
+tools = [
+    {
+        &quot;type&quot;: &quot;function&quot;,
+        &quot;function&quot;: {
+            &quot;name&quot;: &quot;add&quot;,
+            &quot;description&quot;: &quot;加法运算&quot;,
+            &quot;parameters&quot;: {
+                &quot;type&quot;: &quot;object&quot;,
+                &quot;properties&quot;: {
+                    &quot;a&quot;: {&quot;type&quot;: &quot;number&quot;},
+                    &quot;b&quot;: {&quot;type&quot;: &quot;number&quot;}
+                },
+                &quot;required&quot;: [&quot;a&quot;, &quot;b&quot;]
+            }
+        }
+    },
+    {
+        &quot;type&quot;: &quot;function&quot;,
+        &quot;function&quot;: {
+            &quot;name&quot;: &quot;subtract&quot;,
+            &quot;description&quot;: &quot;减法运算&quot;,
+            &quot;parameters&quot;: {
+                &quot;type&quot;: &quot;object&quot;,
+                &quot;properties&quot;: {
+                    &quot;a&quot;: {&quot;type&quot;: &quot;number&quot;},
+                    &quot;b&quot;: {&quot;type&quot;: &quot;number&quot;}
+                },
+                &quot;required&quot;: [&quot;a&quot;, &quot;b&quot;]
+            }
+        }
+    },
+    {
+        &quot;type&quot;: &quot;function&quot;,
+        &quot;function&quot;: {
+            &quot;name&quot;: &quot;multiply&quot;,
+            &quot;description&quot;: &quot;乘法运算&quot;,
+            &quot;parameters&quot;: {
+                &quot;type&quot;: &quot;object&quot;,
+                &quot;properties&quot;: {
+                    &quot;a&quot;: {&quot;type&quot;: &quot;number&quot;},
+                    &quot;b&quot;: {&quot;type&quot;: &quot;number&quot;}
+                },
+                &quot;required&quot;: [&quot;a&quot;, &quot;b&quot;]
+            }
+        }
+    },
+    {
+        &quot;type&quot;: &quot;function&quot;,
+        &quot;function&quot;: {
+            &quot;name&quot;: &quot;divide&quot;,
+            &quot;description&quot;: &quot;除法运算&quot;,
+            &quot;parameters&quot;: {
+                &quot;type&quot;: &quot;object&quot;,
+                &quot;properties&quot;: {
+                    &quot;a&quot;: {&quot;type&quot;: &quot;number&quot;},
+                    &quot;b&quot;: {&quot;type&quot;: &quot;number&quot;}
+                },
+                &quot;required&quot;: [&quot;a&quot;, &quot;b&quot;]
+            }
+        }
+    }
+]
+
+
+def run_conversation(user_input):
+    messages = [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: user_input}]
+
+    while True:
+        try:
+            response = client.chat.completions.create(
+                model=&quot;mistral-nemo&quot;,
+                messages=messages,
+                tools=tools,
+                tool_choice=&quot;auto&quot;,
+            )
+
+            response_message = response.choices[0].message
+
+            if response_message.tool_calls:
+                for tool_call in response_message.tool_calls:
+                    function_name = tool_call.function.name
+                    function_args = eval(tool_call.function.arguments)
+
+                    function_response = available_functions[function_name](**function_args)
+
+                    messages.append(response_message)
+                    messages.append({
+                        &quot;role&quot;: &quot;tool&quot;,
+                        &quot;tool_call_id&quot;: tool_call.id,
+                        &quot;name&quot;: function_name,
+                        &quot;content&quot;: str(function_response),
+                    })
+            else:
+                return response_message.content
+        except Exception as e:
+            return f&quot;发生错误：{str(e)}&quot;
+
+
+# 主程序
+if __name__ == &quot;__main__&quot;:
+    print(&quot;欢迎使用简单计算器！&quot;)
+    print(&quot;您可以进行加法、减法、乘法和除法运算。&quot;)
+    print(&quot;请用自然语言输入您的计算需求，例如：&#x27;请帮我计算23加17&#x27;&quot;)
+    print(&quot;输入&#x27;退出&#x27;来结束程序。&quot;)
+
+    while True:
+        user_input = input(&quot;\n请输入您的计算需求：&quot;)
+        if user_input.lower() == &#x27;退出&#x27;:
+            print(&quot;谢谢使用，再见！&quot;)
+            break
+
+        result = run_conversation(user_input)
+        print(result)</code></pre><p id="8bb37cda-7cd8-46f3-8f26-1051840e0e1f" class="">
+</p><h3 id="571e4659-ada8-43a4-a548-b56341695161" class="">ollama function calling实现航班信息查询</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="cfd9926c-15fc-420d-b7b9-5e3572566af4" class="code"><code class="language-Shell">import json
+import ollama
+import asyncio
+
+
+# Simulates an API call to get flight times
+# In a real application, this would fetch data from a live database or API
+def get_flight_times(departure: str, arrival: str) -&gt; str:
+  flights = {
+    &#x27;NYC-LAX&#x27;: {&#x27;departure&#x27;: &#x27;08:00 AM&#x27;, &#x27;arrival&#x27;: &#x27;11:30 AM&#x27;, &#x27;duration&#x27;: &#x27;5h 30m&#x27;},
+    &#x27;LAX-NYC&#x27;: {&#x27;departure&#x27;: &#x27;02:00 PM&#x27;, &#x27;arrival&#x27;: &#x27;10:30 PM&#x27;, &#x27;duration&#x27;: &#x27;5h 30m&#x27;},
+    &#x27;LHR-JFK&#x27;: {&#x27;departure&#x27;: &#x27;10:00 AM&#x27;, &#x27;arrival&#x27;: &#x27;01:00 PM&#x27;, &#x27;duration&#x27;: &#x27;8h 00m&#x27;},
+    &#x27;JFK-LHR&#x27;: {&#x27;departure&#x27;: &#x27;09:00 PM&#x27;, &#x27;arrival&#x27;: &#x27;09:00 AM&#x27;, &#x27;duration&#x27;: &#x27;7h 00m&#x27;},
+    &#x27;CDG-DXB&#x27;: {&#x27;departure&#x27;: &#x27;11:00 AM&#x27;, &#x27;arrival&#x27;: &#x27;08:00 PM&#x27;, &#x27;duration&#x27;: &#x27;6h 00m&#x27;},
+    &#x27;DXB-CDG&#x27;: {&#x27;departure&#x27;: &#x27;03:00 AM&#x27;, &#x27;arrival&#x27;: &#x27;07:30 AM&#x27;, &#x27;duration&#x27;: &#x27;7h 30m&#x27;},
+  }
+
+  key = f&#x27;{departure}-{arrival}&#x27;.upper()
+  return json.dumps(flights.get(key, {&#x27;error&#x27;: &#x27;Flight not found&#x27;}))
+
+
+async def run(model: str):
+  client = ollama.AsyncClient()
+  # Initialize conversation with a user query
+  messages = [{&#x27;role&#x27;: &#x27;user&#x27;, &#x27;content&#x27;: &#x27;What is the flight time from New York (NYC) to Los Angeles (LAX)?&#x27;}]
+
+  # First API call: Send the query and function description to the model
+  response = await client.chat(
+    model=model,
+    messages=messages,
+    tools=[
+      {
+        &#x27;type&#x27;: &#x27;function&#x27;,
+        &#x27;function&#x27;: {
+          &#x27;name&#x27;: &#x27;get_flight_times&#x27;,
+          &#x27;description&#x27;: &#x27;Get the flight times between two cities&#x27;,
+          &#x27;parameters&#x27;: {
+            &#x27;type&#x27;: &#x27;object&#x27;,
+            &#x27;properties&#x27;: {
+              &#x27;departure&#x27;: {
+                &#x27;type&#x27;: &#x27;string&#x27;,
+                &#x27;description&#x27;: &#x27;The departure city (airport code)&#x27;,
+              },
+              &#x27;arrival&#x27;: {
+                &#x27;type&#x27;: &#x27;string&#x27;,
+                &#x27;description&#x27;: &#x27;The arrival city (airport code)&#x27;,
+              },
+            },
+            &#x27;required&#x27;: [&#x27;departure&#x27;, &#x27;arrival&#x27;],
+          },
+        },
+      },
+    ],
+  )
+
+  # Add the model&#x27;s response to the conversation history
+  messages.append(response[&#x27;message&#x27;])
+
+  # Check if the model decided to use the provided function
+  if not response[&#x27;message&#x27;].get(&#x27;tool_calls&#x27;):
+    print(&quot;The model didn&#x27;t use the function. Its response was:&quot;)
+    print(response[&#x27;message&#x27;][&#x27;content&#x27;])
+    return
+
+  # Process function calls made by the model
+  if response[&#x27;message&#x27;].get(&#x27;tool_calls&#x27;):
+    available_functions = {
+      &#x27;get_flight_times&#x27;: get_flight_times,
+    }
+    for tool in response[&#x27;message&#x27;][&#x27;tool_calls&#x27;]:
+      function_to_call = available_functions[tool[&#x27;function&#x27;][&#x27;name&#x27;]]
+      function_response = function_to_call(tool[&#x27;function&#x27;][&#x27;arguments&#x27;][&#x27;departure&#x27;], tool[&#x27;function&#x27;][&#x27;arguments&#x27;][&#x27;arrival&#x27;])
+      # Add function response to the conversation
+      messages.append(
+        {
+          &#x27;role&#x27;: &#x27;tool&#x27;,
+          &#x27;content&#x27;: function_response,
+        }
+      )
+
+  # Second API call: Get final response from the model
+  final_response = await client.chat(model=model, messages=messages)
+  print(final_response[&#x27;message&#x27;][&#x27;content&#x27;])
+
+
+# Run the async function
+asyncio.run(run(&#x27;mistral-nemo&#x27;))</code></pre><p id="2083b816-1b51-4553-8ee1-676c62605ab2" class="">
+</p><h3 id="b6ad77e7-5462-407a-ad60-56fd59432788" class="">Parallel function calling实现电商<strong>客户服务系统</strong></h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="dd2d8430-845f-4eed-a88c-505b4e7d5769" class="code"><code class="language-Shell">#pip install mistralai pandas
+
+import os
+import pandas as pd
+import json
+import time
+from functools import partial
+from google.colab import userdata
+from mistralai.client import MistralClient
+from mistralai.models.chat_completion import ChatMessage
+from mistralai.exceptions import MistralAPIStatusException, MistralAPIException
+
+MISTRAL_API_KEY =os.environ.get(&quot;MISTRAL_API_KEY&quot;)
+
+# 模拟订单数据库
+order_data = {
+    &#x27;订单号&#x27;: [&#x27;O1001&#x27;, &#x27;O1002&#x27;, &#x27;O1003&#x27;, &#x27;O1004&#x27;, &#x27;O1005&#x27;],
+    &#x27;客户ID&#x27;: [&#x27;C001&#x27;, &#x27;C002&#x27;, &#x27;C003&#x27;, &#x27;C002&#x27;, &#x27;C001&#x27;],
+    &#x27;总金额&#x27;: [1255.50, 899.99, 1200.00, 543.30, 2102.20],
+    &#x27;下单日期&#x27;: [&#x27;2024-07-20&#x27;, &#x27;2024-07-21&#x27;, &#x27;2024-07-22&#x27;, &#x27;2024-07-23&#x27;, &#x27;2024-07-24&#x27;],
+    &#x27;状态&#x27;: [&#x27;已送达&#x27;, &#x27;处理中&#x27;, &#x27;已发货&#x27;, &#x27;已取消&#x27;, &#x27;处理中&#x27;],
+    &#x27;预计送达日期&#x27;: [&#x27;2024-07-25&#x27;, &#x27;2024-07-28&#x27;, &#x27;2024-07-26&#x27;, None, &#x27;2024-07-29&#x27;]
+}
+df = pd.DataFrame(order_data)
+
+def get_order_status(order_id: str) -&gt; str:
+    &quot;&quot;&quot;获取订单状态&quot;&quot;&quot;
+    if order_id in df.订单号.values:
+        return json.dumps({&#x27;状态&#x27;: df[df.订单号 == order_id].状态.item()})
+    return json.dumps({&#x27;错误&#x27;: &#x27;未找到该订单号。&#x27;})
+
+def get_estimated_delivery(order_id: str) -&gt; str:
+    &quot;&quot;&quot;获取预计送达日期&quot;&quot;&quot;
+    if order_id in df.订单号.values:
+        delivery_date = df[df.订单号 == order_id].预计送达日期.item()
+        if pd.isna(delivery_date):
+            return json.dumps({&#x27;错误&#x27;: &#x27;暂无预计送达日期信息。&#x27;})
+        return json.dumps({&#x27;预计送达日期&#x27;: delivery_date})
+    return json.dumps({&#x27;错误&#x27;: &#x27;未找到该订单号。&#x27;})
+
+# 可用函数字典
+available_functions = {
+    &quot;get_order_status&quot;: get_order_status,
+    &quot;get_estimated_delivery&quot;: get_estimated_delivery,
+}
+
+# 工具定义
+tools = [
+    {
+        &quot;type&quot;: &quot;function&quot;,
+        &quot;function&quot;: {
+            &quot;name&quot;: &quot;get_order_status&quot;,
+            &quot;description&quot;: &quot;获取订单的当前状态&quot;,
+            &quot;parameters&quot;: {
+                &quot;type&quot;: &quot;object&quot;,
+                &quot;properties&quot;: {
+                    &quot;order_id&quot;: {
+                        &quot;type&quot;: &quot;string&quot;,
+                        &quot;description&quot;: &quot;订单号&quot;,
+                    }
+                },
+                &quot;required&quot;: [&quot;order_id&quot;],
+            },
+        },
+    },
+    {
+        &quot;type&quot;: &quot;function&quot;,
+        &quot;function&quot;: {
+            &quot;name&quot;: &quot;get_estimated_delivery&quot;,
+            &quot;description&quot;: &quot;获取订单的预计送达日期&quot;,
+            &quot;parameters&quot;: {
+                &quot;type&quot;: &quot;object&quot;,
+                &quot;properties&quot;: {
+                    &quot;order_id&quot;: {
+                        &quot;type&quot;: &quot;string&quot;,
+                        &quot;description&quot;: &quot;订单号&quot;,
+                    }
+                },
+                &quot;required&quot;: [&quot;order_id&quot;],
+            },
+        },
+    }
+]
+
+def run_conversation(query: str):
+    &quot;&quot;&quot;运行对话，处理用户查询并返回结果&quot;&quot;&quot;
+    messages = [ChatMessage(role=&quot;user&quot;, content=query)]
+    
+    # 步骤 1: 发送对话和可用函数到模型
+    response = client.chat(
+        model=&quot;mistral-large-latest&quot;,
+        messages=messages,
+        tools=tools,
+        tool_choice=&quot;auto&quot;
+    )
+    
+    response_message = response.choices[0].message
+    tool_calls = response_message.tool_calls
+    
+    # 步骤 2: 检查模型是否想要调用函数 执行多个函数调用
+    if tool_calls:
+        messages.append(response_message)  # 将助手的回复添加到对话中
+        
+        # 步骤 3: 执行所有函数调用
+        for tool_call in tool_calls:
+            function_name = tool_call.function.name
+            function_to_call = available_functions[function_name]
+            function_args = json.loads(tool_call.function.arguments)
+            function_response = function_to_call(**function_args)
+            messages.append(ChatMessage(
+                role=&quot;tool&quot;,
+                content=function_response,
+                name=function_name,
+                tool_call_id=tool_call.id
+            ))
+        
+        # 步骤 4: 发送函数调用信息和函数响应给模型
+        second_response = client.chat(
+            model=&quot;mistral-large-latest&quot;,
+            messages=messages,
+        )
+        return second_response.choices[0].message.content
+    
+    return response_message.content
+
+# 示例使用
+if __name__ == &quot;__main__&quot;:
+    print(run_conversation(&quot;订单O1002和O1003的状态如何？它们预计什么时候送达？&quot;))
+</code></pre><p id="07494d21-b8f4-4108-9791-6669ba5a2c9f" class="">
+</p><h3 id="5294b88b-6e95-407c-8eae-e700c528ecf5" class="">atuogen调用mistral api</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="08939411-0e6b-4aec-8de3-1e16cb191f57" class="code"><code class="language-Shell">pip install pyautogen[mistral]
+pip install dask[dataframe]</code></pre><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="c4dca81f-9922-4697-ad46-6a8e834c08d7" class="code"><code class="language-Shell">import os
+
+config_list = [
+    {
+        # 选择 mistral-large-latest 模型
+        &quot;model&quot;: &quot;mistral-large-latest&quot;,
+        # 在这里提供您的 Mistral AI API 密钥，或将其放入 MISTRAL_API_KEY 环境变量中
+        &quot;api_key&quot;: os.environ.get(&quot;MISTRAL_API_KEY&quot;),
+        # 将 API 类型指定为 &#x27;mistral&#x27;，以使用 Mistral AI 客户端类
+        &quot;api_type&quot;: &quot;mistral&quot;,
+    }
+]
+
+
+from pathlib import Path
+
+from autogen import AssistantAgent, UserProxyAgent
+from autogen.coding import LocalCommandLineCodeExecutor
+
+# 设置代码执行器
+workdir = Path(&quot;coding&quot;)
+workdir.mkdir(exist_ok=True)
+code_executor = LocalCommandLineCodeExecutor(work_dir=workdir)
+
+# 设置代理
+
+# UserProxyAgent 将执行 AssistantAgent 提供的代码
+user_proxy_agent = UserProxyAgent(
+    name=&quot;用户&quot;,
+    code_execution_config={&quot;executor&quot;: code_executor},
+    is_termination_msg=lambda msg: &quot;完成&quot; in msg.get(&quot;content&quot;),
+)
+
+system_message = &quot;&quot;&quot;你是一个有帮助的 AI 助手，可以编写代码，而用户则执行这些代码。
+使用你的编码和语言技能来解决任务。
+在以下情况下，为用户提供 Python 代码（在 Python 代码块中）以供执行。
+如果需要，请逐步解决任务。如果没有提供计划，请先解释你的计划。清楚地说明哪一步使用代码，哪一步使用你的语言技能。
+使用代码时，你必须在代码块中指明脚本类型。用户除了执行你建议的代码外，不能提供任何其他反馈或执行任何其他操作。用户不能修改你的代码。因此，不要提供需要用户修改的不完整代码。如果代码块不是用于用户执行，则不要使用代码块。
+不要在一个回复中包含多个代码块。不要要求用户复制粘贴结果。相反，在相关时使用 &#x27;print&#x27; 函数输出结果。检查用户返回的执行结果。
+如果结果表明有错误，请修复错误并再次输出代码。建议完整的代码，而不是部分代码或代码更改。如果错误无法修复，或者即使代码成功执行后任务仍未解决，请分析问题，重新审视你的假设，收集你需要的额外信息，并考虑尝试不同的方法。
+当你找到答案时，请仔细验证答案。如果可能，在你的回复中包含可验证的证据。
+重要：等待用户执行你的代码，然后你可以回复&quot;完成&quot;一词。不要在代码块后输出&quot;完成&quot;。&quot;&quot;&quot;
+
+# AssistantAgent 使用 Mistral AI 的模型，接收编码请求并返回代码
+assistant_agent = AssistantAgent(
+    name=&quot;Mistral 助手&quot;,
+    system_message=system_message,
+    llm_config={&quot;config_list&quot;: config_list},
+)
+
+
+# 开始对话，UserProxyAgent 向 AssistantAgent 发送消息
+chat_result = user_proxy_agent.initiate_chat(
+    assistant_agent,
+    message=&quot;提供代码来计算 1 到 10000 之间的质数数量。&quot;,
+)</code></pre></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
