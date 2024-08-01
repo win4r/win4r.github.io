@@ -1,0 +1,1117 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>axolotl微调llama3.1实现法律大模型，文本分块+数据集生成</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(0, 0, 0, 0.06); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="13d8463a-a8f9-453d-9fc0-1e9fecc0c4a1" class="page sans"><header><h1 class="page-title">axolotl微调llama3.1实现法律大模型，文本分块+数据集生成</h1><p class="page-description"></p></header><div class="page-body"><p id="44f7e5b6-eeba-4dd9-99ac-79023c70e8b2" class="">
+</p><p id="54c6faad-5fc7-4f4f-b235-29da223bda68" class="">
+</p><h3 id="eedb1616-4ba9-4570-b1eb-de941aa26c3b" class="">Axolotl</h3><blockquote id="d0c86708-f983-489a-8ac2-836e9153ff07" class="">Axolotl是一款极简开源框架。它为开发者提供了一个简单易用的工具，可以快速高效地微调大语言模型，使其更好地适应特定任务和领域。<br/><br/><ul id="9705ffe9-6e42-42c9-9794-b41288d59b2e" class="bulleted-list"><li style="list-style-type:disc"><strong>极简易用：</strong> Axolotl的设计理念就是简单易用，即使没有深度学习背景的开发者也能快速上手。它提供了直观的接口和丰富的文档，让用户可以专注于模型的微调，而不用过多地关注底层的技术细节。</li></ul><ul id="f615d96c-7e1c-42ae-a5f3-fa68d088eb2e" class="bulleted-list"><li style="list-style-type:disc"><strong>高效率：</strong> Axolotl在性能优化方面做了很多工作，可以大大缩短模型微调的时间。它支持分布式训练，可以充分利用多台机器的计算资源，加速训练过程。</li></ul><p id="830de83c-fb43-4b21-a324-0366156cf153" class="">
+</p></blockquote><p id="a95b9887-219b-407a-b68d-b347a300616b" class="">
+</p><h3 id="9a122395-5979-4c2a-b816-eb33248be760" class="">文本分块</h3><blockquote id="0e3a1698-5651-4321-a676-2f6c894044ac" class="">使用文本分块的作用：<br/><br/><ul id="c0275f6c-8b1c-4d86-a08b-f61e6aa86747" class="bulleted-list"><li style="list-style-type:disc">控制输入长度：大多数语言模型都有最大输入长度限制。通过将长文本分成较小的块，可以确保每个输入都在模型的处理能力范围内。</li></ul><ul id="40922dff-9ed3-45a3-9a1b-208f369f601b" class="bulleted-list"><li style="list-style-type:disc">提高效率：较小的文本块可以更快地被处理，这在训练大规模数据集时特别重要，可以显著减少训练时间。</li></ul><ul id="7794c717-b41c-4a19-9f37-012a4c453c4a" class="bulleted-list"><li style="list-style-type:disc">增加多样性：将长文档分成多个块可以增加训练样本的数量和多样性，有助于模型学习更广泛的语言模式和上下文关系。</li></ul><ul id="539840b6-4061-4af4-b319-153509ced058" class="bulleted-list"><li style="list-style-type:disc">保持上下文：合理的分块可以确保每个块都包含足够的上下文信息，使模型能够理解和生成连贯的文本。</li></ul><ul id="15bae90f-d970-4c4b-8c66-2adeab857159" class="bulleted-list"><li style="list-style-type:disc">优化内存使用：较小的文本块占用更少的内存，使得在有限的硬件资源上也能处理大型数据集。</li></ul><ul id="a00e9cbe-a24f-4b59-8d7c-0a9a98865bb7" class="bulleted-list"><li style="list-style-type:disc">便于并行处理：小型文本块更容易进行并行处理，可以充分利用现代计算架构的优势。</li></ul><ul id="ff325ae6-c4e2-48c6-bd07-0f4343eb960a" class="bulleted-list"><li style="list-style-type:disc">适应不同任务：不同的NLP任务可能需要不同长度的输入。分块允许灵活地准备适合各种任务的数据。</li></ul><ul id="9c94e09b-5785-4ce2-a1df-aef41a62fb89" class="bulleted-list"><li style="list-style-type:disc">提高模型泛化能力：通过学习处理不同长度和结构的文本块，模型可以提高其在各种实际应用场景中的泛化能力。</li></ul></blockquote><p id="0163245f-497d-4af1-a8ef-f8137ea75fbb" class="">
+</p><h3 id="3c169b73-fa72-4e13-b043-9444465cb0fe" class=""><code>google-bert/bert-base-chinese</code> 是一个基于BERT的预训练语言模型，主要用于自然语言理解任务，如文本分类、命名实体识别、问答等。</h3><p id="328a1dd3-6b86-4057-b6dd-56026a20c0c1" class="">
+</p><blockquote id="53d02a5b-c710-426c-9d2d-5f7bbabfdc05" class="">使用google-bert/bert-base-chinese进行文本分块的主要优势是它能够基于深度语义理解和中文语言特性，生成更加连贯、语义完整的文本块，同时保持了对中文词汇和上下文的敏感性，这有助于提高后续NLP任务的性能和效果。</blockquote><p id="4c26109f-409b-4dac-8acc-2da6e0903ba9" class="">
+</p><h2 id="2d70fb70-8b22-4df5-80ee-ff0375586a94" class=""><strong>👉👉👉如有问题请联系我的徽信 stoeng</strong></h2><h2 id="7e87906d-d702-43e1-8eff-4a5e98b601cc" class=""><strong>🔥🔥🔥本项目代码由AI超元域频道制作，观看更多大模型微调视频请访问我的频道⬇</strong></h2><h3 id="4f02b415-3f66-4765-83a7-a0dd337f0cf8" class=""><strong>👉👉👉</strong><strong><a href="https://space.bilibili.com/3493277319825652">我的哔哩哔哩频道</a></strong></h3><h3 id="2a1cbd66-cee2-4b33-a1e7-23d325ebc617" class=""><strong>👉👉👉</strong><strong><a href="https://www.youtube.com/@AIsuperdomain">我的YouTube频道</a></strong></h3><h3 id="874b8434-4151-4229-bfa8-2946b1ba8b5c" class=""><strong>👉👉👉我的开源项目 </strong><strong><a href="https://github.com/win4r/AISuperDomain">https://github.com/win4r/AISuperDomain</a></strong></h3><p id="f8fbd2b3-a6e7-4186-bd21-10ac75e71950" class="">
+</p><h3 id="8521f3a9-34ad-4e57-a894-6fb0fc27864e" class="">使用<code>bert-base-chinese</code>进行文本分块</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="d3e7c51e-b9b1-45b0-884b-519f95350a94" class="code"><code class="language-Shell">import torch
+from transformers import BertTokenizer, BertModel
+import re
+import os
+from scipy.spatial.distance import cosine
+
+
+def get_sentence_embedding(sentence, model, tokenizer):
+    &quot;&quot;&quot;
+    获取句子的嵌入表示
+
+    参数:
+    sentence (str): 输入句子
+    model (BertModel): 预训练的BERT模型
+    tokenizer (BertTokenizer): BERT分词器
+
+    返回:
+    numpy.ndarray: 句子的嵌入向量
+    &quot;&quot;&quot;
+    # 使用分词器处理输入句子，并转换为模型输入格式
+    inputs = tokenizer(sentence, return_tensors=&quot;pt&quot;, padding=True, truncation=True, max_length=512)
+    # 使用模型获取输出，不计算梯度
+    with torch.no_grad():
+        outputs = model(**inputs)
+    # 返回最后一层隐藏状态的平均值作为句子嵌入
+    return outputs.last_hidden_state.mean(dim=1).squeeze().numpy()
+
+
+def split_text_by_semantic(text, max_length, similarity_threshold=0.5):
+    &quot;&quot;&quot;
+    基于语义相似度对文本进行分块
+
+    参数:
+    text (str): 输入的长文本
+    max_length (int): 每个文本块的最大长度（以BERT分词器的token为单位）
+    similarity_threshold (float): 语义相似度阈值，默认为0.5
+
+    返回:
+    list: 分割后的文本块列表
+    &quot;&quot;&quot;
+    # 加载BERT模型和分词器
+    tokenizer = BertTokenizer.from_pretrained(&#x27;bert-base-chinese&#x27;)
+    model = BertModel.from_pretrained(&#x27;bert-base-chinese&#x27;)
+    model.eval()  # 设置模型为评估模式
+
+    # 按句子分割文本（使用常见的中文标点符号）
+    sentences = re.split(r&#x27;(。|！|？|；)&#x27;, text)
+    # 重新组合句子和标点
+    sentences = [s + p for s, p in zip(sentences[::2], sentences[1::2]) if s]
+
+    chunks = []
+    current_chunk = sentences[0]
+    # 获取当前chunk的嵌入表示
+    current_embedding = get_sentence_embedding(current_chunk, model, tokenizer)
+
+    for sentence in sentences[1:]:
+        # 获取当前句子的嵌入表示
+        sentence_embedding = get_sentence_embedding(sentence, model, tokenizer)
+        # 计算当前chunk和当前句子的余弦相似度
+        similarity = 1 - cosine(current_embedding, sentence_embedding)
+
+        # 如果相似度高于阈值且合并后不超过最大长度，则合并
+        if similarity &gt; similarity_threshold and len(tokenizer.tokenize(current_chunk + sentence)) &lt;= max_length:
+            current_chunk += sentence
+            # 更新当前chunk的嵌入表示
+            current_embedding = (current_embedding + sentence_embedding) / 2
+        else:
+            # 否则，保存当前chunk并开始新的chunk
+            chunks.append(current_chunk)
+            current_chunk = sentence
+            current_embedding = sentence_embedding
+
+    # 添加最后一个chunk
+    if current_chunk:
+        chunks.append(current_chunk)
+
+    return chunks
+
+
+def read_text_file(file_path):
+    &quot;&quot;&quot;
+    读取文本文件
+
+    参数:
+    file_path (str): 文件路径
+
+    返回:
+    str: 文件内容
+    &quot;&quot;&quot;
+    with open(file_path, &#x27;r&#x27;, encoding=&#x27;utf-8&#x27;) as file:
+        return file.read()
+
+
+def save_chunks_to_files(chunks, output_dir):
+    &quot;&quot;&quot;
+    将分割后的文本块保存到文件
+
+    参数:
+    chunks (list): 文本块列表
+    output_dir (str): 输出目录路径
+    &quot;&quot;&quot;
+    # 如果输出目录不存在，则创建
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    # 将每个文本块保存为单独的文件
+    for i, chunk in enumerate(chunks):
+        chunk_file_path = os.path.join(output_dir, f&quot;chunk_{i + 1}.txt&quot;)
+        with open(chunk_file_path, &#x27;w&#x27;, encoding=&#x27;utf-8&#x27;) as file:
+            file.write(chunk)
+        print(f&quot;已保存第 {i + 1} 个文本块到 {chunk_file_path}&quot;)
+
+
+# 主程序
+
+# 设置输入和输出路径
+input_file_path = &#x27;./book/1.txt&#x27;  # 替换为你的长文本文件路径
+output_dir = &#x27;./saveChunk/&#x27;  # 替换为你希望保存文本块的目录路径
+
+# 读取长文本
+long_text = read_text_file(input_file_path)
+
+# 设置每个文本块的最大分词数量和相似度阈值
+max_length = 2048  # 可根据需要调整
+similarity_threshold = 0.5  # 可根据需要调整
+
+# 分割长文本
+text_chunks = split_text_by_semantic(long_text, max_length, similarity_threshold)
+
+# 保存分割后的文本块到指定目录
+save_chunks_to_files(text_chunks, output_dir)</code></pre><p id="9328730e-f512-4dab-92a7-916405edf914" class="">
+</p><h3 id="b2ba4ea1-ef1a-4383-a659-754a56aeb5ab" class="">生成数据集</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="20f71d5f-29cc-412f-892f-68f2b7ceb03f" class="code"><code class="language-Shell">import json
+import os
+import time
+import re
+from typing import List, Dict
+from openai import OpenAI
+import logging
+import backoff
+import pyarrow as pa
+import pyarrow.parquet as pq
+
+# 设置日志
+logging.basicConfig(level=logging.INFO, format=&#x27;%(asctime)s - %(levelname)s - %(message)s&#x27;)
+logger = logging.getLogger(__name__)
+
+# 初始化 OpenAI 客户端
+client = OpenAI(base_url=&quot;https://api.together.xyz/v1&quot;, api_key=&quot;your_api_Key&quot;)  # 替换为你的 API 密钥
+
+def read_file(file_path: str) -&gt; str:
+    with open(file_path, &#x27;r&#x27;, encoding=&#x27;utf-8&#x27;) as file:
+        return file.read()
+
+@backoff.on_exception(backoff.expo, Exception, max_tries=3)
+def generate_single_entry(text: str) -&gt; Dict:
+    prompt = f&quot;&quot;&quot;
+    基于以下文本，生成1个用于指令数据集的高质量条目。条目应该直接关联到给定的文本内容，提出相关的问题或任务。
+    请确保生成多样化的指令类型，例如：
+    - 分析类：&quot;分析...&quot;
+    - 比较类：&quot;比较...&quot;
+    - 解释类：&quot;解释...&quot;
+    - 评价类：&quot;评价...&quot;
+    - 问答类：&quot;为什么...&quot;
+
+    文本内容：
+    {text}
+
+    请以下面的格式生成条目，确保所有字段都有适当的内容：
+    {{
+        &quot;instruction&quot;: &quot;使用上述多样化的指令类型之一，提出一个具体的、与文本相关的问题或任务&quot;,
+        &quot;input&quot;: &quot;如果需要额外的上下文信息，请在这里提供，否则留空&quot;,
+        &quot;output&quot;: &quot;对instruction的详细回答或任务的完成结果&quot;
+    }}
+    确保所有生成的内容都与给定的文本直接相关，生成的是有效的JSON格式，并且内容高质量、准确、详细。
+    &quot;&quot;&quot;
+
+    try:
+        response = client.chat.completions.create(
+            model=&quot;meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo&quot;,
+            messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: prompt}],
+            temperature=0.7,  # 增加温度以提高多样性
+            max_tokens=4098
+        )
+        logger.info(f&quot;API 响应: {response.choices[0].message.content}&quot;)
+
+        json_match = re.search(r&#x27;\{.*\}&#x27;, response.choices[0].message.content, re.DOTALL)
+        if json_match:
+            entry = json.loads(json_match.group())
+            required_keys = [&#x27;instruction&#x27;, &#x27;input&#x27;, &#x27;output&#x27;]
+            if isinstance(entry, dict) and all(key in entry for key in required_keys):
+                # 根据 input 是否为空来设置 text 字段
+                if entry[&#x27;input&#x27;].strip():
+                    entry[
+                        &#x27;text&#x27;] = f&quot;Below is an instruction that describes a task, paired with an input that provides further context. Write a response that appropriately completes the request.### Instruction: {entry[&#x27;instruction&#x27;]}\n### Input: {entry[&#x27;input&#x27;]}\n### Response: {entry[&#x27;output&#x27;]}&quot;
+                else:
+                    entry[
+                        &#x27;text&#x27;] = f&quot;Below is an instruction that describes a task. Write a response that appropriately completes the request.### Instruction: {entry[&#x27;instruction&#x27;]}\n### Input: {entry[&#x27;input&#x27;]}\n### Response: {entry[&#x27;output&#x27;]}&quot;
+
+                logger.info(&quot;成功生成完整条目&quot;)
+                return entry
+            else:
+                logger.warning(&quot;JSON 解析成功，但缺少必要字段&quot;)
+                return {}
+        else:
+            logger.error(&quot;无法从API响应中提取有效的JSON&quot;)
+            return {}
+
+    except Exception as e:
+        logger.error(f&quot;生成条目时发生错误: {str(e)}&quot;)
+        raise
+def generate_dataset(folder_path: str, entries_per_file: int = 2) -&gt; List[Dict]:
+    dataset = []
+    for filename in os.listdir(folder_path):
+        if filename.endswith(&quot;.txt&quot;):
+            file_path = os.path.join(folder_path, filename)
+            logger.info(f&quot;正在处理文件: {filename}&quot;)
+            text = read_file(file_path)
+            for j in range(entries_per_file):
+                logger.info(f&quot;  生成第 {j + 1}/{entries_per_file} 个条目&quot;)
+                entry = generate_single_entry(text)
+                if entry and all(key in entry for key in [&#x27;instruction&#x27;, &#x27;input&#x27;, &#x27;output&#x27;, &#x27;text&#x27;]):
+                    dataset.append(entry)
+                    logger.info(f&quot;  成功生成 1 个完整条目&quot;)
+                else:
+                    logger.warning(f&quot;  跳过不完整的条目&quot;)
+                time.sleep(2)  # 在请求之间增加延迟到2秒
+
+    return dataset
+
+def save_dataset_as_parquet(dataset: List[Dict], output_file: str):
+    schema = pa.schema([
+        (&#x27;instruction&#x27;, pa.string()),
+        (&#x27;input&#x27;, pa.string()),
+        (&#x27;output&#x27;, pa.string()),
+        (&#x27;text&#x27;, pa.string())
+    ])
+
+    arrays = [
+        pa.array([entry[&#x27;instruction&#x27;] for entry in dataset]),
+        pa.array([entry[&#x27;input&#x27;] for entry in dataset]),
+        pa.array([entry[&#x27;output&#x27;] for entry in dataset]),
+        pa.array([entry[&#x27;text&#x27;] for entry in dataset])
+    ]
+
+    table = pa.Table.from_arrays(arrays, schema=schema)
+    pq.write_table(table, output_file)
+
+if __name__ == &quot;__main__&quot;:
+    input_folder = &quot;./saveChunk&quot;  # 指定输入文件夹路径
+    output_file = &quot;instruction_dataset.parquet&quot;
+
+    logger.info(&quot;开始生成数据集&quot;)
+    dataset = generate_dataset(input_folder, entries_per_file=10)
+    save_dataset_as_parquet(dataset, output_file)
+    logger.info(f&quot;数据集已生成并保存到 {output_file}&quot;)
+    logger.info(f&quot;共生成 {len(dataset)} 个有效条目&quot;)</code></pre><p id="ddc681cc-3f6f-4761-8942-287a13360992" class="">
+</p><h3 id="0f008d78-a53a-4c7c-87a3-8a5d7dc80c73" class="">微调命令</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="f365da41-dd7b-47f4-bd68-2fb414fff315" class="code"><code class="language-Shell">	
+#将当前登录的用户添加到docker组中，使其拥有使用docker命令的权限。
+sudo usermod -aG docker $USER
+
+#sudo docker run --gpus &#x27;&quot;all&quot;&#x27; -it winglian/axolotl:main-latest
+sudo docker run --gpus &#x27;&quot;all&quot;&#x27; --rm -it winglian/axolotl:main-latest
+
+
+rm examples/llama-3/qlora.yml
+
+wget -P examples/llama-3/ https://raw.githubusercontent.com/win4r/mytest/main/qlora.yml
+
+#数据集 https://raw.githubusercontent.com/win4r/mytest/main/qlora.yml
+#模型 NousResearch/Meta-Llama-3.1-8B
+#数据集 leo009/lawdata
+
+
+
+CUDA_VISIBLE_DEVICES=&quot;&quot; python -m axolotl.cli.preprocess examples/llama-3/qlora.yml
+accelerate launch -m axolotl.cli.train examples/llama-3/qlora.yml
+
+# 预处理数据集
+CUDA_VISIBLE_DEVICES=&quot;&quot; python -m axolotl.cli.preprocess examples/llama-3/instruct-dpo-lora-8b.yml
+
+# finetune lora
+accelerate launch -m axolotl.cli.train examples/llama-3/instruct-dpo-lora-8b.yml
+
+# inference
+accelerate launch -m axolotl.cli.inference examples/llama-3/qlora.yml \
+    --lora_model_dir=&quot;./outputs/qlora-out&quot;
+
+# gradio
+accelerate launch -m axolotl.cli.inference examples/llama-3/qlora.yml \
+    --lora_model_dir=&quot;./outputs/qlora-out&quot; --gradio
+
+# remote yaml files - the yaml config can be hosted on a public URL
+# Note: the yaml config must directly link to the **raw** yaml
+accelerate launch -m axolotl.cli.train https://raw.githubusercontent.com/axolotl-ai-cloud/axolotl/main/examples/openllama-3b/lora.yml
+
+
+#合并模型
+python3 -m axolotl.cli.merge_lora examples/llama-3/qlora.yml --lora_model_dir=&quot;./outputs/qlora-out&quot;
+
+#上次合并后到模型到hf
+huggingface-cli login
+#然后输入write权限的token
+huggingface-cli upload leo009/merged-llama3.1-8b outputs/qlora-out/merged</code></pre><h3 id="0ea6f326-8c05-46a9-8a37-3971db59c35a" class="">数据集处理</h3><p id="0ccdd01b-4176-41f5-ad71-242b4ace9dd7" class="">
+</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="f3fbc0c7-ffde-4bee-ad4a-13de63b1fab7" class="code"><code class="language-Shell">
+#pip install ollama datasets
+
+import json
+from datasets import load_dataset
+import ollama
+from rich import print
+
+# Load a real dataset from Hugging Face
+dataset = load_dataset(&quot;squad_v2&quot;, split=&quot;train&quot;)
+
+# Convert dataset to list of dictionaries
+json_data = dataset.select(range(10)).to_dict()
+
+print(&quot;Dataset Rows:&quot;, len(json_data[&#x27;id&#x27;]))
+print({key: json_data[key][0] for key in json_data})
+
+# Function to format the input for the model
+def format_input(context, question):
+    return (
+        &quot;### Context:\n&quot; + context +
+        (&quot;\n\n### Question:\n&quot; + question if question else &quot;&quot;)
+    )
+
+# Initialize the Ollama client
+client = ollama.Client()  # Replace with your actual API key if required
+
+# Initialize new keys in the json_data dictionary
+json_data[&#x27;rejected&#x27;] = [&#x27;&#x27;] * len(json_data[&#x27;id&#x27;])
+json_data[&#x27;chosen&#x27;] = [&#x27;&#x27;] * len(json_data[&#x27;id&#x27;])
+
+# Process each entry in the dataset
+for i in range(len(json_data[&#x27;id&#x27;])):
+    context = json_data[&#x27;context&#x27;][i]
+    question = json_data[&#x27;question&#x27;][i]
+    answer = json_data[&#x27;answers&#x27;][i][&#x27;text&#x27;][0] if json_data[&#x27;answers&#x27;][i][&#x27;text&#x27;] else &quot;No answer&quot;
+
+    print(&quot;Rejected Answer:&quot;, answer)
+
+    prompt_text = format_input(context, question)
+
+    prompt = (
+        f&quot;Rewrite `{prompt_text}` output to be concise and clear: {answer}. &quot;
+        &quot;Ensure the response is easy to understand, professional and as a full sentense. Just respond only with the Answer&quot;
+    )
+
+    response = client.generate(
+        model=&quot;llama3.1&quot;,
+        prompt=prompt,
+        options={&quot;seed&quot;: 123, &quot;temperature&quot;: 0}
+    )
+    chosen_answer = response[&#x27;response&#x27;]
+    print(&quot;Chosen Answer:&quot;, chosen_answer)
+
+    json_data[&#x27;rejected&#x27;][i] = answer
+    json_data[&#x27;chosen&#x27;][i] = chosen_answer
+
+# Convert back to dictionary format expected by json.dump
+final_data = [{key: json_data[key][i] for key in json_data} for i in range(len(json_data[&#x27;id&#x27;]))]
+
+with open(&quot;preference_dataset.json&quot;, &quot;w&quot;) as file:
+    json.dump(final_data, file, indent=4)
+</code></pre><p id="908decf1-95ff-44e6-893e-6654ec9ca5e1" class="">
+</p><h3 id="ee9eaab0-fc8a-4b1d-ab92-335930b45a19" class="">转alpaca数据集</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="fda1e755-d48a-410a-b724-566aa5409a11" class="code"><code class="language-Shell">import json
+from datasets import load_dataset
+import ollama
+from rich import print
+
+# Load a real dataset from Hugging Face
+dataset = load_dataset(&quot;squad_v2&quot;, split=&quot;train&quot;)
+
+# Convert dataset to list of dictionaries
+json_data = dataset.select(range(10)).to_dict()
+
+print(&quot;Dataset Rows:&quot;, len(json_data[&#x27;id&#x27;]))
+print({key: json_data[key][0] for key in json_data})
+
+# Function to format the input for the model
+def format_input(context, question):
+    return (
+        &quot;### Context:\n&quot; + context +
+        (&quot;\n\n### Question:\n&quot; + question if question else &quot;&quot;)
+    )
+
+# Initialize the Ollama client
+client = ollama.Client()  # Replace with your actual API key if required
+
+# Initialize list to store Alpaca format data
+alpaca_data = []
+
+# Process each entry in the dataset
+for i in range(len(json_data[&#x27;id&#x27;])):
+    context = json_data[&#x27;context&#x27;][i]
+    question = json_data[&#x27;question&#x27;][i]
+    original_answer = json_data[&#x27;answers&#x27;][i][&#x27;text&#x27;][0] if json_data[&#x27;answers&#x27;][i][&#x27;text&#x27;] else &quot;No answer&quot;
+
+    print(&quot;Original Answer:&quot;, original_answer)
+
+    prompt_text = format_input(context, question)
+
+    prompt = (
+        f&quot;Rewrite `{prompt_text}` output to be concise and clear: {original_answer}. &quot;
+        &quot;Ensure the response is easy to understand, professional and as a full sentence. Just respond only with the Answer&quot;
+    )
+
+    response = client.generate(
+        model=&quot;llama3.1&quot;,
+        prompt=prompt,
+        options={&quot;seed&quot;: 123, &quot;temperature&quot;: 0}
+    )
+    improved_answer = response[&#x27;response&#x27;]
+    print(&quot;Improved Answer:&quot;, improved_answer)
+
+    # Create Alpaca format entry
+    alpaca_entry = {
+        &quot;instruction&quot;: &quot;Answer the following question based on the given context.&quot;,
+        &quot;input&quot;: f&quot;Context: {context}\n\nQuestion: {question}&quot;,
+        &quot;output&quot;: improved_answer
+    }
+    alpaca_data.append(alpaca_entry)
+
+# Save in Alpaca format
+with open(&quot;alpaca_dataset.json&quot;, &quot;w&quot;) as file:
+    json.dump(alpaca_data, file, indent=4)
+
+print(&quot;Alpaca format dataset saved as &#x27;alpaca_dataset.json&#x27;&quot;)</code></pre><p id="105c25a0-34d3-44a6-9149-4ce6f0503b32" class="">
+</p><p id="62f26b42-60f5-4196-8273-49b385489c2b" class="">
+</p><p id="c562de2d-a031-4f86-808e-6bf429e8964d" class="">
+</p><h3 id="b10da314-a2d7-493f-a9fc-710e42cd6e50" class="">qLoRA优势</h3><blockquote id="8f4f1620-207d-433e-b5b5-34c3144da2aa" class="">qLoRA是一种高效的微调技术,具有以下几个主要优点:<ol type="1" id="d7c3308a-6503-4a29-8635-e930de4b4a12" class="numbered-list" start="1"><li>显著降低内存需求:<br/>qLoRA通过量化模型参数并仅训练低秩适应矩阵,大大减少了内存使用。这使得在消费级GPU上微调大型模型成为可能。<br/></li></ol><ol type="1" id="2ab2e2cc-6483-414c-9043-6828d3a4c5a1" class="numbered-list" start="2"><li>保持模型性能:<br/>尽管使用了量化技术,qLoRA仍能保持接近全精度微调的性能。在许多任务中,qLoRA微调的模型表现可以与全参数微调相媲美。<br/></li></ol><ol type="1" id="f41288b6-bc3c-4169-9540-fcca8347e83f" class="numbered-list" start="3"><li>加快训练速度:<br/>由于减少了需要更新的参数数量,qLoRA可以加快微调过程,节省时间和计算资源。<br/></li></ol><ol type="1" id="256ba7c6-0ec3-4430-9f06-3fe2344ef97d" class="numbered-list" start="4"><li>适用于各种规模的模型:<br/>qLoRA技术可以应用于从较小到非常大的语言模型,具有良好的可扩展性。<br/></li></ol><ol type="1" id="e69e9bc8-82d5-48a8-a685-8c5145b5bade" class="numbered-list" start="5"><li>便于部署和共享:<br/>qLoRA微调后的模型更小,更容易部署和分享,特别适合资源受限的环境。<br/></li></ol><ol type="1" id="e7a4f831-157f-49bd-98e9-29781f85a274" class="numbered-list" start="6"><li>支持增量学习:<br/>qLoRA允许在不影响原始预训练权重的情况下进行微调,有利于模型的持续更新和适应。<br/></li></ol></blockquote><p id="b2a803c7-dfd7-4cd0-a34e-96ea221d55ba" class="">
+</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
