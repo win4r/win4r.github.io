@@ -1,0 +1,871 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>LangFlow+ollama实现本地RAG知识库</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(0, 0, 0, 0.06); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="0f2d92f2-1807-41aa-8fd4-32bcafebf76e" class="page sans"><header><h1 class="page-title">LangFlow+ollama实现本地RAG知识库</h1><p class="page-description"></p></header><div class="page-body"><p id="e61bb204-bcc2-48b7-8199-823e6d207152" class="">
+</p><h3 id="9592b467-07c3-439d-a34e-ba56933d2e90" class="">api key </h3><figure id="4aa632dd-229d-44be-81fb-1be0be80ecbf"><a href="https://www.langflow.store/profile/api-key" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title"></div></div><div class="bookmark-href">https://www.langflow.store/profile/api-key</div></div></a></figure><p id="11de8f20-83bd-4c81-8b71-1aa59190485d" class="">
+</p><h3 id="c6444679-2036-4397-a581-90c842595845" class="">huggingface</h3><figure id="f14ec75e-b914-4f84-a01f-5d9a9533ead1"><a href="https://huggingface.co/spaces/Langflow/Langflow?duplicate=true" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">LangFlow - a Hugging Face Space by Langflow</div><div class="bookmark-description">Discover amazing ML apps made by the community</div></div><div class="bookmark-href"><img src="https://huggingface.co/favicon.ico" class="icon bookmark-icon"/>https://huggingface.co/spaces/Langflow/Langflow?duplicate=true</div></div><img src="https://cdn-thumbnails.huggingface.co/social-thumbnails/spaces/Langflow/Langflow.png" class="bookmark-image"/></a></figure><p id="d4b35b3e-c0c5-42df-80b0-37cc62e165ba" class="">
+</p><p id="2cd14df6-2ab4-4aaa-b0b4-ede61337295b" class="">
+</p><p id="4870347a-4db3-42fb-8de2-fecaf87ee5ca" class="">LangFlow 是一个开源的可视化框架，旨在构建多智能体和检索增强生成（RAG）应用。它提供了一个无需编码的 AI 生态系统，能够无缝集成各种常用工具和技术栈。LangFlow 以 Python 为基础，非常灵活，支持多种大型语言模型（LLM）和向量存储。</p><h3 id="558ba2b8-227e-4237-8f6e-877463594112" class="">LangFlow 的主要特点</h3><ol type="1" id="743b7230-c3db-49b8-b17f-35d656c9349f" class="numbered-list" start="1"><li><strong>直观的可视化界面</strong>:<ul id="6ea2516d-e332-44d5-b074-060d9f8b91de" class="bulleted-list"><li style="list-style-type:disc">LangFlow 提供了一个易于使用的可视化界面，使用户无需编写大量代码就能构建复杂的 AI 工作流。这使得技术和非技术用户都能轻松上手。</li></ul></li></ol><ol type="1" id="ee881b86-3870-4b9d-b917-5c7047f3d631" class="numbered-list" start="2"><li><strong>强大的集成功能</strong>:<ul id="95ca73c6-1ea4-4f8f-8932-10e11be07a63" class="bulleted-list"><li style="list-style-type:disc">该平台支持与众多 AI 和数据服务集成，如 OpenAI、HuggingFace、LangChain、Pinecone 和 Google Cloud 等。这种灵活性使用户能够将他们的工作流与已熟悉的工具和服务连接起来。</li></ul></li></ol><ol type="1" id="6eca007a-0f48-43ff-95b8-8f9b14df6087" class="numbered-list" start="3"><li><strong>多种安装选项</strong>:<ul id="788c12d4-bfb7-447b-94cd-427e4dcda2d5" class="bulleted-list"><li style="list-style-type:disc">LangFlow 可以在本地、Google Cloud 或 VirtualBox 环境中安装。这种多样性使用户可以选择最适合其需求和资源的设置。</li></ul></li></ol><ol type="1" id="08c18492-294c-4d7a-9252-5ce6fd16b24d" class="numbered-list" start="4"><li><strong>组件化架构</strong>:<ul id="0310c1b6-bd88-4cff-bd2a-f658f093140f" class="bulleted-list"><li style="list-style-type:disc">该框架采用组件化的方法，用户可以通过拖放各种元素（如模型、提示和数据源）来创建所需的工作流。这些组件可以定制并以不同的方式连接，以构建复杂的 AI 应用。</li></ul></li></ol><ol type="1" id="2963385b-617c-4e5f-8ebd-3eaec40414f1" class="numbered-list" start="5"><li><strong>异步处理</strong>:<ul id="ea7641d0-396a-49d7-a26b-ac744880207a" class="bulleted-list"><li style="list-style-type:disc">LangFlow 支持异步处理，使用户能够更有效地处理长时间运行的任务。这是通过使用 Celery 工作队列和 AnyIO 任务组实现的，用户可以通过简单的 API 进行管理。</li></ul></li></ol><ol type="1" id="1c40d4c5-f623-47cd-9702-67f6b4a1933b" class="numbered-list" start="6"><li><strong>应用场景</strong>:<ul id="84a1cd26-d5f0-4db9-a3a4-cca9e2884e97" class="bulleted-list"><li style="list-style-type:disc">LangFlow 被用于各种 AI 应用，包括聊天机器人、文档问答系统和记忆型聊天机器人。其灵活性和易用性使其成为开发者快速原型和部署 AI 解决方案的首选。</li></ul></li></ol><p id="40328384-3293-461d-b422-63abb0fd99e4" class="">
+</p><h2 id="8b95fd61-7fe3-40e9-bc30-3fba95c59b5c" class=""><strong>👉👉👉如有问题请联系我的徽信 stoeng</strong></h2><h2 id="88bfb81f-707a-4fbd-87ff-48c946835353" class=""><strong>🔥🔥🔥本项目代码由AI超元域频道制作，观看更多大模型微调视频请访问我的频道⬇</strong></h2><h3 id="9d89ef64-4a27-44a0-b3e7-63ef475c7d69" class=""><strong>👉👉👉</strong><strong><a href="https://space.bilibili.com/3493277319825652">我的哔哩哔哩频道</a></strong></h3><h3 id="93f6e933-8186-4a07-b6c0-ce85d465d662" class=""><strong>👉👉👉</strong><strong><a href="https://www.youtube.com/@AIsuperdomain">我的YouTube频道</a></strong></h3><h3 id="8699f09f-bc65-47b6-aae3-0a454a159bc9" class=""><strong>👉👉👉我的开源项目 </strong><strong><a href="https://github.com/win4r/AISuperDomain">https://github.com/win4r/AISuperDomain</a></strong></h3><p id="ad759a2b-eccb-4721-b990-fcc9f65b0521" class="">
+</p><h3 id="0bf5e9c2-92ca-4ded-b9eb-b9ec6f848ee5" class="">api key</h3><p id="594548ce-1aee-43eb-89df-90c99c7c02b5" class=""><a href="https://www.langflow.store/profile/api-key/">https://www.langflow.store/profile/api-key/</a></p><p id="126403e8-65ce-4240-a80d-dde001590e1b" class="">
+</p><h3 id="39b3f3b5-d6fd-437c-8ee6-6e601692a17c" class="">安装</h3><p id="351929ad-b741-4fd1-b33c-3dfbef812971" class="">
+</p><p id="77a9de84-9978-4658-b986-6dce469382cc" class="">直接使用工作流的api</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="f96c9cc0-8333-4fe6-8758-31857cb105f4" class="code"><code class="language-Shell">curl -X POST \
+    &quot;http://127.0.0.1:7861/api/v1/run/ee207a8c-aa4f-435c-99e9-d4f019d4c92f?stream=false&quot; \
+    -H &#x27;Content-Type: application/json&#x27;\
+    -d &#x27;{&quot;input_value&quot;: &quot;message&quot;,
+    &quot;output_type&quot;: &quot;chat&quot;,
+    &quot;input_type&quot;: &quot;chat&quot;,
+    &quot;tweaks&quot;: {
+  &quot;ChatInput-u6JPw&quot;: {},
+  &quot;OllamaModel-Mb0Nf&quot;: {},
+  &quot;ChatOutput-wkFXt&quot;: {}
+}}&#x27;
+    </code></pre><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="55b675a4-d3ba-487c-9e70-71c6aa9bf35b" class="code"><code class="language-Shell">import argparse
+import json
+from argparse import RawTextHelpFormatter
+import requests
+from typing import Optional
+import warnings
+try:
+    from langflow.load import upload_file
+except ImportError:
+    warnings.warn(&quot;Langflow provides a function to help you upload files to the flow. Please install langflow to use it.&quot;)
+    upload_file = None
+
+BASE_API_URL = &quot;http://127.0.0.1:7861&quot;
+FLOW_ID = &quot;ee207a8c-aa4f-435c-99e9-d4f019d4c92f&quot;
+ENDPOINT = &quot;&quot; # You can set a specific endpoint name in the flow settings
+
+# You can tweak the flow by adding a tweaks dictionary
+# e.g {&quot;OpenAI-XXXXX&quot;: {&quot;model_name&quot;: &quot;gpt-4&quot;}}
+TWEAKS = {
+  &quot;ChatInput-u6JPw&quot;: {},
+  &quot;OllamaModel-Mb0Nf&quot;: {},
+  &quot;ChatOutput-wkFXt&quot;: {}
+}
+
+def run_flow(message: str,
+  endpoint: str,
+  output_type: str = &quot;chat&quot;,
+  input_type: str = &quot;chat&quot;,
+  tweaks: Optional[dict] = None,
+  api_key: Optional[str] = None) -&gt; dict:
+    &quot;&quot;&quot;
+    Run a flow with a given message and optional tweaks.
+
+    :param message: The message to send to the flow
+    :param endpoint: The ID or the endpoint name of the flow
+    :param tweaks: Optional tweaks to customize the flow
+    :return: The JSON response from the flow
+    &quot;&quot;&quot;
+    api_url = f&quot;{BASE_API_URL}/api/v1/run/{endpoint}&quot;
+
+    payload = {
+        &quot;input_value&quot;: message,
+        &quot;output_type&quot;: output_type,
+        &quot;input_type&quot;: input_type,
+    }
+    headers = None
+    if tweaks:
+        payload[&quot;tweaks&quot;] = tweaks
+    if api_key:
+        headers = {&quot;x-api-key&quot;: api_key}
+    response = requests.post(api_url, json=payload, headers=headers)
+    return response.json()
+
+def main():
+    parser = argparse.ArgumentParser(description=&quot;&quot;&quot;Run a flow with a given message and optional tweaks.
+Run it like: python &lt;your file&gt;.py &quot;your message here&quot; --endpoint &quot;your_endpoint&quot; --tweaks &#x27;{&quot;key&quot;: &quot;value&quot;}&#x27;&quot;&quot;&quot;,
+        formatter_class=RawTextHelpFormatter)
+    parser.add_argument(&quot;message&quot;, type=str, help=&quot;The message to send to the flow&quot;)
+    parser.add_argument(&quot;--endpoint&quot;, type=str, default=ENDPOINT or FLOW_ID, help=&quot;The ID or the endpoint name of the flow&quot;)
+    parser.add_argument(&quot;--tweaks&quot;, type=str, help=&quot;JSON string representing the tweaks to customize the flow&quot;, default=json.dumps(TWEAKS))
+    parser.add_argument(&quot;--api_key&quot;, type=str, help=&quot;API key for authentication&quot;, default=None)
+    parser.add_argument(&quot;--output_type&quot;, type=str, default=&quot;chat&quot;, help=&quot;The output type&quot;)
+    parser.add_argument(&quot;--input_type&quot;, type=str, default=&quot;chat&quot;, help=&quot;The input type&quot;)
+    parser.add_argument(&quot;--upload_file&quot;, type=str, help=&quot;Path to the file to upload&quot;, default=None)
+    parser.add_argument(&quot;--components&quot;, type=str, help=&quot;Components to upload the file to&quot;, default=None)
+
+    args = parser.parse_args()
+    try:
+      tweaks = json.loads(args.tweaks)
+    except json.JSONDecodeError:
+      raise ValueError(&quot;Invalid tweaks JSON string&quot;)
+
+    if args.upload_file:
+        if not upload_file:
+            raise ImportError(&quot;Langflow is not installed. Please install it to use the upload_file function.&quot;)
+        elif not args.components:
+            raise ValueError(&quot;You need to provide the components to upload the file to.&quot;)
+        tweaks = upload_file(file_path=args.upload_file, host=BASE_API_URL, flow_id=ENDPOINT, components=args.components, tweaks=tweaks)
+
+    response = run_flow(
+        message=args.message,
+        endpoint=args.endpoint,
+        output_type=args.output_type,
+        input_type=args.input_type,
+        tweaks=tweaks,
+        api_key=args.api_key
+    )
+
+    print(json.dumps(response, indent=2))
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre><p id="d325c21b-437e-44da-8870-3638d1514ad2" class="">方法1</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="688a770e-62c0-47ef-a9b8-0a04c13efdda" class="code"><code class="language-Shell">python -m pip install langflow -U
+
+python -m langflow run
+</code></pre><p id="9679f354-8ed3-4788-ae43-1193615177d4" class="">方法2</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="4386347e-9ade-49f1-8aae-6e840f2e1bed" class="code"><code class="language-Shell">git clone https://github.com/langflow-ai/langflow.git
+
+cd langflow
+
+make install_frontend &amp;&amp; make build_frontend &amp;&amp; make install_backend
+
+poetry run python -m langflow run
+</code></pre><p id="b63116d2-5d83-40a0-a050-07a4c0724002" class="">
+</p><h3 id="200f6cde-1bda-4a76-a211-d5e07981a4ea" class="">API</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="da0f2d57-f720-4ced-a210-348a2f6b87b0" class="code"><code class="language-Shell">poetry run python -m langflow api-key</code></pre><p id="d5522156-32b6-4714-848b-97f1a40d2ee5" class="">
+</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="ac00e0be-28d5-4ae1-8a95-957e8a4ef881" class="code"><code class="language-Shell">
+curl -X POST \
+  &#x27;http://localhost:7860/api/v1/run/4277d3c1-096d-48bc-a98a-8fc690ddaa8d&#x27; \
+  -H &#x27;Content-Type: application/json&#x27; \
+  -H &#x27;x-api-key: sk-mBZChEOy6Vc8n6MnCwVYNfiqbA3qoDYlR45-RrRhcnk&#x27; \
+  -d &#x27;{&quot;inputs&quot;: {&quot;text&quot;: &quot;hello&quot;}, &quot;tweaks&quot;: {}}&#x27;
+
+
+
+curl -X POST \
+  &#x27;http://127.0.0.1:7861/api/v1/run/ee207a8c-aa4f-435c-99e9-d4f019d4c92f&#x27; \
+  -H &#x27;Content-Type: application/json&#x27; \
+  -H &#x27;x-api-key: sk-5vTph2sgyXxmqlgkfOqBxGo-ja2id4vrLdsrXa7LP4o&#x27; \
+  -d &#x27;{&quot;inputs&quot;: {&quot;text&quot;: &quot;hello&quot;}, &quot;tweaks&quot;: {}}&#x27;
+
+</code></pre><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="6fb489f2-feec-4fd8-9d5f-d817980e0058" class="code"><code class="language-Shell">import requests
+from typing import Optional
+
+BASE_API_URL = &quot;http://localhost:7860/api/v1/run&quot;
+FLOW_ID = &quot;4277d3c1-096d-48bc-a98a-8fc690ddaa8d&quot;
+# You can tweak the flow by adding a tweaks dictionary
+# e.g {&quot;OpenAI-XXXXX&quot;: {&quot;model_name&quot;: &quot;gpt-4&quot;}}
+TWEAKS = {}
+
+
+def run_flow(inputs: dict,
+             flow_id: str,
+             tweaks: Optional[dict] = None,
+             apiKey: Optional[str] = None) -&gt; dict:
+    &quot;&quot;&quot;
+    Run a flow with given inputs and optional tweaks.
+
+    :param inputs: The inputs to send to the flow
+    :param flow_id: The ID of the flow to run
+    :param tweaks: Optional tweaks to customize the flow
+    :param apiKey: Optional API key for authentication
+    :return: The JSON response from the flow
+    &quot;&quot;&quot;
+    api_url = f&quot;{BASE_API_URL}/{flow_id}&quot;
+    payload = {&quot;inputs&quot;: inputs}
+    headers = {&quot;Content-Type&quot;: &quot;application/json&quot;}
+
+    if tweaks:
+        payload[&quot;tweaks&quot;] = tweaks
+    if apiKey:
+        headers[&quot;x-api-key&quot;] = apiKey
+
+    response = requests.post(api_url, json=payload, headers=headers)
+    return response.json()
+
+
+def extract_message(response: dict) -&gt; str:
+    &quot;&quot;&quot;
+    Extract the message text from the response.
+
+    :param response: The JSON response from the flow
+    :return: The extracted message text
+    &quot;&quot;&quot;
+    try:
+        return response[&#x27;outputs&#x27;][0][&#x27;outputs&#x27;][0][&#x27;results&#x27;][&#x27;message&#x27;][&#x27;data&#x27;][&#x27;text&#x27;]
+    except KeyError:
+        return &quot;Unable to extract the message from the response.&quot;
+
+
+# Setup inputs and API key
+inputs = {&quot;input_value&quot;: &quot;hello&quot;}
+api_key = &quot;sk-mBZChEOy6Vc8n6MnCwVYNfiqbA3qoDYlR45-RrRhcnk&quot;
+
+# Run the flow and print the extracted message
+response = run_flow(inputs, flow_id=FLOW_ID, tweaks=TWEAKS, apiKey=api_key)
+print(extract_message(response))
+</code></pre></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
