@@ -1,0 +1,964 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>微软最新开源大模型phi3.5全面解析：从MoE到vision，一站式掌握未来AI技术，轻松构建智能应用</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-default_background {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 237, 214, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 237, 214, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(0, 0, 0, 0.06); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(249, 228, 188, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="ffea5058-e1c4-4e53-b62f-a74098fb9279" class="page sans"><header><h1 class="page-title">微软最新开源大模型phi3.5全面解析：从MoE到vision，一站式掌握未来AI技术，轻松构建智能应用</h1><p class="page-description"></p></header><div class="page-body"><p id="e0fba190-5f33-4808-8841-ba06a0d4c41b" class="">
+</p><figure id="1f89d122-c51b-4148-b146-265bdbea4810"><a href="https://build.nvidia.com/microsoft/phi-3_5-moe" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">NVIDIA NIM | phi-3_5-moe</div><div class="bookmark-description">Experience the leading models to build enterprise generative AI apps now.</div></div><div class="bookmark-href"><img src="https://build.nvidia.com/favicon.ico" class="icon bookmark-icon"/>https://build.nvidia.com/microsoft/phi-3_5-moe</div></div><img src="https://build.nvidia.com/opengraph-image.jpg?6ec102a0470b935b" class="bookmark-image"/></a></figure><figure id="09882210-76e2-42e5-bfc8-819620818adc"><a href="https://huggingface.co/microsoft/Phi-3.5-MoE-instruct" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">microsoft/Phi-3.5-MoE-instruct · Hugging Face</div><div class="bookmark-description">We’re on a journey to advance and democratize artificial intelligence through open source and open science.</div></div><div class="bookmark-href"><img src="https://huggingface.co/favicon.ico" class="icon bookmark-icon"/>https://huggingface.co/microsoft/Phi-3.5-MoE-instruct</div></div><img src="https://cdn-thumbnails.huggingface.co/social-thumbnails/models/microsoft/Phi-3.5-MoE-instruct.png" class="bookmark-image"/></a></figure><p id="b85714c4-281a-4116-b3aa-4729cfc8288c" class="">
+</p><figure id="15a1da04-3243-4eb1-9952-4de613f2e938"><a href="https://colab.research.google.com/drive/1lebG8uDq0xFuQQCZJx4v_BUxqe9Pm2HU?usp=sharing" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">Google Colab</div></div><div class="bookmark-href"><img src="https://ssl.gstatic.com/colaboratory-static/common/6b90f1bc8641dbd2aa9dc6b83ace17ac/img/favicon.ico" class="icon bookmark-icon"/>https://colab.research.google.com/drive/1lebG8uDq0xFuQQCZJx4v_BUxqe9Pm2HU?usp=sharing</div></div><img src="https://colab.research.google.com/img/colab_favicon_256px.png" class="bookmark-image"/></a></figure><p id="a2451ef4-3846-4aa6-9a00-b7a3cfdfb6dd" class="">
+</p><h3 id="b1faca9d-2860-4657-96bb-c5b4e9dd46b7" class="">算法测试</h3><figure id="b73e7b68-8907-469f-8b8e-49f539498a25"><a href="https://leetcode.com/problems/longest-palindromic-substring/" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">Longest Palindromic Substring - LeetCode</div><div class="bookmark-description">Can you solve this real interview question? Longest Palindromic Substring - Given a string s, return the longest palindromic substring in s.     Example 1:   Input: s = &quot;babad&quot; Output: &quot;bab&quot; Explanation: &quot;aba&quot; is also a valid answer.   Example 2:   Input: s = &quot;cbbd&quot; Output: &quot;bb&quot;      Constraints:   * 1 &lt;= s.length &lt;= 1000  * s consist of only digits and English letters.</div></div><div class="bookmark-href"><img src="https://leetcode.com/favicon.ico" class="icon bookmark-icon"/>https://leetcode.com/problems/longest-palindromic-substring/</div></div><img src="https://leetcode.com/static/images/LeetCode_Sharing.png" class="bookmark-image"/></a></figure><figure id="0133dc18-4705-4646-a631-777a29dcafb0"><a href="https://leetcode.com/problems/merge-k-sorted-lists/" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">Merge k Sorted Lists - LeetCode</div><div class="bookmark-description">Can you solve this real interview question? Merge k Sorted Lists - You are given an array of k linked-lists lists, each linked-list is sorted in ascending order.  Merge all the linked-lists into one sorted linked-list and return it.     Example 1:   Input: lists = [[1,4,5],[1,3,4],[2,6]] Output: [1,1,2,3,4,4,5,6] Explanation: The linked-lists are: [   1-&gt;4-&gt;5,   1-&gt;3-&gt;4,   2-&gt;6 ] merging them into one sorted list: 1-&gt;1-&gt;2-&gt;3-&gt;4-&gt;4-&gt;5-&gt;6   Example 2:   Input: lists = [] Output: []   Example 3:   Input: lists = [[]] Output: []      Constraints:   * k == lists.length  * 0 &lt;= k &lt;= 104  * 0 &lt;= lists[i].length &lt;= 500  * -104 &lt;= lists[i][j] &lt;= 104  * lists[i] is sorted in ascending order.  * The sum of lists[i].length will not exceed 104.</div></div><div class="bookmark-href"><img src="https://leetcode.com/favicon.ico" class="icon bookmark-icon"/>https://leetcode.com/problems/merge-k-sorted-lists/</div></div><img src="https://leetcode.com/static/images/LeetCode_Sharing.png" class="bookmark-image"/></a></figure><figure id="66b77964-edcc-4e09-96f6-8ad51664ef76"><a href="https://leetcode.com/problems/substring-with-concatenation-of-all-words/" class="bookmark source"><div class="bookmark-info"><div class="bookmark-text"><div class="bookmark-title">Substring with Concatenation of All Words - LeetCode</div><div class="bookmark-description">Can you solve this real interview question? Substring with Concatenation of All Words - You are given a string s and an array of strings words. All the strings of words are of the same length.  A concatenated string is a string that exactly contains all the strings of any permutation of words concatenated.   * For example, if words = [&quot;ab&quot;,&quot;cd&quot;,&quot;ef&quot;], then &quot;abcdef&quot;, &quot;abefcd&quot;, &quot;cdabef&quot;, &quot;cdefab&quot;, &quot;efabcd&quot;, and &quot;efcdab&quot; are all concatenated strings. &quot;acdbef&quot; is not a concatenated string because it is not the concatenation of any permutation of words.  Return an array of the starting indices of all the concatenated substrings in s. You can return the answer in any order.     Example 1:  Input: s = &quot;barfoothefoobarman&quot;, words = [&quot;foo&quot;,&quot;bar&quot;]  Output: [0,9]  Explanation:  The substring starting at 0 is &quot;barfoo&quot;. It is the concatenation of [&quot;bar&quot;,&quot;foo&quot;] which is a permutation of words. The substring starting at 9 is &quot;foobar&quot;. It is the concatenation of [&quot;foo&quot;,&quot;bar&quot;] which is a permutation of words.  Example 2:  Input: s = &quot;wordgoodgoodgoodbestword&quot;, words = [&quot;word&quot;,&quot;good&quot;,&quot;best&quot;,&quot;word&quot;]  Output: []  Explanation:  There is no concatenated substring.  Example 3:  Input: s = &quot;barfoofoobarthefoobarman&quot;, words = [&quot;bar&quot;,&quot;foo&quot;,&quot;the&quot;]  Output: [6,9,12]  Explanation:  The substring starting at 6 is &quot;foobarthe&quot;. It is the concatenation of [&quot;foo&quot;,&quot;bar&quot;,&quot;the&quot;]. The substring starting at 9 is &quot;barthefoo&quot;. It is the concatenation of [&quot;bar&quot;,&quot;the&quot;,&quot;foo&quot;]. The substring starting at 12 is &quot;thefoobar&quot;. It is the concatenation of [&quot;the&quot;,&quot;foo&quot;,&quot;bar&quot;].     Constraints:   * 1 &lt;= s.length &lt;= 104  * 1 &lt;= words.length &lt;= 5000  * 1 &lt;= words[i].length &lt;= 30  * s and words[i] consist of lowercase English letters.</div></div><div class="bookmark-href"><img src="https://leetcode.com/favicon.ico" class="icon bookmark-icon"/>https://leetcode.com/problems/substring-with-concatenation-of-all-words/</div></div><img src="https://leetcode.com/static/images/LeetCode_Sharing.png" class="bookmark-image"/></a></figure><h3 id="1079a099-45c8-4a68-ab26-7b094d6c7f3c" class="">NIM代码</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="232e3cf9-d8b6-4970-8e96-c4bd0fa3c4a6" class="code"><code class="language-Shell">export NVIDIA_API_KEY=nvapi-9kPgR5Yz28</code></pre><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="9ced15a5-9abe-48e9-a53d-eeed057a0bcb" class="code"><code class="language-Shell">from openai import OpenAI
+import os
+
+client = OpenAI(
+  base_url = &quot;https://integrate.api.nvidia.com/v1&quot;,
+  api_key = os.getenv(&quot;NVIDIA_API_KEY&quot;)
+)
+
+completion = client.chat.completions.create(
+  model=&quot;microsoft/phi-3.5-moe-instruct&quot;,
+  messages=[{&quot;role&quot;:&quot;user&quot;,&quot;content&quot;:&quot;What is the latest version of Python?&quot;}],
+  temperature=0.2,
+  top_p=0.7,
+  max_tokens=1024,
+  stream=True
+)
+
+for chunk in completion:
+  if chunk.choices[0].delta.content is not None:
+    print(chunk.choices[0].delta.content, end=&quot;&quot;)
+</code></pre><p id="ff8f07a0-d3fb-4e9e-b753-6504776b4d45" class="">
+</p><h2 id="91ef2c89-4d9e-4186-92e2-da52d532c03c" class=""><strong>👉👉👉如有问题/项目合作请联系我的徽信 stoeng</strong></h2><h2 id="d998d348-c886-4dfa-a014-72271ea5004a" class=""><strong>🔥🔥🔥本项目代码由AI超元域频道制作，观看更多大模型微调视频请访问我的频道⬇</strong></h2><h3 id="559ec3b7-ee17-44c9-b154-f4b5804565f4" class=""><strong>👉👉👉</strong><strong><a href="https://space.bilibili.com/3493277319825652">我的哔哩哔哩频道</a></strong></h3><h3 id="ccdf0a59-8a87-42d4-85d6-76a64c1a3d2f" class=""><strong>👉👉👉</strong><strong><a href="https://www.youtube.com/@AIsuperdomain">我的YouTube频道</a></strong></h3><h3 id="ef7f6a72-616a-4e68-bcec-e56cda6f8661" class=""><strong>👉👉👉我的开源项目 </strong><strong><a href="https://github.com/win4r/AISuperDomain">https://github.com/win4r/AISuperDomain</a></strong></h3><p id="aa5ea47a-d967-4d96-a6de-2028a49ad959" class="">
+</p><h3 id="a3700505-fa14-46e5-9009-2088419a2013" class="">MoE UI</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="db1c3451-b675-44e9-8444-9506abdc9993" class="code"><code class="language-Shell">import os
+from openai import OpenAI as AsyncOpenAI
+import chainlit as cl
+
+api_key = os.environ.get(&quot;NVIDIA_API_KEY&quot;)
+client = AsyncOpenAI(base_url=&quot;https://integrate.api.nvidia.com/v1&quot;, api_key=api_key)
+cl.instrument_openai()
+
+settings = {
+    &quot;model&quot;: &quot;microsoft/phi-3.5-moe-instruct&quot;,
+    &quot;temperature&quot;: 0.5,
+    &quot;top_p&quot;: 0.7,
+    &quot;max_tokens&quot;: 1024,
+}
+
+@cl.on_chat_start
+def start_chat():
+    cl.user_session.set(
+        &quot;message_history&quot;,
+        [{&quot;role&quot;: &quot;system&quot;, &quot;content&quot;: &quot;You are a helpful assistant.&quot;}],
+    )
+
+async def async_generator(sync_gen):
+    for item in sync_gen:
+        yield item
+
+@cl.on_message
+async def run_conversation(message: cl.Message):
+    message_history = cl.user_session.get(&quot;message_history&quot;)
+    message_history.append({&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: message.content})
+
+    msg = cl.Message(content=&quot;&quot;)
+    await msg.send()
+
+    stream = client.chat.completions.create(
+        messages=message_history, stream=True, **settings
+    )
+
+    async for part in async_generator(stream):
+        if token := part.choices[0].delta.content or &quot;&quot;:
+            await msg.stream_token(token)
+
+    message_history.append({&quot;role&quot;: &quot;assistant&quot;, &quot;content&quot;: msg.content})
+    await msg.update()
+</code></pre><p id="e2cdcf66-151d-4d8d-8f18-a270439480ca" class="">
+</p><h3 id="22c01141-da74-402c-803a-0b19bb9ca56d" class="">vision</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="7afc5131-cb19-472b-ad14-6680f32d1058" class="code"><code class="language-Shell">import requests
+import base64
+import json
+
+invoke_url = &quot;https://integrate.api.nvidia.com/v1/chat/completions&quot;
+stream = False  # Changed to False to get a single JSON response
+
+with open(&quot;./dog.jpeg&quot;, &quot;rb&quot;) as f:
+    image_b64 = base64.b64encode(f.read()).decode()
+
+assert len(image_b64) &lt; 180_000, \
+    &quot;To upload larger images, use the assets API (see docs)&quot;
+
+headers = {
+    &quot;Authorization&quot;: &quot;Bearer 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&quot;,
+    &quot;Accept&quot;: &quot;application/json&quot;  # Changed to accept JSON
+}
+
+payload = {
+    &quot;model&quot;: &#x27;microsoft/phi-3.5-vision-instruct&#x27;,
+    &quot;messages&quot;: [
+        {
+            &quot;role&quot;: &quot;user&quot;,
+            &quot;content&quot;: f&#x27;Describe the image. &lt;img src=&quot;data:image/jpeg;base64,{image_b64}&quot; /&gt;&#x27;
+        }
+    ],
+    &quot;max_tokens&quot;: 512,
+    &quot;temperature&quot;: 0.20,
+    &quot;top_p&quot;: 0.70,
+    &quot;stream&quot;: stream
+}
+
+response = requests.post(invoke_url, headers=headers, json=payload)
+
+# Parse the JSON response and print only the content
+if response.status_code == 200:
+    response_json = response.json()
+    description = response_json[&#x27;choices&#x27;][0][&#x27;message&#x27;][&#x27;content&#x27;]
+    print(description)
+else:
+    print(f&quot;Error: {response.status_code}&quot;)
+    print(response.text)</code></pre><p id="d4f68aba-059e-4a91-8cc4-6f59d8ac7897" class="">
+</p><h3 id="8bc241bb-6c43-4237-a11c-52b6d523687e" class="">vision-UI</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1ed63ae1-12d0-4d07-a3e3-6f9db3910cd5" class="code"><code class="language-Shell">import chainlit as cl
+import requests
+import base64
+import os
+
+
+# Function to get image description from NVIDIA API
+async def get_image_description(image_path, api_key):
+    invoke_url = &quot;https://integrate.api.nvidia.com/v1/chat/completions&quot;
+
+    with open(image_path, &quot;rb&quot;) as f:
+        image_b64 = base64.b64encode(f.read()).decode()
+
+    assert len(image_b64) &lt; 180_000, \
+        &quot;To upload larger images, use the assets API (see docs)&quot;
+
+    headers = {
+        &quot;Authorization&quot;: f&quot;Bearer {api_key}&quot;,
+        &quot;Accept&quot;: &quot;application/json&quot;
+    }
+
+    payload = {
+        &quot;model&quot;: &#x27;microsoft/phi-3.5-vision-instruct&#x27;,
+        &quot;messages&quot;: [
+            {
+                &quot;role&quot;: &quot;user&quot;,
+                &quot;content&quot;: f&#x27;Describe the image. &lt;img src=&quot;data:image/jpeg;base64,{image_b64}&quot; /&gt;&#x27;
+            }
+        ],
+        &quot;max_tokens&quot;: 512,
+        &quot;temperature&quot;: 0.20,
+        &quot;top_p&quot;: 0.70,
+        &quot;stream&quot;: False
+    }
+
+    response = requests.post(invoke_url, headers=headers, json=payload)
+
+    if response.status_code == 200:
+        response_json = response.json()
+        description = response_json[&#x27;choices&#x27;][0][&#x27;message&#x27;][&#x27;content&#x27;]
+        return description
+    else:
+        return f&quot;Error: {response.status_code}\n{response.text}&quot;
+
+
+@cl.on_chat_start
+async def start():
+    await cl.Message(content=&quot;Welcome! Please upload an image to get a description.&quot;).send()
+
+
+@cl.on_message
+async def on_message(msg: cl.Message):
+    if not msg.elements:
+        await cl.Message(content=&quot;No file attached. Please upload an image.&quot;).send()
+        return
+
+    # Processing images exclusively
+    images = [file for file in msg.elements if &quot;image&quot; in file.mime]
+
+    if not images:
+        await cl.Message(content=&quot;Please upload an image file.&quot;).send()
+        return
+
+    # Get the API key from environment variable
+    api_key = os.getenv(&#x27;NVIDIA_API_KEY&#x27;)
+    if not api_key:
+        await cl.Message(content=&quot;Error: NVIDIA API key not found in environment variables.&quot;).send()
+        return
+
+    # Process the first image
+    image_path = images[0].path
+
+    # Get image description
+    description = await get_image_description(image_path, api_key)
+
+    # Send the description back to the user
+    await cl.Message(content=f&quot;Image Description: {description}&quot;).send()
+
+    # Optional: display the processed image
+    with open(image_path, &quot;rb&quot;) as f:
+        image_content = f.read()
+
+    elements = [
+        cl.Image(name=&quot;processed_image&quot;, content=image_content, mime=images[0].mime)
+    ]
+    await cl.Message(content=&quot;Processed Image:&quot;, elements=elements).send()
+
+    await cl.Message(content=f&quot;Processed {len(images)} image(s)&quot;).send()
+
+
+if __name__ == &quot;__main__&quot;:
+    cl.run()</code></pre><p id="50eb3494-1f9b-4e82-837b-0e4295e6a397" class="">
+</p><h3 id="d7b17ab0-f807-4a85-8de5-93f68e1b7351" class="">autogen studio</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="cd59bccc-5fdb-40d4-8a6f-000533ad797b" class="code"><code class="language-Shell">autogenstudio ui --port 8081
+</code></pre><p id="5e0c82c7-aeb4-4453-96bc-c86234d97ca7" class="">
+</p><h3 id="446ba2e3-4580-4621-b2d5-7c82d5731dea" class="">skills代码</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2821cd42-fc39-40fd-abc6-cc0b230c8d0c" class="code"><code class="language-Shell">
+#Name duck_duck_go
+#Description Search the web using DuckDuckGo.
+
+
+from duckduckgo_search import DDGS
+
+def search_duckduckgo(query, region=&#x27;wt-wt&#x27;, safesearch=&#x27;off&#x27;, max_results=5):
+    &quot;&quot;&quot;Search DuckDuckGo for the given query and return the results.&quot;&quot;&quot;
+    ddg = DDGS()
+    results = ddg.text(keywords=query, region=region, safesearch=safesearch, max_results=max_results)
+    
+    for result in results:
+        print(f&quot;Title: {result[&#x27;title&#x27;]}&quot;)
+        print(f&quot;URL: {result[&#x27;href&#x27;]}&quot;)
+        print(f&quot;Snippet: {result[&#x27;body&#x27;]}\n&quot;)
+    
+    return results
+
+# Test the function
+if __name__ == &quot;__main__&quot;:
+    query = &quot;Web scraping with Python&quot;
+    search_duckduckgo(query)
+
+# Example usage for autogen agent
+# Create a new Python script (e.g., execute_search.py) and import the function:
+# from skills import search_duckduckgo  
+# query = &quot;autogenstudio&quot;  
+# search_duckduckgo(query)</code></pre><p id="7a3732f4-1408-4bec-b60b-d8579b0c424e" class="">
+</p><h3 id="ed74ff39-1743-458c-aaff-7ba826dbdb7a" class="">autogen prompt</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="84b86b04-e141-45de-8600-e8d2a83e48bc" class="code"><code class="language-Shell">You are a versatile AI assistant specialized in using the DuckDuckGo search API to gather information, refine search results, and transform them into engaging news articles. Your tasks include performing searches, analyzing results, and crafting informative news pieces based on the gathered information.
+When given a task or query:
+
+Use the search_duckduckgo function to gather initial information. Suggest Python code to execute this function, providing the necessary parameters (query, region, safesearch, max_results).
+After receiving the search results, analyze the titles, URLs, and snippets. If the information is insufficient or unclear, perform additional searches with refined queries.
+Synthesize and enhance the search results:
+
+Summarize key points from the search results
+Organize and explain the relevance of the sources
+Identify information gaps and suggest ways to fill them
+
+
+Transform the synthesized information into a well-structured news article:
+
+Create an attention-grabbing headline
+Write a concise lead paragraph summarizing key information (who, what, when, where, why, and how)
+Develop the story with supporting details, quotes, and context
+Include relevant background information
+
+
+Ensure journalistic standards are met:
+
+Maintain objectivity and balance
+Distinguish between facts and opinions
+Use proper attribution for quotes and claims
+Cross-reference information from multiple sources when available
+
+
+Enhance readability and engagement:
+
+Use clear, concise language for a general audience
+Break up long paragraphs and use subheadings where appropriate
+Include relevant statistics or data points
+Add a brief &quot;Key Takeaways&quot; section for complex topics
+
+
+If additional code execution is needed (e.g., to perform follow-up searches or process results), suggest the appropriate Python code in a code block, using the search_duckduckgo function.
+Present your final news article in a clear, structured format using Markdown.
+
+Always use Python code blocks for any code that needs to be executed. Include comments in your code to explain what each part does. If you need to save any code or results to a file, include # filename: &lt;filename&gt; as the first line in the code block.
+Do not suggest incomplete code or ask the user to modify the code. The user can only execute the code you provide without modifications.
+If there are any errors in the code execution, analyze the error message, fix the issue, and provide the corrected full code block.
+Continue this process of searching, analyzing, refining, and writing until you have produced a comprehensive and engaging news article based on the original query or task. Verify your final article carefully and include verifiable evidence where possible.
+Suggest a filename for the article using the format: &quot;YYYYMMDD_headline_keywords.md&quot;
+Reply &#x27;ARTICLE_COMPLETE&#x27; when you have finished writing and editing the news article based on the search results.</code></pre><h3 id="efcde8c1-1a62-405c-a5ca-36bd09073c5f" class="">ollama</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="9a3780d4-c80b-46b2-9c32-addf324fdd86" class="code"><code class="language-Shell">ollama run phi3.5:latest</code></pre><p id="c082bd20-5e37-42b6-a6a3-89ffaebd8fbd" class="">
+</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
