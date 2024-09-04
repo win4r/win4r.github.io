@@ -1,0 +1,1014 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>🔥command-r-plus最强开源大模型</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-default_background {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 237, 214, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 237, 214, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(0, 0, 0, 0.06); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(249, 228, 188, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="d92a67ab-810c-4839-a9c6-ae0961a0b29b" class="page sans"><header><h1 class="page-title">🔥command-r-plus最强开源大模型</h1><p class="page-description"></p></header><div class="page-body"><p id="9a9ffddf-ddfc-4e03-abeb-1de6a2c83bb2" class="">
+</p><p id="e555b8c9-c9e6-4bc5-bbb1-49b09ac6af1e" class="">C4AI Command R+（2024年8月版）是CohereForAI推出的一款极为强大的语言模型，拥有1040亿参数。以下是该模型的详细信息：</p><ol type="1" id="13011325-5d0f-4d2a-89e7-3fadca87ec98" class="numbered-list" start="1"><li><strong>高级检索增强生成（RAG）</strong>：Command R+ 支持先进的RAG能力，即通过检索相关文档片段来增强生成内容。这使得它在需要结合多种信息来源的任务中表现非常出色，能够生成有依据的响应，并且可以提供引用回文档的能力，适用于复杂的知识增强场景。</li></ol><ol type="1" id="2ca4ec5a-552d-46a0-91ec-5512f70e8a65" class="numbered-list" start="2"><li><strong>多步骤工具使用</strong>：模型经过训练能够在对话中进行多步骤的工具使用。例如，模型可以在一轮对话中调用多个工具来完成一个复杂的任务，还能够识别并使用特殊的<code>directly_answer</code>工具，这使得它可以选择不使用任何工具，而直接提供答案。这种能力使模型在处理任务自动化、问答以及智能对话中具有很大的灵活性。</li></ol><ol type="1" id="9f9eec13-f15f-469c-b1c5-f3a3e1dde089" class="numbered-list" start="3"><li><strong>多语言支持</strong>：Command R+支持10种语言，经过多语言评估，使得它能够在不同语言和文化背景下应用。这为跨语言的自然语言处理任务提供了广泛的支持。</li></ol><ol type="1" id="1caa1b44-41f1-43e0-93fc-d01d38ceeea3" class="numbered-list" start="4"><li><strong>优化的应用场景</strong>：模型特别适合用于推理、摘要生成、问答系统等应用场景。此外，它的工具使用和RAG能力，使得它在开发智能助手、内容生成工具、知识管理系统方面有着广阔的应用前景。</li></ol><ol type="1" id="1ec02118-397d-49f3-848c-1322de6f02f7" class="numbered-list" start="5"><li><strong>训练与使用</strong>：模型通过监督微调和偏好微调的混合方式进行了训练。用户可以通过特定的提示模板与模型进行互动，并可以灵活调整这些模板，以探索模型的各种功能和表现。CohereForAI还提供了全面的文档，以帮助开发者充分利用Command R+的工具使用功能。</li></ol><p id="77e0bc20-cd58-4d3b-96e6-d50e1cb6764e" class="">这些特性使C4AI Command R+成为自然语言处理领域中极具前景的模型，适用于多种复杂的任务和应用场景。</p><p id="eaa7fd56-dd8d-4070-9bdb-8b22b3ad3308" class="">
+</p><h3 id="67ad24cf-8cf9-45d9-92f9-6c4813b803eb" class="">模型链接</h3><p id="a6dc8a95-eed4-4f9f-8ebc-ba6cd68f7138" class=""><a href="https://huggingface.co/CohereForAI/c4ai-command-r-plus-08-2024">https://huggingface.co/CohereForAI/c4ai-command-r-plus-08-2024</a></p><p id="6fcc15e4-1c5c-4dc2-924f-14c55fabc638" class="">
+</p><h3 id="cbb1c648-305f-4f01-9fbf-19a76b9187fa" class="">🔥online</h3><p id="ccbdd2be-e100-4f01-a887-5c4cd85a9e64" class=""><a href="https://coral.cohere.com/">https://coral.cohere.com/</a></p><p id="475aa533-e777-42c4-b900-cd433d81246c" class="">
+</p><h3 id="a412bc60-775d-4fc4-aeea-e34c387bab56" class="">🔥ollama</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="5476c315-449a-481a-a3b9-03406079a53e" class="code"><code class="language-Shell">#https://ollama.com/library/command-r-plus
+ollama run command-r-plus
+ollama run command-r-plus:104b-fp16</code></pre><p id="ac400203-7951-4572-b1f2-4e84e2ff9467" class="">
+</p><p id="0b8db722-5763-4795-9a87-86f610f35cba" class="">
+</p><h3 id="59eb863c-2f1d-4af2-b22b-3f2e6e3ea06f" class="">🔥逻辑推理测试</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="e3feca70-b1d5-4dc8-b685-a34a19d8926c" class="code"><code class="language-Shell">张三去理发店理发，理发费用30元，但是张三没带钱，于是找理发店老板借了100块，
+用借的这100块，付了30块给理发店老板，老板找了70块给张三。
+张三回家拿钱后找到老板，并且给老板100块。
+但老板总觉得张三给少了，请问张三应该还给老板多少钱？
+</code></pre><p id="5d882f16-21e5-40ed-8f20-e24b2e212b2c" class="">
+</p><h2 id="9604133e-0a7a-449f-ae1b-4541fd622e1f" class=""><strong>👉👉👉如有问题请联系我的徽信 stoeng</strong></h2><h2 id="61e856ee-7837-4f5c-8e73-daf6296a05f7" class=""><strong>🔥🔥🔥本项目代码由AI超元域频道制作，观看更多大模型微调视频请访问我的频道⬇</strong></h2><h3 id="8617bedc-cc76-4970-b287-2a18fbb1dc6d" class=""><strong>👉👉👉</strong><strong><a href="https://space.bilibili.com/3493277319825652">我的哔哩哔哩频道</a></strong></h3><h3 id="1f3d24a8-e567-42c8-ba14-2fb09e19c961" class=""><strong>👉👉👉</strong><strong><a href="https://www.youtube.com/@AIsuperdomain">我的YouTube频道</a></strong></h3><h3 id="f3fbbe89-7897-48f4-8668-45e85a307782" class=""><strong>👉👉👉我的开源项目 </strong><strong><a href="https://github.com/win4r/AISuperDomain">https://github.com/win4r/AISuperDomain</a></strong></h3><h3 id="f36930b2-8caa-4e01-a918-ac983a6e30c5" class="">🔥autogen</h3><p id="b62b1efb-3a62-4782-a945-f17f5271f285" class="">
+</p><blockquote id="8735e17b-6e14-4d6d-94b3-3f9bb24d7793" class="">AutoGen 是一个开源的编程框架，旨在简化多智能体人工智能应用的开发。通过结构化的多智能体对话，AutoGen 允许多个智能体进行互动与协作，以执行复杂任务。<br/><br/>该框架支持自主和人机协作的工作流程，能够无缝集成大型语言模型（LLM）、各种工具及人类输入。<br/><br/>AutoGen 提供高度可定制的智能体，适应特定应用需求，优化和自动化复杂的 AI 工作流程，从而推动下一代智能系统的发展和创新。<br/></blockquote><p id="653df1c3-c3ab-46a2-8896-1e95091f9e29" class="">
+</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="f2b5ab3a-7316-4a4f-ba70-91dc5bf09f70" class="code"><code class="language-Shell">import json
+import os
+from typing import Literal
+from typing_extensions import Annotated
+import autogen
+import asyncio
+from forex_python.converter import CurrencyRates
+import ssl
+import certifi
+import requests
+
+# 设置环境变量
+os.environ[&quot;COHERE_API_KEY&quot;] = &quot;&quot;
+
+# API 配置列表
+config_list = [
+    {&quot;api_type&quot;: &quot;cohere&quot;, &quot;model&quot;: &quot;command-r-plus&quot;, &quot;api_key&quot;: os.getenv(&quot;COHERE_API_KEY&quot;), &quot;cache_seed&quot;: None}
+]
+
+# 创建用于工具调用的助手代理
+chatbot = autogen.AssistantAgent(
+    name=&quot;chatbot&quot;,
+    system_message=&quot;&quot;&quot;对于货币兑换和天气预报任务，
+        只使用提供给你的函数。
+        当提供了答案时输出&#x27;HAVE FUN!&#x27;&quot;&quot;&quot;,
+    llm_config={&quot;config_list&quot;: config_list},
+)
+
+# 创建用户代理
+user_proxy = autogen.UserProxyAgent(
+    name=&quot;user_proxy&quot;,
+    is_termination_msg=lambda x: x.get(&quot;content&quot;, &quot;&quot;) and &quot;HAVE FUN!&quot; in x.get(&quot;content&quot;, &quot;&quot;),
+    human_input_mode=&quot;NEVER&quot;,
+    max_consecutive_auto_reply=1,
+)
+
+# 货币兑换功能
+CurrencySymbol = Literal[&quot;USD&quot;, &quot;EUR&quot;]
+
+# 使用 forex-python 获取汇率
+c = CurrencyRates()
+
+# 添加一个简单的汇率字典作为备用
+backup_rates = {
+    &quot;EUR&quot;: {&quot;USD&quot;: 1.1},
+    &quot;USD&quot;: {&quot;EUR&quot;: 1/1.1}
+}
+
+@user_proxy.register_for_execution()
+@chatbot.register_for_llm(description=&quot;货币兑换计算器。&quot;)
+def currency_calculator(
+    base_amount: Annotated[float, &quot;基础货币的金额&quot;],
+    base_currency: Annotated[CurrencySymbol, &quot;基础货币&quot;] = &quot;USD&quot;,
+    quote_currency: Annotated[CurrencySymbol, &quot;报价货币&quot;] = &quot;EUR&quot;,
+) -&gt; str:
+    try:
+        # 创建 SSL 上下文
+        ssl_context = ssl.create_default_context(cafile=certifi.where())
+        # 获取汇率
+        rate = c.get_rate(base_currency, quote_currency)
+        # 计算兑换金额
+        quote_amount = rate * base_amount
+        return f&quot;{format(quote_amount, &#x27;.2f&#x27;)} {quote_currency}&quot;
+    except Exception as e:
+        # 使用备用汇率
+        if base_currency in backup_rates and quote_currency in backup_rates[base_currency]:
+            rate = backup_rates[base_currency][quote_currency]
+            quote_amount = rate * base_amount
+            return f&quot;(使用备用汇率) {format(quote_amount, &#x27;.2f&#x27;)} {quote_currency}&quot;
+        else:
+            return f&quot;获取汇率时出错，无可用备用汇率: {str(e)}&quot;
+
+# 天气功能
+def get_weather(city):
+    try:
+        # WeatherAPI.com 的 API 密钥
+        api_key = &quot;8a5ea58a527f4d89a6d64152240409&quot;
+        # 构建 API 请求 URL
+        url = f&quot;http://api.weatherapi.com/v1/current.json?key={api_key}&amp;q={city}&quot;
+        # 发送 GET 请求
+        response = requests.get(url)
+        # 解析 JSON 响应
+        data = response.json()
+
+        if response.status_code == 200:
+            # 提取位置信息
+            location = data[&#x27;location&#x27;]
+            # 提取当前天气信息
+            current = data[&#x27;current&#x27;]
+            temp_c = current[&#x27;temp_c&#x27;]
+            temp_f = current[&#x27;temp_f&#x27;]
+            condition = current[&#x27;condition&#x27;][&#x27;text&#x27;]
+            return f&quot;{location[&#x27;name&#x27;]}, {location[&#x27;country&#x27;]}的天气: 当前温度 {temp_c}°C ({temp_f}°F), {condition}&quot;
+        else:
+            # 返回错误信息
+            return f&quot;获取天气信息时出错: {data.get(&#x27;error&#x27;, {}).get(&#x27;message&#x27;, &#x27;未知错误&#x27;)}&quot;
+    except Exception as e:
+        # 捕获并返回任何异常
+        return f&quot;获取天气信息时出错: {str(e)}&quot;
+
+@user_proxy.register_for_execution()
+@chatbot.register_for_llm(description=&quot;根据城市名称获取天气预报。&quot;)
+def weather_forecast(
+    city: Annotated[str, &quot;城市名称&quot;],
+) -&gt; str:
+    return get_weather(city)
+
+# 开始对话
+res = user_proxy.initiate_chat(
+    chatbot,
+    message=&quot;纽约的天气如何，你能告诉我123.45欧元兑换成美元是多少，以便我在假期中使用吗？再顺便给些假期建议。&quot;,
+    summary_method=&quot;reflection_with_llm&quot;,
+)</code></pre><p id="38ea86ee-e3e8-44c0-b0c2-c2388d299de0" class="">
+</p><p id="909b91b0-38fc-463b-aad2-28879a81fa45" class="">
+</p><h3 id="4fd059fb-e8df-452e-822d-66e8ea313eb2" class="">🔥LlamaIndex</h3><p id="0d418d66-9b30-40a5-9f4b-32d1922ad14e" class="">
+</p><p id="ae60492b-b446-4d12-aa33-38050e0ce6ec" class="">
+</p><blockquote id="19504c0c-4aa9-4b15-8109-a74c215c05b7" class="">LlamaIndex 是一个多功能工具，旨在优化大型语言模型（LLM）与复杂数据集之间的交互。<br/><br/>它通过创建高效的索引结构，将原始数据转化为中间表示（如向量嵌入），从而在查询时实现快速且精确的数据检索。<br/><br/>LlamaIndex 还支持增强检索生成（RAG），通过结合上下文与 LLM 的能力来提高响应的准确性。此外，它提供集成工具，用于监控和评估 LLM 的性能，支持实时调整和持续改进。<br/></blockquote><p id="d29fc23f-263a-4f4b-b009-2776068b00fb" class="">
+</p><p id="053ea1d1-85a3-4e0a-86a3-6c7a133517fc" class="">
+</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="109ce2b7-bc7d-40db-af22-49d4a2d73a73" class="code"><code class="language-Shell">
+%pip install llama-index-llms-cohere
+%pip install llama-index-embeddings-cohere
+
+
+!pip install llama-index
+
+
+import os
+from sqlalchemy import (
+    create_engine,
+    MetaData,
+    Table,
+    Column,
+    String,
+    Integer,
+    Float,
+    select,
+    text,
+    insert,
+)
+from llama_index.core import SQLDatabase
+from llama_index.core.query_engine import NLSQLTableQueryEngine
+from llama_index.llms.cohere import Cohere
+from llama_index.embeddings.cohere import CohereEmbedding
+
+
+
+
+# 设置Cohere API密钥
+os.environ[&quot;CO_API_KEY&quot;] = &quot;&quot;
+
+cohere_api_key = os.environ[&quot;CO_API_KEY&quot;]
+
+
+
+# 创建数据库引擎
+engine = create_engine(&quot;sqlite:///:memory:&quot;)
+metadata_obj = MetaData()
+
+
+
+# 创建产品库存SQL表
+table_name = &quot;产品库存&quot;
+product_inventory_table = Table(
+    table_name,
+    metadata_obj,
+    Column(&quot;产品编号&quot;, String(16), primary_key=True),
+    Column(&quot;产品名称&quot;, String(64), nullable=False),
+    Column(&quot;类别&quot;, String(32), nullable=False),
+    Column(&quot;库存数量&quot;, Integer),
+    Column(&quot;价格&quot;, Float),
+)
+metadata_obj.create_all(engine)
+
+
+
+
+# 添加样本数据
+rows = [
+    {&quot;产品编号&quot;: &quot;LT001&quot;, &quot;产品名称&quot;: &quot;超薄笔记本Pro&quot;, &quot;类别&quot;: &quot;电子产品&quot;, &quot;库存数量&quot;: 50, &quot;价格&quot;: 6999.99},
+    {&quot;产品编号&quot;: &quot;SP002&quot;, &quot;产品名称&quot;: &quot;智能手机X&quot;, &quot;类别&quot;: &quot;电子产品&quot;, &quot;库存数量&quot;: 100, &quot;价格&quot;: 4999.99},
+]
+
+for row in rows:
+    stmt = insert(product_inventory_table).values(**row)
+    with engine.begin() as connection:
+        connection.execute(stmt)
+
+
+
+
+# 查看当前表内容
+stmt = select(product_inventory_table)
+with engine.connect() as connection:
+    results = connection.execute(stmt).fetchall()
+    print(&quot;当前库存:&quot;)
+    for row in results:
+        print(row)
+  
+        
+
+
+
+# 示例查询1：查询电子产品类别的产品名称和库存数量
+print(&quot;\n电子产品库存:&quot;)
+with engine.connect() as con:
+    rows = con.execute(text(&quot;SELECT 产品名称, 库存数量 FROM 产品库存 WHERE 类别 = &#x27;电子产品&#x27;&quot;))
+    for row in rows:
+        print(row)
+
+
+
+
+
+
+# 示例查询2：查找库存低于100的产品
+print(&quot;\n库存低于100的产品:&quot;)
+with engine.connect() as con:
+    rows = con.execute(text(&quot;SELECT 产品名称, 库存数量 FROM 产品库存 WHERE 库存数量 &lt; 100&quot;))
+    for row in rows:
+        print(row)
+
+
+
+
+# 示例查询3：计算总库存价值
+print(&quot;\n总库存价值:&quot;)
+with engine.connect() as con:
+    result = con.execute(text(&quot;SELECT SUM(库存数量 * 价格) as 总价值 FROM 产品库存&quot;))
+    total_value = result.fetchone()[0]
+    print(f&quot;￥{total_value:.2f}&quot;)
+
+
+
+
+
+
+# 设置Cohere LLM和嵌入模型
+llm = Cohere(temperature=0.1, model=&quot;command-r-plus&quot;)
+# 创建Cohere嵌入模型
+embed_model = CohereEmbedding(
+    api_key=os.environ[&quot;CO_API_KEY&quot;],
+    model_name=&quot;embed-multilingual-v3.0&quot;,
+    input_type=&quot;search_query&quot;,
+)
+
+
+
+
+
+
+# 创建自然语言到SQL查询引擎
+query_engine = NLSQLTableQueryEngine(
+    sql_database=sql_database,
+    tables=[&quot;产品库存&quot;],
+    llm=llm,
+    embed_model=embed_model
+)
+
+
+
+
+
+
+# 使用自然语言查询
+nl_query = &quot;哪个产品的价格最高？&quot;
+response = query_engine.query(nl_query)
+print(f&quot;\n问题: {nl_query}&quot;)
+print(f&quot;回答: {response}&quot;)
+
+
+
+
+
+nl_query = &quot;库存量最多的产品是什么？&quot;
+response = query_engine.query(nl_query)
+print(f&quot;\n问题: {nl_query}&quot;)
+print(f&quot;回答: {response}&quot;)
+
+
+
+
+
+nl_query = &quot;经济学原理库存多少&quot;
+response = query_engine.query(nl_query)
+print(f&quot;\n问题: {nl_query}&quot;)
+print(f&quot;回答: {response}&quot;)
+
+
+
+
+
+nl_query = &quot;有多少种书籍？&quot;
+response = query_engine.query(nl_query)
+print(f&quot;\n问题: {nl_query}&quot;)
+print(f&quot;回答: {response}&quot;)
+
+
+
+
+
+nl_query = &quot;食品类有哪些？&quot;
+response = query_engine.query(nl_query)
+print(f&quot;\n问题: {nl_query}&quot;)
+print(f&quot;回答: {response}&quot;)
+
+
+
+
+
+nl_query = &quot;哪种食品价格最高？&quot;
+response = query_engine.query(nl_query)
+print(f&quot;\n问题: {nl_query}&quot;)
+print(f&quot;回答: {response}&quot;)
+
+</code></pre><p id="6577cb57-d4fd-449e-b3d4-9807c794f307" class="">
+</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
