@@ -1,3 +1,4 @@
+
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Reflection 70B-AI界的新星来袭：深度解析Reflection-Llama3.1-70b模型，揭秘其超强推理能力与自我纠错技术，带你体验AI思维的革命性突破</title><style>
 /* cspell:disable-file */
 /* webkit printing magic: print all background colors */
@@ -714,8 +715,6 @@ blockquote {
       }&#x27;</code></pre><p id="90ca847d-1f36-41c3-8c5d-13a7d22b46b8" class="">
 </p><h3 id="9356cdec-c85f-4dc1-8513-e3619d0f8b27" class="">AutoGen+LlamaIndex</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="2a7f2f79-8063-4e10-aa7d-2f8b96bdfc74" class="code"><code class="language-Shell">!pip install pyautogen llama-index-vector-stores-chroma llama-index llama-index-embeddings-huggingface llama-index-llms-together
 
-
-
 from llama_index.core import VectorStoreIndex, SimpleDirectoryReader
 from llama_index.vector_stores.chroma import ChromaVectorStore
 from llama_index.core import StorageContext
@@ -725,6 +724,16 @@ from llama_index.llms.together import TogetherLLM
 
 import chromadb
 import autogen
+from autogen import ConversableAgent
+
+
+
+# 创建目录（如果不存在）
+!mkdir -p ./documents
+
+# 下载文件到 ./documents 目录
+!wget -P ./documents https://raw.githubusercontent.com/win4r/mytest/main/book.txt
+
 
 
 
@@ -740,10 +749,10 @@ def initialize_index():
 
     # 使用 BAAI/bge-large-en-v1.5 嵌入模型
     embed_model = HuggingFaceEmbedding(model_name=&quot;BAAI/bge-large-en-v1.5&quot;)
-    
-    # 设置全局嵌入模型和禁用 LLM
+
+    # 设置全局嵌入模型
     Settings.embed_model = embed_model
-    Settings.llm = TogetherLLM( model=&quot;meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo&quot;, api_key=&quot;sk-&quot; ) 
+    Settings.llm = TogetherLLM( model=&quot;meta-llama/Meta-Llama-3.1-70B-Instruct-Turbo&quot;, api_key=&quot;sk-&quot; )
 
     # 检查集合是否已存在数据
     if chroma_collection.count() &gt; 0:
@@ -766,6 +775,37 @@ index = initialize_index()
 query_engine = index.as_query_engine()
 
 
+
+def create_prompt(user_input):
+    result = query_engine.query(user_input)
+
+    prompt = f&quot;&quot;&quot;
+    Your Task: Provide a concise and informative response to the user&#x27;s query, drawing on the provided context.
+
+    Context: {result}
+
+    User Query: {user_input}
+
+    Guidelines:
+    1. Relevance: Focus directly on the user&#x27;s question.
+    2. Conciseness: Avoid unnecessary details.
+    3. Accuracy: Ensure factual correctness.
+    4. Clarity: Use clear language.
+    5. Contextual Awareness: Use general knowledge if context is insufficient.
+    6. Honesty: State if you lack information.
+
+    Response Format:
+    - Direct answer
+    - Brief explanation (if necessary)
+    - Citation (if relevant)
+    - Conclusion
+    &quot;&quot;&quot;
+
+    return prompt
+
+
+
+
 # 配置LLM(语言模型)
 llm_config = {
     &quot;config_list&quot;: [
@@ -776,14 +816,12 @@ llm_config = {
         # }
         {
           &quot;model&quot;: &quot;mattshumer/reflection-70b:free&quot;,
-          &quot;base_url&quot;: &quot;https://openrouter.ai/api/&quot;,
-          &quot;api_key&quot;: &quot;&quot;,
+          &quot;base_url&quot;: &quot;https://openrouter.ai/api/v1&quot;,
+          &quot;api_key&quot;: &quot;sk-or-v1-&quot;,
           &quot;cache_seed&quot;: 42
         },
     ]
 }
-
-
 
 # 创建RAG机器人代理
 rag_agent = ConversableAgent(
@@ -796,14 +834,23 @@ rag_agent = ConversableAgent(
 
 
 
-# 生成回复
-reply = rag_agent.generate_reply(messages=[{&quot;content&quot;: &quot;Show me some samples of Knowledge Integration prompts&quot;, &quot;role&quot;: &quot;user&quot;}])
 
-# 打印回复
+
+prompt = create_prompt(&quot;Show me some samples of Knowledge Integration prompts&quot;)
+
+reply = rag_agent.generate_reply(messages=[{&quot;content&quot;: prompt, &quot;role&quot;: &quot;user&quot;}])
+
+print(&quot;\nType of reply:&quot;, type(reply))
+print(&quot;\nContent of reply:&quot;, reply)
+
 if isinstance(reply, dict) and &#x27;content&#x27; in reply:
     print(f&quot;\nRAGbot: {reply[&#x27;content&#x27;]}&quot;)
 elif isinstance(reply, str):
     print(f&quot;\nRAGbot: {reply}&quot;)
 else:
-    print(f&quot;\nUnexpected reply format: {reply}&quot;)
+    print(&quot;\nUnexpected reply format&quot;)
+
+
+
+
 </code></pre></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
