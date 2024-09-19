@@ -1,0 +1,727 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Mistral-Small-Instruct-2409 深入剖析如何结合Mistral small和LlamaIndex，实现语言代理树搜索，打造超强企业分析工具！</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-default_background {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 237, 214, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 237, 214, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(0, 0, 0, 0.06); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(249, 228, 188, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="1053b313-aef4-80c7-9f72-fd551d61a8ec" class="page sans"><header><h1 class="page-title">Mistral-Small-Instruct-2409 深入剖析如何结合Mistral small和LlamaIndex，实现语言代理树搜索，打造超强企业分析工具！</h1><p class="page-description"></p></header><div class="page-body"><p id="1063b313-aef4-8051-b8ea-ee1480d67774" class="">
+</p><h3 id="1053b313-aef4-80bc-8506-d3759a3f6c9f" class="">本期视频为大家深入解析Mistral最新发布的开源模型Mistral small。这款拥有220亿参数的模型不仅支持128K的上下文窗口，而且在function calling方面表现出色。</h3><p id="1053b313-aef4-80ae-adeb-e9c557b0f0c4" class="">
+</p><h3 id="1053b313-aef4-8041-b789-c613365ebaaf" class="">参数:22B</h3><h3 id="1053b313-aef4-8054-8af9-d04cbbf37d4a" class="">支持function calling</h3><h3 id="1053b313-aef4-8060-b101-e6eb9745b5cb" class="">128k上下文长度</h3><h3 id="1053b313-aef4-8026-81cc-e8abfd604a17" class="">GPU显存要求:44 GB </h3><p id="b0c6bbc3-55be-4b58-ba2f-d75acccccc8e" class="">
+</p><h3 id="1063b313-aef4-80a0-a3e7-d89ec912d6fb" class="">ollama</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1063b313-aef4-80cb-9bd3-ef91ec37676e" class="code"><code class="language-Shell">ollama run mistral-small</code></pre><p id="1063b313-aef4-804e-8f49-daa2edd2af2a" class="">
+</p><h3 id="1063b313-aef4-8070-b72e-dc2c048b0b60" class="">算法测试：</h3><p id="74fd02f7-0d1b-4250-a33b-3b2efeb8cf32" class=""><a href="https://leetcode.com/problems/merge-k-sorted-lists/description/">https://leetcode.com/problems/merge-k-sorted-lists/description/</a></p><p id="1063b313-aef4-807a-8ba9-e7895eebb78d" class=""><a href="https://leetcode.com/problems/distinct-subsequences/">https://leetcode.com/problems/distinct-subsequences/</a></p><p id="1063b313-aef4-80eb-aca3-d8389c2e51b6" class=""><a href="https://leetcode.com/problems/sliding-window-maximum/description/">https://leetcode.com/problems/sliding-window-maximum/description/</a></p><p id="1063b313-aef4-8000-921c-d58c51cb3340" class="">
+</p><h2 id="c513ab8c-b4c9-439b-a54b-229a982022cc" class=""><strong>👉👉👉如有问题请联系我的徽信 stoeng</strong></h2><h2 id="1063b313-aef4-80dd-b18a-d6dfdd582af0" class=""><strong>🔥🔥🔥本项目代码由AI超元域频道制作，观看更多大模型微调视频请访问我的频道⬇</strong></h2><h3 id="1063b313-aef4-8089-9f47-cd1e3e35337e" class=""><strong>👉👉👉</strong><strong><a href="https://space.bilibili.com/3493277319825652">我的哔哩哔哩频道</a></strong></h3><h3 id="1063b313-aef4-8002-9113-d419c75b6ce2" class=""><strong>👉👉👉</strong><strong><a href="https://www.youtube.com/@AIsuperdomain">我的YouTube频道</a></strong></h3><h3 id="1063b313-aef4-8093-a238-fa7bc1ce6d36" class=""><strong>👉👉👉我的开源项目 </strong><strong><a href="https://github.com/win4r/AISuperDomain">https://github.com/win4r/AISuperDomain</a></strong></h3><p id="1063b313-aef4-802d-9a01-d64601bb8b1b" class="">
+</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="5efe4a20-f823-4f84-99cb-9e6124fddf0d" class="code"><code class="language-Shell">curl --location &quot;https://api.mistral.ai/v1/chat/completions&quot; \
+     --header &#x27;Content-Type: application/json&#x27; \
+     --header &#x27;Accept: application/json&#x27; \
+     --header &quot;Authorization: Bearer iTDzYt5Htod7u&quot; \
+     --data &#x27;{
+    &quot;model&quot;: &quot;mistral-large-latest&quot;,
+    &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Who is the most renowned French painter?&quot;}]
+  }&#x27;</code></pre><p id="1053b313-aef4-804a-b1b9-f7cc7f209710" class="">
+</p><h3 id="1053b313-aef4-807e-a55a-f63138f9dcde" class="">安装</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1053b313-aef4-8055-adb1-ec251c49095e" class="code"><code class="language-Shell">
+pip install --upgrade vllm mistral_common
+</code></pre><h3 id="1053b313-aef4-80f6-9abd-eafb76361015" class="">离线使用</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="687ed36c-0772-4565-8bac-a07adc465b20" class="code"><code class="language-Shell">from vllm import LLM
+from vllm.sampling_params import SamplingParams
+
+model_name = &quot;mistralai/Mistral-Small-Instruct-2409&quot;
+
+sampling_params = SamplingParams(max_tokens=8192)
+
+# note that running Mistral-Small on a single GPU requires at least 44 GB of GPU RAM
+# If you want to divide the GPU requirement over multiple devices, please add *e.g.* `tensor_parallel=2`
+llm = LLM(model=model_name, tokenizer_mode=&quot;mistral&quot;, config_format=&quot;mistral&quot;, load_format=&quot;mistral&quot;)
+
+prompt = &quot;How often does the letter r occur in Mistral?&quot;
+
+messages = [
+    {
+        &quot;role&quot;: &quot;user&quot;,
+        &quot;content&quot;: prompt
+    },
+]
+
+outputs = llm.chat(messages, sampling_params=sampling_params)
+
+print(outputs[0].outputs[0].text)
+</code></pre><h3 id="1053b313-aef4-806d-804f-ec924af4359b" class="">server</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1053b313-aef4-807f-ba4c-ef79bd9169d4" class="code"><code class="language-Shell">vllm serve mistralai/Mistral-Small-Instruct-2409 --tokenizer_mode mistral --config_format mistral --load_format mistral
+
+</code></pre><h3 id="1053b313-aef4-8059-ab39-c94c2acfd89d" class=""><strong>Language Agent Tree Search 语言代理树搜索（LATS)</strong></h3><p id="b0279da0-e41d-4bba-9e6e-2329b7080fe7" class=""><a href="https://colab.research.google.com/github/run-llama/llama_index/blob/main/docs/docs/examples/agent/lats_agent.ipynb">https://colab.research.google.com/github/run-llama/llama_index/blob/main/docs/docs/examples/agent/lats_agent.ipynb</a></p><p id="1063b313-aef4-80a0-a5ff-d091db138d5c" class="">
+</p><p id="1053b313-aef4-809e-ae44-cbcc1616d4eb" class="">
+</p><blockquote id="1063b313-aef4-802c-8449-e008065c096c" class="">语言代理树搜索<h2 id="76df3ed0-7695-42d4-866f-83b282c5920c" class="">语言代理树搜索（LATS）简介</h2><p id="af9d7517-56b7-4ec1-95c6-daed8505a7d4" class=""><strong>语言代理树搜索</strong>（<strong>Language Agent Tree Search</strong>，简称LATS）是一种创新框架，旨在增强语言模型（LMs）在决策任务中的能力。</p><p id="1063b313-aef4-8052-902e-f94dacc3cae9" class="">LATS将蒙特卡罗树搜索（MCTS）与语言模型的反思和评估能力相结合，使其成为各种应用（如编程、交互式问答和网页导航）中强大的自主代理工具。</p><h3 id="1063b313-aef4-804a-b4eb-c1ea9d6c8bd2" class=""> LATS的核心特征</h3><p id="1063b313-aef4-8077-989f-c13dd87fdfcb" class="">LATS因其独特的方法而脱颖而出，该方法结合了推理、行动和规划。以下是其主要组成部分：</p><ul id="1063b313-aef4-805f-abd9-d372bac29e18" class="bulleted-list"><li style="list-style-type:disc"><strong>蒙特卡罗树搜索</strong>：LATS采用了一种贪婪版本的MCTS，允许它在搜索过程中探索多个潜在结果的分支。这种方法通过一种称为“上置信界”的指标平衡探索（尝试新动作）和利用（选择产生高回报的动作）。</li></ul><ul id="1063b313-aef4-80ad-8dfb-e2271e777532" class="bulleted-list"><li style="list-style-type:disc"><strong>反思与评估</strong>：在执行动作后，LATS会进行反思阶段，根据预定义标准或外部反馈评估结果。这种自我反思有助于通过从过去的行动中学习来改善未来的决策。</li></ul><ul id="1063b313-aef4-80f1-9261-f7f4c4be0ed9" class="bulleted-list"><li style="list-style-type:disc"><strong>动作选择</strong>：该框架包括一种系统的方法，根据先前评估的累积奖励选择最佳的下一个动作。这使得代理能够响应解决方案或继续探索更多选项。</li></ul><h3 id="cb3a7639-7db0-424d-bd64-1f1e3a6e883b" class="">LATS的主要步骤</h3><p id="1063b313-aef4-80ff-b9b8-fe22fc1ec6f5" class="">LATS遵循的过程包括四个主要步骤：</p><ol type="1" id="1063b313-aef4-80e7-b558-e5faeb2fbb25" class="numbered-list" start="1"><li><strong>选择</strong>：根据累积奖励识别最有前景的动作。</li></ol><ol type="1" id="1063b313-aef4-8043-8728-cc45a042022b" class="numbered-list" start="2"><li><strong>扩展与模拟</strong>：生成一组潜在动作（通常为五个），并并行模拟其结果。</li></ol><ol type="1" id="1063b313-aef4-80d0-ba2d-d1f3dff7b1bb" class="numbered-list" start="3"><li><strong>反思与评估</strong>：评估这些动作的结果，根据反思和收到的外部反馈进行评分。</li></ol><ol type="1" id="1063b313-aef4-80de-9d79-dd275947e02b" class="numbered-list" start="4"><li><strong>回传</strong>：根据评估结果更新搜索树中先前轨迹的得分。</li></ol><p id="1063b313-aef4-80d6-9010-f1a89a7a71ec" class="">这种结构化的方法使LATS能够有效地在复杂决策环境中导航，显著提高了性能，相较于传统的提示技术如ReACT和Reflexion有了显著改善。</p><h3 id="1063b313-aef4-8082-8a6d-cbf6fbfbb380" class="">性能与应用</h3><p id="1063b313-aef4-8075-ba34-da7095d0800d" class="">LATS在多个领域展示了卓越的性能：</p><ul id="cd2073ad-7da8-4b93-a3b0-2a0e01812f7b" class="bulleted-list"><li style="list-style-type:disc">在HumanEval编程任务中，它以92.7%的pass@1准确率达到了最先进水平，使用的是GPT-4。</li></ul><ul id="1063b313-aef4-80b6-b64e-f8c2b63f3b3f" class="bulleted-list"><li style="list-style-type:disc">在网页导航任务中，它表现出与基于梯度微调方法相当的竞争力，在WebShop上平均得分为75.9%，使用的是GPT-3.5。</li></ul><p id="1063b313-aef4-8077-ad6d-cb3b5daef8d2" class="">这些结果表明，LATS可以增强语言模型的决策能力，而无需额外训练，使其成为开发更复杂AI代理的多功能工具。</p><h3 id="1063b313-aef4-809d-b777-fdbf588bead1" class="">限制与未来方向</h3><p id="1063b313-aef4-8002-8517-fb2e5467002b" class="">尽管LATS提供了显著优势，但也存在一些挑战：</p><ul id="78bf6091-4ab5-4dfc-b7f6-e6e59a1b9c67" class="bulleted-list"><li style="list-style-type:disc"><strong>计算成本</strong>：MCTS的实现增加了计算需求，相较于更简单的方法，这可能限制其在某些场景中的实用性。</li></ul><ul id="1063b313-aef4-8061-a5bf-ee113b9d1b5a" class="bulleted-list"><li style="list-style-type:disc"><strong>状态回退需求</strong>：该框架假设代理可以在决策过程中回退到早期状态，这在所有环境中可能并不现实。</li></ul><p id="1063b313-aef4-8013-86fd-f07c5b153325" class="">未来研究旨在通过探索更高效的实现方法以及将LATS适应于复杂的多代理系统来解决这些限制。</p><p id="ae7213bf-e60e-4285-816f-556fc2a09f22" class="">语言代理树搜索代表了利用语言模型进行自主决策任务的重要进展，将推理、行动和规划结合成一个整体框架，从而增强整体任务性能。</p></blockquote></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
