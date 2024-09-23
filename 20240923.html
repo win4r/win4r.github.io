@@ -1,0 +1,875 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Ragas ragapp llamaindex</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-default_background {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 237, 214, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 237, 214, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(0, 0, 0, 0.06); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(249, 228, 188, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="574fc16c-42aa-4406-a7b3-b403f1064bdf" class="page sans"><header><h1 class="page-title">Ragas ragapp llamaindex</h1><p class="page-description"></p></header><div class="page-body"><p id="10a3b313-aef4-80db-92f8-f4436991f04f" class="">
+</p><p id="10a3b313-aef4-8091-bedb-f387da25a688" class="">
+</p><h3 id="10a3b313-aef4-8029-b073-c1839c2e4e35" class="">prompts</h3><p id="a7cd5a14-88b7-4c77-8be7-53ac91a8dccf" class="">
+</p><p id="10a3b313-aef4-805a-87ce-c336ed0a0efd" class="">
+</p><blockquote id="ff62fbc4-2346-414e-9108-2c98bd376b11" class="">You are a helpful assistant. Always conduct a web search by using DuckDuckGo to find information on the internet for every user query to provide the most up-to-date information. Fetch today&#x27;s news highlights, gather relevant news headlines, summarize key events, and compile a final report for the user.</blockquote><p id="10a3b313-aef4-8064-8bdc-dac27a21228b" class="">
+</p><blockquote id="765abb05-5f98-4e58-9378-abf391804aa9" class="">You are a helpful assistant. Please retrieve information from the knowledge base based on the user&#x27;s queries</blockquote><p id="1093b313-aef4-80fa-9b63-e0a18276da5d" class="">
+</p><p id="1093b313-aef4-80ef-94d2-dd2a6607fb62" class=""><a href="https://colab.research.google.com/drive/1NYPh7p6_9ZpeZo85rIN1xmNz6_G_OTJI#scrollTo=Q3ugISTB-bT9">https://colab.research.google.com/drive/1NYPh7p6_9ZpeZo85rIN1xmNz6_G_OTJI#scrollTo=Q3ugISTB-bT9</a></p><p id="1093b313-aef4-807d-a1a3-d90a1aafe117" class="">
+</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1093b313-aef4-8085-af9f-d6527494489a" class="code"><code class="language-Shell">!pip install ragas
+
+!pip install unstructured
+
+!pip install datasets
+
+
+</code></pre><p id="1093b313-aef4-806d-973d-d174824a35ff" class="">
+</p><p id="1093b313-aef4-80c5-bf6c-e555dfd70a75" class="">
+</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="bf599c8c-f947-4f58-b3f3-08c840e012bf" class="code"><code class="language-Python">from ragas.testset.generator import TestsetGenerator
+from ragas.testset.evolutions import simple, reasoning, multi_context
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+
+# generator with openai models
+generator_llm = ChatOpenAI(model=&quot;gpt-4o-mini&quot;)
+critic_llm = ChatOpenAI(model=&quot;gpt-4o-mini&quot;)
+embeddings = OpenAIEmbeddings()
+
+generator = TestsetGenerator.from_langchain(
+    generator_llm,
+    critic_llm,
+    embeddings
+)
+
+# generate testset
+testset = generator.generate_with_langchain_docs(documents, test_size=5, distributions={simple: 0.5, reasoning: 0.25, multi_context: 0.25})</code></pre><p id="10a3b313-aef4-80fc-bbbc-f05ef90b94db" class="">
+</p><h2 id="bec1c824-6650-4992-9822-075077d973ee" class=""><strong>👉👉👉如有问题请联系我的徽信 stoeng</strong></h2><h2 id="10a3b313-aef4-80f4-801e-d7bc043ebe72" class=""><strong>🔥🔥🔥本项目代码由AI超元域频道制作，观看更多大模型微调视频请访问我的频道⬇</strong></h2><h3 id="10a3b313-aef4-80c3-96f9-e6d1c0c152a2" class=""><strong>👉👉👉</strong><strong><a href="https://space.bilibili.com/3493277319825652">我的哔哩哔哩频道</a></strong></h3><h3 id="10a3b313-aef4-8049-8092-d0694bd855bc" class=""><strong>👉👉👉</strong><strong><a href="https://www.youtube.com/@AIsuperdomain">我的YouTube频道</a></strong></h3><h3 id="10a3b313-aef4-805e-8183-eb9f8130b5ef" class=""><strong>👉👉👉我的开源项目 </strong><strong><a href="https://github.com/win4r/AISuperDomain">https://github.com/win4r/AISuperDomain</a></strong></h3><p id="1093b313-aef4-80eb-9453-f4f5e8f4ea32" class="">
+</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1093b313-aef4-8031-8cbf-cbd746782bd1" class="code"><code class="language-Shell">df = testset.to_pandas()
+df.head()</code></pre><p id="1093b313-aef4-808e-8835-ccd33c254f30" class="">
+</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1093b313-aef4-80fa-ab6b-ee21aa0eeb92" class="code"><code class="language-Python">from ragas.metrics import (
+    faithfulness,
+    answer_relevancy,
+    context_precision,
+    context_recall,
+)
+from ragas import evaluate
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from datasets import Dataset
+
+# 假设df是你之前生成的testset的DataFrame
+questions = df[&quot;question&quot;].tolist()
+contexts = df[&quot;contexts&quot;].tolist()
+ground_truths = df[&quot;ground_truth&quot;].tolist()
+
+
+
+
+# 假设这是chatbot的回答列表
+chatbot_answers = [
+    &quot;Customer reviews can be grouped into clusters based on sentiment using various techniques in natural language processing (NLP) and machine learning. Here’s a general approach to achieve this: 1. **Data Collection**: Gather customer reviews from various sources such as websites, social media, or surveys. 2. **Preprocessing**: Clean the text data by removing noise such as punctuation, special characters, and stop words. You may also want to convert all text to lowercase and perform stemming or lemmatization. 3. **Sentiment Analysis**: Use sentiment analysis techniques to classify the sentiment of each review. This can be done using: - **Lexicon-based methods**: Use predefined dictionaries of words associated with positive, negative, or neutral sentiments. - **Machine learning models**: Train models (e.g., logistic regression, support vector machines) on labeled datasets to classify sentiment. - **Deep learning models**: Use neural networks, such as LSTM or transformers (like BERT), for more nuanced sentiment analysis. 4. **Feature Extraction**: Convert the reviews into numerical representations. Common methods include: - **Bag of Words (BoW)**: Represents text as a frequency count of words. - **TF-IDF (Term Frequency-Inverse Document Frequency)**: Weighs the frequency of words by how common they are across all documents. - **Word Embeddings**: Use embeddings like Word2Vec or GloVe to capture semantic meaning. 5. **Clustering**: Apply clustering algorithms to group the reviews based on their sentiment scores and features. Common clustering techniques include: - **K-Means Clustering**: Partitions the data into K clusters based on feature similarity. - **Hierarchical Clustering**: Builds a tree of clusters based on distance metrics. - **DBSCAN**: Groups together points that are closely packed together, marking as outliers points that lie alone in low-density regions. 6. **Visualization**: Use visualization techniques such as t-SNE or PCA to reduce dimensionality and visualize the clusters for better interpretation. 7. **Analysis**: Analyze the clusters to understand the common themes or sentiments within each group. This can help in identifying customer satisfaction, dissatisfaction, and areas for improvement. By following these steps, customer reviews can be effectively grouped into clusters based on sentiment, providing valuable insights into customer opinions and experiences.&quot;,
+    &quot;Seed-word prompting in generating text with ChatGPT serves several important purposes: 1. **Guiding Context**: Seed words provide a starting point or context for the model, helping it understand the topic or theme that the user wants to explore. This can lead to more relevant and coherent responses. 2. **Focusing the Output**: By using specific seed words, users can direct the model to generate content that aligns with their interests or needs. This helps in narrowing down the scope of the generated text. 3. **Enhancing Creativity**: Seed words can inspire creative outputs by introducing specific concepts or ideas that the model can elaborate on. This can be particularly useful in creative writing, brainstorming, or generating unique content. 4. **Improving Relevance**: When seed words are used, the model is more likely to produce responses that are relevant to the user&#x27;s query. This reduces the chances of generating off-topic or unrelated content. 5. **Facilitating Structured Responses**: Seed words can help in structuring the response, especially in cases where a specific format or style is desired (e.g., lists, narratives, or technical explanations). 6. **Encouraging Specificity**: By providing seed words, users can encourage the model to focus on particular aspects of a topic, leading to more detailed and informative responses. Overall, seed-word prompting enhances the interaction between the user and the model, making the generated text more aligned with the user&#x27;s expectations and requirements.&quot;,
+    &quot;Using the Multiple Choice prompt technique with ChatGPT can help you generate limited text options effectively. Here’s how to implement this technique: 1. **Define the Context**: Start by clearly defining the context or topic you want to explore. This helps set the stage for the multiple-choice options. 2. **Create Clear Options**: Formulate a set of distinct and clear options that you want the model to choose from. Each option should be concise and relevant to the context. Aim for 3-5 options to keep it manageable. 3. **Use a Structured Prompt**: Structure your prompt to explicitly ask the model to choose from the provided options. You can phrase it like this: - Based on the following context, please choose the best option: [Context]. Options: A) [Option 1], B) [Option 2], C) [Option 3], D) [Option 4]. 4. **Encourage Elaboration**: If you want the model to provide reasoning or elaboration on the chosen option, you can add a follow-up request. For example: - Please choose the best option and explain why you chose it. 5. **Iterate if Necessary**: If the initial response doesn’t meet your expectations, you can refine your options or context and try again. This iterative process can help you hone in on the desired output. ### Example Here’s a practical example of how to use the Multiple Choice prompt technique: **Prompt**: Based on the following context, please choose the best option: &#x27;What is the most effective way to improve customer satisfaction in a retail store?&#x27; Options: A) Implementing a loyalty program, B) Reducing prices, C) Enhancing staff training, D) Increasing store hours.### Expected Output The model might respond with something like: I choose option C) Enhancing staff training because well-trained staff can provide better service, address customer concerns more effectively, and create a positive shopping experience, which ultimately leads to higher customer satisfaction.By using this technique, you can effectively limit the text generation options and guide the model towards producing focused and relevant responses.&quot;,
+    &quot;Combining seed-word prompting with other techniques in ChatGPT text generation can enhance the quality, relevance, and creativity of the generated content. Here are several reasons why this combination is beneficial: 1. **Enhanced Contextualization**: Seed-word prompting provides a specific starting point, while other techniques (like multiple-choice prompts or structured queries) can further refine the context. This leads to more coherent and contextually appropriate responses. 2. **Increased Relevance**: By using seed words alongside techniques like specifying the desired format or style, users can guide the model to produce outputs that are more aligned with their needs. This reduces the likelihood of irrelevant or off-topic content. 3. **Improved Creativity**: Combining seed words with brainstorming techniques or open-ended prompts can stimulate more creative responses. The seed words can serve as inspiration, while the other techniques encourage the model to explore various angles or ideas. 4. **Focused Output**: Techniques such as multiple-choice prompts can help narrow down the options for the model, while seed words set the thematic direction. This combination allows users to obtain focused outputs without overwhelming the model with too many possibilities. 5. **Structured Responses**: Using seed words in conjunction with structured prompts (like lists or outlines) can help organize the generated content. This is particularly useful for tasks that require clarity and structure, such as reports or summaries. 6. **Iterative Refinement**: Combining techniques allows for iterative refinement of the output. For example, a user can start with seed words, generate a response, and then use follow-up prompts to clarify or expand on specific points, leading to a more polished final product. 7. **Diverse Perspectives**: By integrating seed-word prompting with techniques that encourage exploration of different viewpoints (like asking for pros and cons), users can obtain a more comprehensive understanding of a topic. 8. **User Engagement**: Combining techniques can make the interaction more engaging for users. It allows for a more dynamic conversation where users can guide the model in real-time, leading to a more satisfying experience. In summary, combining seed-word prompting with other techniques in ChatGPT text generation creates a more powerful and flexible approach, enabling users to harness the model&#x27;s capabilities more effectively and achieve their desired outcomes.&quot;,
+    &quot;Role prompting is a technique where you assign a specific role or persona to ChatGPT to guide its output in a desired direction. When combined with other prompt engineering techniques, role prompting can enhance the quality and relevance of the generated text. Here’s how to effectively use role prompting alongside other techniques: ### Steps to Use Role Prompting with Other Techniques 1. **Define the Role**: Clearly specify the role you want ChatGPT to assume. This could be a professional (e.g., a doctor, teacher, or consultant), a character (e.g., a historical figure or fictional character), or a specific perspective (e.g., a skeptic or an enthusiast). 2. **Combine with Seed Words**: Use seed words to provide context for the role. For example: - As a financial advisor, please explain the benefits of investing in stocks. Seed words: &#x27;diversification&#x27;, &#x27;long-term growth&#x27;, &#x27;risk management&#x27;. 3. **Incorporate Multiple-Choice Prompts**: After establishing the role, you can present multiple-choice options to guide the response further. For example: - As a travel expert, choose the best destination for a family vacation from the following options: A) Disneyland, B) National Park, C) Beach Resort. Explain your choice. 4. **Use Structured Prompts**: Ask the model to respond in a specific format that aligns with the role. For instance: - As a nutritionist, provide a meal plan for a week. Format: Day 1: Breakfast, Lunch, Dinner. 5. **Encourage Elaboration**: After the initial response, prompt the model to elaborate on its answer. For example: - As a historian, summarize the causes of World War I and then discuss the long-term impacts. 6. **Iterative Refinement**: Use follow-up questions to refine the output. For example: - As a marketing strategist, what are three key strategies for social media marketing? Can you elaborate on the first one? 7. **Set Constraints**: Specify any constraints or limitations to guide the output more effectively. For example: - As a budget travel expert, suggest three affordable travel destinations for under $500. ### Example of Role Prompting Combined with Other Techniques **Prompt**: As a career coach, please provide advice for someone looking to transition into a tech career. Seed words: &#x27;skills&#x27;, &#x27;networking&#x27;, &#x27;resume&#x27;. Additionally, list three key steps to take in this transition. ### Expected Output The model might respond with: As a career coach, transitioning into a tech career involves several important steps. Here are three key steps to consider: 1. **Identify Transferable Skills**: Assess your current skills and see how they can apply to tech roles. Skills like problem-solving, communication, and project management are valuable in tech. 2. **Build a Network**: Connect with professionals in the tech industry through networking events, online forums, and social media platforms like LinkedIn. Networking can open doors to job opportunities and mentorship. 3. **Update Your Resume**: Tailor your resume to highlight relevant skills and experiences. Consider taking online courses or certifications to bolster your qualifications in specific tech areas.By using role prompting in conjunction with other prompt engineering techniques, you can effectively guide ChatGPT&#x27;s output to be more relevant, structured, and aligned with your specific needs. This approach enhances the interaction and helps achieve more satisfactory results.&quot;
+]
+
+# 创建数据字典
+ds_dict = {
+    &quot;question&quot;: questions,
+    &quot;contexts&quot;: contexts,
+    &quot;answer&quot;: chatbot_answers,
+    &quot;ground_truth&quot;: ground_truths
+}
+
+# 创建 Dataset 对象
+dataset = Dataset.from_dict(ds_dict)
+
+# 定义评估指标
+metrics = [
+    faithfulness,
+    answer_relevancy,
+    context_precision,
+    context_recall,
+]
+
+# 初始化评估用的LLM模型
+evaluator_llm = ChatOpenAI(model=&quot;gpt-4o-mini&quot;)
+
+# 进行评估
+result = evaluate(
+    metrics=metrics,
+    dataset=dataset,
+    llm=evaluator_llm,
+    embeddings=OpenAIEmbeddings(),
+)
+
+# 打印评估结果
+print(result)
+
+# 将结果转换为pandas DataFrame以进行更详细的分析
+result_df = result.to_pandas()
+print(result_df)
+
+</code></pre><p id="1093b313-aef4-8091-832d-f38bfc3ccd85" class="">
+</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1093b313-aef4-8062-93e9-f440f9361639" class="code"><code class="language-Python">import os
+from ragas.metrics import (
+    faithfulness,
+    answer_relevancy,
+    context_precision,
+    context_recall,
+)
+from ragas import evaluate
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from datasets import Dataset
+
+
+# 假设df是你之前生成的testset的DataFrame
+questions = df[&quot;question&quot;].tolist()
+contexts = df[&quot;contexts&quot;].tolist()
+ground_truths = df[&quot;ground_truth&quot;].tolist()
+
+# 假设这是chatbot的回答列表
+chatbot_answers = [
+    &quot;Customer reviews can be grouped into clusters based on sentiment using various techniques in natural language processing (NLP) and machine learning. Here’s a general approach to achieve this: 1. **Data Collection**: Gather customer reviews from various sources such as websites, social media, or surveys. 2. **Preprocessing**: Clean the text data by removing noise such as punctuation, special characters, and stop words. You may also want to convert all text to lowercase and perform stemming or lemmatization. 3. **Sentiment Analysis**: Use sentiment analysis techniques to classify the sentiment of each review. This can be done using: - **Lexicon-based methods**: Use predefined dictionaries of words associated with positive, negative, or neutral sentiments. - **Machine learning models**: Train models (e.g., logistic regression, support vector machines) on labeled datasets to classify sentiment. - **Deep learning models**: Use neural networks, such as LSTM or transformers (like BERT), for more nuanced sentiment analysis. 4. **Feature Extraction**: Convert the reviews into numerical representations. Common methods include: - **Bag of Words (BoW)**: Represents text as a frequency count of words. - **TF-IDF (Term Frequency-Inverse Document Frequency)**: Weighs the frequency of words by how common they are across all documents. - **Word Embeddings**: Use embeddings like Word2Vec or GloVe to capture semantic meaning. 5. **Clustering**: Apply clustering algorithms to group the reviews based on their sentiment scores and features. Common clustering techniques include: - **K-Means Clustering**: Partitions the data into K clusters based on feature similarity. - **Hierarchical Clustering**: Builds a tree of clusters based on distance metrics. - **DBSCAN**: Groups together points that are closely packed together, marking as outliers points that lie alone in low-density regions. 6. **Visualization**: Use visualization techniques such as t-SNE or PCA to reduce dimensionality and visualize the clusters for better interpretation. 7. **Analysis**: Analyze the clusters to understand the common themes or sentiments within each group. This can help in identifying customer satisfaction, dissatisfaction, and areas for improvement. By following these steps, customer reviews can be effectively grouped into clusters based on sentiment, providing valuable insights into customer opinions and experiences.&quot;,
+    &quot;Seed-word prompting in generating text with ChatGPT serves several important purposes: 1. **Guiding Context**: Seed words provide a starting point or context for the model, helping it understand the topic or theme that the user wants to explore. This can lead to more relevant and coherent responses. 2. **Focusing the Output**: By using specific seed words, users can direct the model to generate content that aligns with their interests or needs. This helps in narrowing down the scope of the generated text. 3. **Enhancing Creativity**: Seed words can inspire creative outputs by introducing specific concepts or ideas that the model can elaborate on. This can be particularly useful in creative writing, brainstorming, or generating unique content. 4. **Improving Relevance**: When seed words are used, the model is more likely to produce responses that are relevant to the user&#x27;s query. This reduces the chances of generating off-topic or unrelated content. 5. **Facilitating Structured Responses**: Seed words can help in structuring the response, especially in cases where a specific format or style is desired (e.g., lists, narratives, or technical explanations). 6. **Encouraging Specificity**: By providing seed words, users can encourage the model to focus on particular aspects of a topic, leading to more detailed and informative responses. Overall, seed-word prompting enhances the interaction between the user and the model, making the generated text more aligned with the user&#x27;s expectations and requirements.&quot;,
+    &quot;Using the Multiple Choice prompt technique with ChatGPT can help you generate limited text options effectively. Here’s how to implement this technique: 1. **Define the Context**: Start by clearly defining the context or topic you want to explore. This helps set the stage for the multiple-choice options. 2. **Create Clear Options**: Formulate a set of distinct and clear options that you want the model to choose from. Each option should be concise and relevant to the context. Aim for 3-5 options to keep it manageable. 3. **Use a Structured Prompt**: Structure your prompt to explicitly ask the model to choose from the provided options. You can phrase it like this: - Based on the following context, please choose the best option: [Context]. Options: A) [Option 1], B) [Option 2], C) [Option 3], D) [Option 4]. 4. **Encourage Elaboration**: If you want the model to provide reasoning or elaboration on the chosen option, you can add a follow-up request. For example: - Please choose the best option and explain why you chose it. 5. **Iterate if Necessary**: If the initial response doesn’t meet your expectations, you can refine your options or context and try again. This iterative process can help you hone in on the desired output. ### Example Here’s a practical example of how to use the Multiple Choice prompt technique: **Prompt**: Based on the following context, please choose the best option: &#x27;What is the most effective way to improve customer satisfaction in a retail store?&#x27; Options: A) Implementing a loyalty program, B) Reducing prices, C) Enhancing staff training, D) Increasing store hours.### Expected Output The model might respond with something like: I choose option C) Enhancing staff training because well-trained staff can provide better service, address customer concerns more effectively, and create a positive shopping experience, which ultimately leads to higher customer satisfaction.By using this technique, you can effectively limit the text generation options and guide the model towards producing focused and relevant responses.&quot;,
+    &quot;Combining seed-word prompting with other techniques in ChatGPT text generation can enhance the quality, relevance, and creativity of the generated content. Here are several reasons why this combination is beneficial: 1. **Enhanced Contextualization**: Seed-word prompting provides a specific starting point, while other techniques (like multiple-choice prompts or structured queries) can further refine the context. This leads to more coherent and contextually appropriate responses. 2. **Increased Relevance**: By using seed words alongside techniques like specifying the desired format or style, users can guide the model to produce outputs that are more aligned with their needs. This reduces the likelihood of irrelevant or off-topic content. 3. **Improved Creativity**: Combining seed words with brainstorming techniques or open-ended prompts can stimulate more creative responses. The seed words can serve as inspiration, while the other techniques encourage the model to explore various angles or ideas. 4. **Focused Output**: Techniques such as multiple-choice prompts can help narrow down the options for the model, while seed words set the thematic direction. This combination allows users to obtain focused outputs without overwhelming the model with too many possibilities. 5. **Structured Responses**: Using seed words in conjunction with structured prompts (like lists or outlines) can help organize the generated content. This is particularly useful for tasks that require clarity and structure, such as reports or summaries. 6. **Iterative Refinement**: Combining techniques allows for iterative refinement of the output. For example, a user can start with seed words, generate a response, and then use follow-up prompts to clarify or expand on specific points, leading to a more polished final product. 7. **Diverse Perspectives**: By integrating seed-word prompting with techniques that encourage exploration of different viewpoints (like asking for pros and cons), users can obtain a more comprehensive understanding of a topic. 8. **User Engagement**: Combining techniques can make the interaction more engaging for users. It allows for a more dynamic conversation where users can guide the model in real-time, leading to a more satisfying experience. In summary, combining seed-word prompting with other techniques in ChatGPT text generation creates a more powerful and flexible approach, enabling users to harness the model&#x27;s capabilities more effectively and achieve their desired outcomes.&quot;,
+    &quot;Role prompting is a technique where you assign a specific role or persona to ChatGPT to guide its output in a desired direction. When combined with other prompt engineering techniques, role prompting can enhance the quality and relevance of the generated text. Here’s how to effectively use role prompting alongside other techniques: ### Steps to Use Role Prompting with Other Techniques 1. **Define the Role**: Clearly specify the role you want ChatGPT to assume. This could be a professional (e.g., a doctor, teacher, or consultant), a character (e.g., a historical figure or fictional character), or a specific perspective (e.g., a skeptic or an enthusiast). 2. **Combine with Seed Words**: Use seed words to provide context for the role. For example: - As a financial advisor, please explain the benefits of investing in stocks. Seed words: &#x27;diversification&#x27;, &#x27;long-term growth&#x27;, &#x27;risk management&#x27;. 3. **Incorporate Multiple-Choice Prompts**: After establishing the role, you can present multiple-choice options to guide the response further. For example: - As a travel expert, choose the best destination for a family vacation from the following options: A) Disneyland, B) National Park, C) Beach Resort. Explain your choice. 4. **Use Structured Prompts**: Ask the model to respond in a specific format that aligns with the role. For instance: - As a nutritionist, provide a meal plan for a week. Format: Day 1: Breakfast, Lunch, Dinner. 5. **Encourage Elaboration**: After the initial response, prompt the model to elaborate on its answer. For example: - As a historian, summarize the causes of World War I and then discuss the long-term impacts. 6. **Iterative Refinement**: Use follow-up questions to refine the output. For example: - As a marketing strategist, what are three key strategies for social media marketing? Can you elaborate on the first one? 7. **Set Constraints**: Specify any constraints or limitations to guide the output more effectively. For example: - As a budget travel expert, suggest three affordable travel destinations for under $500. ### Example of Role Prompting Combined with Other Techniques **Prompt**: As a career coach, please provide advice for someone looking to transition into a tech career. Seed words: &#x27;skills&#x27;, &#x27;networking&#x27;, &#x27;resume&#x27;. Additionally, list three key steps to take in this transition. ### Expected Output The model might respond with: As a career coach, transitioning into a tech career involves several important steps. Here are three key steps to consider: 1. **Identify Transferable Skills**: Assess your current skills and see how they can apply to tech roles. Skills like problem-solving, communication, and project management are valuable in tech. 2. **Build a Network**: Connect with professionals in the tech industry through networking events, online forums, and social media platforms like LinkedIn. Networking can open doors to job opportunities and mentorship. 3. **Update Your Resume**: Tailor your resume to highlight relevant skills and experiences. Consider taking online courses or certifications to bolster your qualifications in specific tech areas.By using role prompting in conjunction with other prompt engineering techniques, you can effectively guide ChatGPT&#x27;s output to be more relevant, structured, and aligned with your specific needs. This approach enhances the interaction and helps achieve more satisfactory results.&quot;
+]
+
+# 创建数据字典并转换为Dataset对象
+dataset = Dataset.from_dict({
+    &quot;question&quot;: questions,
+    &quot;contexts&quot;: contexts,
+    &quot;answer&quot;: chatbot_answers,
+    &quot;ground_truth&quot;: ground_truths
+})
+
+# 定义评估指标
+metrics = [
+    faithfulness,
+    answer_relevancy,
+    context_precision,
+    context_recall,
+]
+
+# 初始化评估用的LLM模型
+evaluator_llm = ChatOpenAI(model=&quot;gpt-4o&quot;)
+
+try:
+    # 进行评估
+    result = evaluate(
+        metrics=metrics,
+        dataset=dataset,
+        llm=evaluator_llm,
+        embeddings=OpenAIEmbeddings(),
+    )
+
+    # 打印评估结果
+    print(result)
+
+    # 将结果转换为pandas DataFrame以进行更详细的分析
+    result_df = result.to_pandas()
+    print(result_df)
+
+except Exception as e:
+    print(f&quot;评估过程中出现错误: {e}&quot;)</code></pre><p id="1093b313-aef4-806e-ad85-d3e7c88fd2f0" class="">
+</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1093b313-aef4-8040-bf80-e7ecdb80fc6c" class="code"><code class="language-Python">from IPython.display import display, HTML
+
+
+# 定义一个函数来截断长文本
+def truncate_text(text, max_length=100):
+    return text if len(text) &lt;= max_length else text[:max_length] + &quot;...&quot;
+
+# 应用截断函数到特定列
+for col in [&#x27;question&#x27;, &#x27;contexts&#x27;, &#x27;answer&#x27;, &#x27;ground_truth&#x27;]:
+    result_df[col] = result_df[col].apply(lambda x: truncate_text(str(x), max_length=200))
+
+# 使用styler来改善显示
+styler = result_df.style.set_properties(**{&#x27;text-align&#x27;: &#x27;left&#x27;})
+styler = styler.set_table_styles([dict(selector=&#x27;th&#x27;, props=[(&#x27;text-align&#x27;, &#x27;left&#x27;)])])
+
+print(&quot;\nDetailed Results:&quot;)
+display(HTML(styler.to_html()))
+
+# 显示每一行的详细信息
+for index, row in result_df.iterrows():
+    print(f&quot;\nDetailed view of row {index + 1}:&quot;)
+    for col in result_df.columns:
+        print(f&quot;{col}:\n{row[col]}\n&quot;)
+
+
+</code></pre><p id="24a36df8-a4bf-443c-b096-a16e3310876a" class="">
+</p><p id="1093b313-aef4-80e6-bed5-c4f1f94b84f0" class="">
+</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
