@@ -1,0 +1,1353 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>OpenAI Swarm框架实战：3个案例带你掌握AI智能体开发，从天气查询到多表SQL，再到自动化编程工作流！</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-default_background {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(0, 0, 0, 0.06); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="11f3b313-aef4-80be-b25b-f1e35d0efc75" class="page sans"><header><h1 class="page-title">OpenAI Swarm框架实战：3个案例带你掌握AI智能体开发，从天气查询到多表SQL，再到自动化编程工作流！</h1><p class="page-description"></p></header><div class="page-body"><p id="11f3b313-aef4-805d-82cb-f044e7b6c168" class="">
+</p><h1 id="11f3b313-aef4-80cc-ba5b-ff7eda5ac831" class="">本篇笔记所对应的视频 <a href="https://youtu.be/ZzWt3wenMaE">https://youtu.be/ZzWt3wenMaE</a></h1><h1 id="11f3b313-aef4-80a8-b07e-c11805ece74a" class=""><strong>充值openai api key可以使用wildcard虚拟卡充值。wildcard官方链接：</strong></h1><p id="11f3b313-aef4-8066-bdf8-e23eee00fa10" class=""><a href="https://bewildcard.com/i/VLM">https://bewildcard.com/i/VLM</a></p><h1 id="11f3b313-aef4-8090-8ef9-e88dbb999304" class=""><strong>wildcard注册教程和充值API教程(国内打开速度快)：</strong></h1><p id="11f3b313-aef4-8082-ba44-f8a8d61501c5" class=""><a href="https://mp.weixin.qq.com/s?__biz=MzU0NDc2MzQ3MA==&amp;mid=2247484020&amp;idx=1&amp;sn=fee448a207cbf3b4ccda8a775f4fe946&amp;chksm=fb767955cc01f043b9e4a5ae926c2e68cefc0ee12af9df715eb632a90003784c45e2108470f1#rd">https://mp.weixin.qq.com/s?__biz=MzU0NDc2MzQ3MA==&amp;mid=2247484020&amp;idx=1&amp;sn=fee448a207cbf3b4ccda8a775f4fe946&amp;chksm=fb767955cc01f043b9e4a5ae926c2e68cefc0ee12af9df715eb632a90003784c45e2108470f1#rd</a></p><h1 id="11f3b313-aef4-80dd-9311-d092b0f9b367" class=""><strong>wildcard注册教程和充值API教程(海外打开速度快)：</strong></h1><p id="11f3b313-aef4-8013-8f86-f4d8e0cf8625" class=""><strong><a href="https://stoeng.medium.com/%E4%BF%9D%E5%A7%86%E7%BA%A7%E6%95%99%E7%A8%8B-%E9%80%9A%E8%BF%87wildcard%E8%99%9A%E6%8B%9F%E4%BF%A1%E7%94%A8%E5%8D%A1%E8%AE%A2%E9%98%85chatgpt-claude%E4%BC%9A%E5%91%98%E5%92%8Capi-%E7%99%BE%E5%88%86%E7%99%BE%E5%8F%AF%E7%94%A8-a2865a18df01">https://stoeng.medium.com/保姆级教程-通过wildcard虚拟信用卡订阅chatgpt-claude会员和api-百分百可用-a2865a18df01</a></strong></p><p id="11f3b313-aef4-8073-bbea-d0804be0cb2f" class="">
+</p><h2 id="11f3b313-aef4-807d-9caa-d9cf877661e3" class=""><strong>👉👉👉如有问题或者想进入会员交流群请联系我的徽信 stoeng</strong></h2><h2 id="11f3b313-aef4-8018-b333-c8e1103738b9" class=""><strong>🔥🔥🔥本项目代码由AI超元域频道制作，观看更多大模型微调视频请访问我的频道⬇</strong></h2><h3 id="11f3b313-aef4-80cd-a4ba-dc5f8fdfc771" class=""><strong>👉👉👉</strong><strong><a href="https://space.bilibili.com/3493277319825652">我的哔哩哔哩频道</a></strong></h3><h3 id="11f3b313-aef4-8090-a32d-c18c45077a12" class=""><strong>👉👉👉</strong><strong><a href="https://www.youtube.com/@AIsuperdomain">我的YouTube频道</a></strong></h3><h3 id="11f3b313-aef4-8047-8486-f089c0b5ff81" class=""><strong>👉👉👉我的开源项目 </strong><strong><a href="https://github.com/win4r/AISuperDomain">https://github.com/win4r/AISuperDomain</a></strong></h3><p id="11f3b313-aef4-80e3-bd71-d7c74bc54445" class="">
+</p><h1 id="11f3b313-aef4-8085-8101-f891e02a21e2" class="">视频中所用到的代码</h1><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="11f3b313-aef4-8056-a80f-ed65e97e00ea" class="code"><code class="language-Python">!pip install git+https://github.com/openai/swarm.git
+
+import os
+from google.colab import userdata
+os.environ[&quot;OPENAI_API_KEY&quot;]=userdata.get(&#x27;OPENAI_API_KEY&#x27;)
+
+
+
+import requests
+from swarm import Swarm, Agent
+
+def get_weather(latitude: float, longitude: float) -&gt; str:
+    &quot;&quot;&quot;
+    使用Open-Meteo API获取给定坐标的当前天气。
+
+    参数:
+    latitude (float): 纬度
+    longitude (float): 经度
+
+    返回:
+    str: 包含当前温度和风速的天气信息JSON字符串
+    &quot;&quot;&quot;
+    url = f&quot;https://api.open-meteo.com/v1/forecast?latitude={latitude}&amp;longitude={longitude}&amp;current=temperature_2m,wind_speed_10m&quot;
+    
+    response = requests.get(url)
+    if response.status_code == 200:
+        data = response.json()
+        current = data[&#x27;current&#x27;]
+        return str(current)  # 返回JSON字符串
+    else:
+        return &#x27;{&quot;error&quot;: &quot;无法获取天气数据&quot;}&#x27;
+
+def get_coordinates(location: str) -&gt; str:
+    &quot;&quot;&quot;
+    获取给定位置名称的坐标。
+
+    参数:
+    location (str): 位置名称
+
+    返回:
+    str: 包含纬度和经度的JSON字符串
+    &quot;&quot;&quot;
+    coordinates = {
+        &quot;纽约&quot;: (40.7128, -74.0060),
+        &quot;伦敦&quot;: (51.5074, -0.1278),
+        &quot;东京&quot;: (35.6762, 139.6503),
+        &quot;巴黎&quot;: (48.8566, 2.3522),
+        &quot;柏林&quot;: (52.5200, 13.4050)
+    }
+    lat, lon = coordinates.get(location.lower(), (0, 0))
+    return f&#x27;{{&quot;latitude&quot;: {lat}, &quot;longitude&quot;: {lon}}}&#x27;
+
+client = Swarm()
+
+weather_agent = Agent(
+    name=&quot;天气助手&quot;,
+    instructions=&quot;&quot;&quot;
+    你是一个有帮助的天气助手。当被问到特定位置的天气时：
+    1. 使用get_coordinates函数获取该位置的坐标。
+    2. 使用get_weather函数获取天气数据。
+    3. 解析返回的JSON数据，提供一个友好的回复，包含天气信息。
+    如果无法识别该位置，礼貌地通知用户并建议他们尝试一个主要城市。
+    &quot;&quot;&quot;,
+    functions=[get_coordinates, get_weather]
+)
+
+def run_weather_query(query: str) -&gt; str:
+    &quot;&quot;&quot;
+    运行天气查询并返回结果。
+
+    参数:
+    query (str): 用户的天气查询
+
+    返回:
+    str: Agent的响应
+    &quot;&quot;&quot;
+    messages = [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: query}]
+    response = client.run(agent=weather_agent, messages=messages)
+    return response.messages[-1][&quot;content&quot;]
+
+# 使用示例
+print(run_weather_query(&quot;纽约的天气怎么样？&quot;))
+print(run_weather_query(&quot;柏林的天气如何？&quot;))
+print(run_weather_query(&quot;巴黎的天气如何？&quot;))
+print(run_weather_query(&quot;伦敦的天气如何？&quot;))
+print(run_weather_query(&quot;东京的天气怎么样？&quot;))
+print(run_weather_query(&quot;告诉我小村庄的天气&quot;))
+
+
+
+
+
+from swarm import Swarm, Agent
+
+client = Swarm()
+
+# 模拟数据库
+accounts = {
+    123: {&quot;name&quot;: &quot;James&quot;, &quot;balance&quot;: 1000},
+    456: {&quot;name&quot;: &quot;Emma&quot;, &quot;balance&quot;: 1500},
+}
+
+def instructions(context_variables):
+    name = context_variables.get(&quot;name&quot;, &quot;User&quot;)
+    return f&quot;You are a helpful banking assistant. Greet {name} and assist with their banking needs.&quot;
+
+def check_balance(context_variables: dict):
+    user_id = context_variables.get(&quot;user_id&quot;)
+    if user_id in accounts:
+        return f&quot;Your current balance is ${accounts[user_id][&#x27;balance&#x27;]:.2f}&quot;
+    return &quot;Account not found.&quot;
+
+def deposit(context_variables: dict):
+    user_id = context_variables.get(&quot;user_id&quot;)
+    amount = context_variables.get(&quot;amount&quot;, 0)
+    if user_id in accounts and amount &gt; 0:
+        accounts[user_id][&#x27;balance&#x27;] += amount
+        return f&quot;Deposit of ${amount:.2f} successful. New balance is ${accounts[user_id][&#x27;balance&#x27;]:.2f}&quot;
+    return &quot;Deposit failed. Please check your account and amount.&quot;
+
+def withdraw(context_variables: dict):
+    user_id = context_variables.get(&quot;user_id&quot;)
+    amount = context_variables.get(&quot;amount&quot;, 0)
+    if user_id in accounts and 0 &lt; amount &lt;= accounts[user_id][&#x27;balance&#x27;]:
+        accounts[user_id][&#x27;balance&#x27;] -= amount
+        return f&quot;Withdrawal of ${amount:.2f} successful. New balance is ${accounts[user_id][&#x27;balance&#x27;]:.2f}&quot;
+    return &quot;Withdrawal failed. Please check your account and amount.&quot;
+
+agent = Agent(
+    name=&quot;BankingAgent&quot;,
+    instructions=instructions,
+    functions=[check_balance, deposit, withdraw],
+)
+
+def process_request(user_id, message):
+    context_variables = {&quot;user_id&quot;: user_id, &quot;name&quot;: accounts[user_id][&quot;name&quot;]}
+    response = client.run(
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: message}],
+        agent=agent,
+        context_variables=context_variables,
+    )
+    return response.messages[-1][&quot;content&quot;]
+
+# 示例使用
+user_id = 123
+print(process_request(user_id, &quot;Hi! What&#x27;s my current balance?&quot;))
+print(process_request(user_id, &quot;I&#x27;d like to deposit $500&quot;))
+context_variables = {&quot;user_id&quot;: user_id, &quot;amount&quot;: 500}
+print(deposit(context_variables))
+print(process_request(user_id, &quot;What&#x27;s my new balance?&quot;))
+print(process_request(user_id, &quot;I want to withdraw $200&quot;))
+context_variables = {&quot;user_id&quot;: user_id, &quot;amount&quot;: 200}
+print(withdraw(context_variables))
+print(process_request(user_id, &quot;What&#x27;s my final balance?&quot;))
+
+
+
+
+
+
+
+
+
+
+
+
+import sqlite3
+import re
+from swarm import Swarm, Agent
+from tabulate import tabulate
+
+# 初始化 Swarm 客户端
+client = Swarm()
+
+# 创建内存数据库连接
+conn = sqlite3.connect(&#x27;:memory:&#x27;)
+cursor = conn.cursor()
+
+# 创建员工表
+cursor.execute(&#x27;&#x27;&#x27;
+CREATE TABLE employees (
+    id INTEGER PRIMARY KEY,
+    name TEXT,
+    department TEXT,
+    salary REAL
+)
+&#x27;&#x27;&#x27;)
+
+# 插入20条示例数据
+employees = [
+    (1, &#x27;张伟&#x27;, &#x27;IT&#x27;, 75000),
+    (2, &#x27;王芳&#x27;, &#x27;HR&#x27;, 65000),
+    (3, &#x27;李斯&#x27;, &#x27;销售&#x27;, 80000),
+    (4, &#x27;赵辉&#x27;, &#x27;市场&#x27;, 70000),
+    (5, &#x27;陈明&#x27;, &#x27;IT&#x27;, 72000),
+    (6, &#x27;杨丽&#x27;, &#x27;HR&#x27;, 68000),
+    (7, &#x27;周浩&#x27;, &#x27;销售&#x27;, 82000),
+    (8, &#x27;吴娜&#x27;, &#x27;市场&#x27;, 71000),
+    (9, &#x27;刘洋&#x27;, &#x27;IT&#x27;, 76000),
+    (10, &#x27;孙琳&#x27;, &#x27;HR&#x27;, 67000),
+    (11, &#x27;朱峰&#x27;, &#x27;销售&#x27;, 81000),
+    (12, &#x27;徐婷&#x27;, &#x27;市场&#x27;, 72000),
+    (13, &#x27;郭震&#x27;, &#x27;IT&#x27;, 74000),
+    (14, &#x27;马梅&#x27;, &#x27;HR&#x27;, 66000),
+    (15, &#x27;胡勇&#x27;, &#x27;销售&#x27;, 83000),
+    (16, &#x27;林梅&#x27;, &#x27;市场&#x27;, 73000),
+    (17, &#x27;韩磊&#x27;, &#x27;IT&#x27;, 77000),
+    (18, &#x27;董芳&#x27;, &#x27;HR&#x27;, 69000),
+    (19, &#x27;萧峰&#x27;, &#x27;销售&#x27;, 84000),
+    (20, &#x27;沈丹&#x27;, &#x27;市场&#x27;, 74000)
+]
+cursor.executemany(&#x27;INSERT INTO employees VALUES (?,?,?,?)&#x27;, employees)
+conn.commit()
+
+def instructions(context_variables):
+    return &quot;&quot;&quot;你是一个能够将中文自然语言查询转换为SQL查询的AI助手。
+    数据库有一个名为&#x27;employees&#x27;的表，包含以下列：id, name, department, salary。
+    只返回SQL查询，不要包含任何其他文本或解释。支持复杂查询，如比较、排序和聚合函数。&quot;&quot;&quot;
+
+def clean_sql_query(sql_query):
+    &quot;&quot;&quot;清理SQL查询，移除可能的Markdown格式和多余空白&quot;&quot;&quot;
+    cleaned = re.sub(r&#x27;```sql\s*|\s*```&#x27;, &#x27;&#x27;, sql_query).strip()
+    return cleaned
+
+def execute_sql(sql_query):
+    &quot;&quot;&quot;执行SQL查询并返回结果&quot;&quot;&quot;
+    try:
+        cursor.execute(sql_query)
+        results = cursor.fetchall()
+        return results
+    except sqlite3.Error as e:
+        return f&quot;SQL错误: {e}&quot;
+
+def explain_query(sql_query):
+    &quot;&quot;&quot;提供更具体的SQL查询解释&quot;&quot;&quot;
+    parts = sql_query.upper().split()
+    explanation = &quot;这个查询&quot;
+    
+    if &#x27;SELECT&#x27; in parts:
+        select_index = parts.index(&#x27;SELECT&#x27;)
+        from_index = parts.index(&#x27;FROM&#x27;)
+        fields = &#x27;, &#x27;.join(parts[select_index+1:from_index]).lower()
+        table = parts[from_index+1].lower()
+        explanation += f&quot;从{table}表中获取{fields}&quot;
+    
+    if &#x27;WHERE&#x27; in parts:
+        where_index = parts.index(&#x27;WHERE&#x27;)
+        condition = &#x27; &#x27;.join(parts[where_index+1:]).lower()
+        explanation += f&quot;，条件是{condition}&quot;
+    
+    if &#x27;ORDER BY&#x27; in parts:
+        order_index = parts.index(&#x27;ORDER&#x27;)
+        order = &#x27; &#x27;.join(parts[order_index+2:]).lower()
+        explanation += f&quot;，结果按{order}排序&quot;
+    
+    if &#x27;LIMIT&#x27; in parts:
+        limit_index = parts.index(&#x27;LIMIT&#x27;)
+        limit = parts[limit_index+1]
+        explanation += f&quot;，只显示前{limit}条结果&quot;
+    
+    return explanation + &quot;。&quot;
+
+def format_results(results, sql_query):
+    &quot;&quot;&quot;格式化查询结果，添加上下文和单位&quot;&quot;&quot;
+    if not results or len(results) == 0:
+        return &quot;没有找到匹配的结果。&quot;
+    
+    if isinstance(results, str):  # 错误消息
+        return results
+    
+    headers = [description[0] for description in cursor.description]
+    
+    # 为薪水添加单位
+    if &#x27;salary&#x27; in headers:
+        salary_index = headers.index(&#x27;salary&#x27;)
+        results = [list(row) for row in results]
+        for row in results:
+            row[salary_index] = f&quot;{row[salary_index]}元&quot;
+    
+    formatted_results = tabulate(results, headers=headers, tablefmt=&quot;grid&quot;)
+    
+    # 添加结果上下文
+    if len(results) == 1 and &#x27;name&#x27; in headers and &#x27;salary&#x27; in headers:
+        name_index = headers.index(&#x27;name&#x27;)
+        salary_index = headers.index(&#x27;salary&#x27;)
+        context = f&quot;{results[0][name_index]}的薪水是{results[0][salary_index]}&quot;
+        return f&quot;{context}\n\n{formatted_results}&quot;
+    
+    return formatted_results
+
+agent = Agent(
+    name=&quot;SQLAgent&quot;,
+    instructions=instructions,
+)
+
+def process_query(natural_language_query):
+    &quot;&quot;&quot;处理自然语言查询，转换为SQL，执行并返回结果&quot;&quot;&quot;
+    # 使用 Swarm 将自然语言转换为 SQL
+    response = client.run(
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: natural_language_query}],
+        agent=agent,
+    )
+    sql_query = clean_sql_query(response.messages[-1][&quot;content&quot;])
+    
+    # 执行 SQL 查询
+    results = execute_sql(sql_query)
+    
+    # 获取查询解释
+    explanation = explain_query(sql_query)
+    
+    # 格式化结果
+    formatted_results = format_results(results, sql_query)
+    
+    return f&quot;SQL查询: {sql_query}\n解释: {explanation}\n结果:\n{formatted_results}&quot;
+
+# 主程序循环
+if __name__ == &quot;__main__&quot;:
+    print(&quot;欢迎使用text to SQL系统！代码由AI超元域原创&quot;)
+    print(&quot;输入 &#x27;exit&#x27; 或 &#x27;quit&#x27; 退出程序。&quot;)
+    print(&quot;本系统支持复杂查询，如比较、排序和聚合函数。&quot;)
+    
+    while True:
+        user_input = input(&quot;\n请输入您的查询 (或 &#x27;exit&#x27; 退出): &quot;)
+        if user_input.lower() in [&#x27;exit&#x27;, &#x27;quit&#x27;]:
+            print(&quot;谢谢使用，再见！&quot;)
+            break
+        
+        print(process_query(user_input))
+
+# 关闭数据库连接
+conn.close()
+
+
+
+
+
+
+
+
+
+
+
+import sqlite3
+import re
+from swarm import Swarm, Agent
+from tabulate import tabulate
+
+# 初始化 Swarm 客户端
+client = Swarm()
+
+# 创建内存数据库连接
+conn = sqlite3.connect(&#x27;:memory:&#x27;)
+cursor = conn.cursor()
+
+# 创建员工表
+cursor.execute(&#x27;&#x27;&#x27;
+CREATE TABLE employees (
+    id INTEGER PRIMARY KEY,
+    name TEXT,
+    department_id INTEGER,
+    salary REAL
+)
+&#x27;&#x27;&#x27;)
+
+# 创建部门表
+cursor.execute(&#x27;&#x27;&#x27;
+CREATE TABLE departments (
+    id INTEGER PRIMARY KEY,
+    name TEXT,
+    location TEXT
+)
+&#x27;&#x27;&#x27;)
+
+# 插入员工数据
+employees = [
+    (1, &#x27;张伟&#x27;, 1, 75000),
+    (2, &#x27;王芳&#x27;, 2, 65000),
+    (3, &#x27;李斯&#x27;, 3, 80000),
+    (4, &#x27;赵静&#x27;, 4, 70000),
+    (5, &#x27;陈明&#x27;, 1, 72000),
+    (6, &#x27;杨丽&#x27;, 2, 68000),
+    (7, &#x27;周浩&#x27;, 3, 82000),
+    (8, &#x27;吴娜&#x27;, 4, 71000),
+    (9, &#x27;刘洋&#x27;, 1, 76000),
+    (10, &#x27;孙琳&#x27;, 2, 67000)
+]
+cursor.executemany(&#x27;INSERT INTO employees VALUES (?,?,?,?)&#x27;, employees)
+
+# 插入部门数据
+departments = [
+    (1, &#x27;IT&#x27;, &#x27;北京&#x27;),
+    (2, &#x27;HR&#x27;, &#x27;上海&#x27;),
+    (3, &#x27;销售&#x27;, &#x27;广州&#x27;),
+    (4, &#x27;市场&#x27;, &#x27;深圳&#x27;)
+]
+cursor.executemany(&#x27;INSERT INTO departments VALUES (?,?,?)&#x27;, departments)
+
+conn.commit()
+
+def instructions(context_variables):
+    return &quot;&quot;&quot;你是一个能够将中文自然语言查询转换为SQL查询的AI助手。
+    数据库有两个表：
+    1. &#x27;employees&#x27;表，包含以下列：id, name, department_id, salary
+    2. &#x27;departments&#x27;表，包含以下列：id, name, location
+    只返回SQL查询，不要包含任何其他文本或解释。支持复杂查询，包括多表连接、比较、排序和聚合函数。&quot;&quot;&quot;
+
+def clean_sql_query(sql_query):
+    &quot;&quot;&quot;清理SQL查询，移除可能的Markdown格式和多余空白&quot;&quot;&quot;
+    cleaned = re.sub(r&#x27;```sql\s*|\s*```&#x27;, &#x27;&#x27;, sql_query).strip()
+    return cleaned
+
+def execute_sql(sql_query):
+    &quot;&quot;&quot;执行SQL查询并返回结果&quot;&quot;&quot;
+    try:
+        cursor.execute(sql_query)
+        results = cursor.fetchall()
+        return results
+    except sqlite3.Error as e:
+        return f&quot;SQL错误: {e}&quot;
+
+def explain_query(sql_query):
+    &quot;&quot;&quot;提供更具体的SQL查询解释，包括多表查询&quot;&quot;&quot;
+    parts = sql_query.upper().split()
+    explanation = &quot;这个查询&quot;
+    
+    if &#x27;SELECT&#x27; in parts:
+        select_index = parts.index(&#x27;SELECT&#x27;)
+        from_index = parts.index(&#x27;FROM&#x27;)
+        fields = &#x27;, &#x27;.join(parts[select_index+1:from_index]).lower()
+        tables = []
+        for i in range(from_index+1, len(parts)):
+            if parts[i] in [&#x27;WHERE&#x27;, &#x27;GROUP&#x27;, &#x27;ORDER&#x27;, &#x27;LIMIT&#x27;]:
+                break
+            if parts[i] not in [&#x27;JOIN&#x27;, &#x27;INNER&#x27;, &#x27;LEFT&#x27;, &#x27;RIGHT&#x27;, &#x27;FULL&#x27;, &#x27;ON&#x27;, &#x27;AND&#x27;]:
+                tables.append(parts[i].lower())
+        tables = &#x27;, &#x27;.join(tables)
+        explanation += f&quot;从{tables}表中获取{fields}&quot;
+    
+    if &#x27;JOIN&#x27; in parts:
+        explanation += &quot;，进行了表连接&quot;
+    
+    if &#x27;WHERE&#x27; in parts:
+        where_index = parts.index(&#x27;WHERE&#x27;)
+        condition = &#x27; &#x27;.join(parts[where_index+1:]).lower()
+        explanation += f&quot;，条件是{condition}&quot;
+    
+    if &#x27;GROUP BY&#x27; in parts:
+        group_index = parts.index(&#x27;GROUP&#x27;)
+        group = &#x27; &#x27;.join(parts[group_index+2:]).lower()
+        explanation += f&quot;，按{group}进行分组&quot;
+    
+    if &#x27;ORDER BY&#x27; in parts:
+        order_index = parts.index(&#x27;ORDER&#x27;)
+        order = &#x27; &#x27;.join(parts[order_index+2:]).lower()
+        explanation += f&quot;，结果按{order}排序&quot;
+    
+    if &#x27;LIMIT&#x27; in parts:
+        limit_index = parts.index(&#x27;LIMIT&#x27;)
+        limit = parts[limit_index+1]
+        explanation += f&quot;，只显示前{limit}条结果&quot;
+    
+    return explanation + &quot;。&quot;
+
+def format_results(results, sql_query):
+    &quot;&quot;&quot;格式化查询结果，添加上下文和单位&quot;&quot;&quot;
+    if not results or len(results) == 0:
+        return &quot;没有找到匹配的结果。&quot;
+    
+    if isinstance(results, str):  # 错误消息
+        return results
+    
+    headers = [description[0] for description in cursor.description]
+    
+    # 为薪水添加单位
+    if &#x27;salary&#x27; in headers:
+        salary_index = headers.index(&#x27;salary&#x27;)
+        results = [list(row) for row in results]
+        for row in results:
+            row[salary_index] = f&quot;{row[salary_index]}元&quot;
+    
+    formatted_results = tabulate(results, headers=headers, tablefmt=&quot;grid&quot;)
+    
+    return formatted_results
+
+agent = Agent(
+    name=&quot;SQLAgent&quot;,
+    instructions=instructions,
+)
+
+def process_query(natural_language_query):
+    &quot;&quot;&quot;处理自然语言查询，转换为SQL，执行并返回结果&quot;&quot;&quot;
+    # 使用 Swarm 将自然语言转换为 SQL
+    response = client.run(
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: natural_language_query}],
+        agent=agent,
+    )
+    sql_query = clean_sql_query(response.messages[-1][&quot;content&quot;])
+    
+    # 执行 SQL 查询
+    results = execute_sql(sql_query)
+    
+    # 获取查询解释
+    explanation = explain_query(sql_query)
+    
+    # 格式化结果
+    formatted_results = format_results(results, sql_query)
+    
+    return f&quot;SQL查询: {sql_query}\n解释: {explanation}\n结果:\n{formatted_results}&quot;
+
+# 主程序循环
+if __name__ == &quot;__main__&quot;:
+    print(&quot;欢迎使用支持多表查询的中文自然语言到SQL转换系统！&quot;)
+    print(&quot;输入 &#x27;exit&#x27; 或 &#x27;quit&#x27; 退出程序。&quot;)
+    print(&quot;本系统支持复杂查询，包括多表连接、比较、排序和聚合函数。&quot;)
+    
+    while True:
+        user_input = input(&quot;\n请输入您的查询 (或 &#x27;exit&#x27; 退出): &quot;)
+        if user_input.lower() in [&#x27;exit&#x27;, &#x27;quit&#x27;]:
+            print(&quot;谢谢使用，再见！&quot;)
+            break
+        
+        print(process_query(user_input))
+
+# 关闭数据库连接
+conn.close()
+
+
+
+
+
+
+
+
+
+from swarm import Swarm, Agent
+
+# 创建Swarm客户端实例
+client = Swarm()
+
+# 定义专门的agents
+
+# 需求分析agent
+requirements_agent = Agent(
+    name=&quot;Requirements Analysis Agent&quot;,
+    instructions=&quot;You are a requirements analysis specialist. Analyze user requirements and create a detailed specification.&quot;
+)
+
+# 设计agent
+design_agent = Agent(
+    name=&quot;Design Agent&quot;,
+    instructions=&quot;You are a software design specialist. Create a high-level design based on the requirements specification.&quot;
+)
+
+# 编码agent
+coding_agent = Agent(
+    name=&quot;Coding Agent&quot;,
+    instructions=&quot;You are a coding specialist. Implement the design in clean, efficient code.&quot;
+)
+
+# 测试agent
+testing_agent = Agent(
+    name=&quot;Testing Agent&quot;,
+    instructions=&quot;You are a software testing specialist. Review the code, identify potential bugs, and suggest improvements.&quot;
+)
+
+# 文档agent
+documentation_agent = Agent(
+    name=&quot;Documentation Agent&quot;,
+    instructions=&quot;You are a technical documentation specialist. Create clear and comprehensive documentation for the code.&quot;
+)
+
+def generate_code(user_requirement):
+    &quot;&quot;&quot;
+    多阶段代码生成函数
+    
+    参数:
+    user_requirement (str): 用户提供的功能需求
+    
+    返回:
+    dict: 包含需求规格、设计文档、代码和文档的字典
+    &quot;&quot;&quot;
+
+    # 阶段1：需求分析
+    req_response = client.run(
+        agent=requirements_agent,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Analyze these requirements: {user_requirement}&quot;}]
+    )
+    requirements_spec = req_response.messages[-1][&quot;content&quot;]
+
+    # 阶段2：设计
+    design_response = client.run(
+        agent=design_agent,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Create a design based on this specification: {requirements_spec}&quot;}]
+    )
+    design_doc = design_response.messages[-1][&quot;content&quot;]
+
+    # 阶段3：编码
+    coding_response = client.run(
+        agent=coding_agent,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Implement this design in code: {design_doc}&quot;}]
+    )
+    initial_code = coding_response.messages[-1][&quot;content&quot;]
+
+    # 阶段4：测试和优化
+    testing_response = client.run(
+        agent=testing_agent,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Review and suggest improvements for this code: {initial_code}&quot;}]
+    )
+    test_feedback = testing_response.messages[-1][&quot;content&quot;]
+
+    # 根据测试反馈进行代码优化
+    refinement_response = client.run(
+        agent=coding_agent,
+        messages=[
+            {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Refine the code based on this feedback: {test_feedback}&quot;},
+            {&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Original code: {initial_code}&quot;}
+        ]
+    )
+    refined_code = refinement_response.messages[-1][&quot;content&quot;]
+
+    # 阶段5：文档编写
+    doc_response = client.run(
+        agent=documentation_agent,
+        messages=[{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: f&quot;Create documentation for this code: {refined_code}&quot;}]
+    )
+    documentation = doc_response.messages[-1][&quot;content&quot;]
+     
+    # 返回包含所有生成内容的字典
+    return {
+        &quot;requirements&quot;: requirements_spec,
+        &quot;design&quot;: design_doc,
+        &quot;code&quot;: refined_code,
+        &quot;documentation&quot;: documentation
+    }
+
+# Example usage
+user_requirement = &quot;Create a Python function that calculates the Fibonacci sequence up to a given number, optimized for performance.&quot;
+result = generate_code(user_requirement)
+
+print(&quot;Generated Code:&quot;)
+print(result[&quot;code&quot;])
+print(&quot;\nDocumentation:&quot;)
+print(result[&quot;documentation&quot;])
+
+
+
+
+# 更新示例使用 - 贪吃蛇游戏
+user_requirement = &quot;&quot;&quot;
+创建一个简单的贪吃蛇游戏，具有以下功能：
+1. 使用Python的pygame库实现
+2. 游戏在一个固定大小的窗口中运行
+3. 蛇可以使用方向键控制移动
+4. 随机生成食物，蛇吃到食物后长度增加
+5. 当蛇撞到自己或边界时游戏结束
+6. 显示当前得分（蛇的长度）
+7. 实现基本的开始和结束界面
+请提供游戏的核心逻辑代码和必要的注释。
+&quot;&quot;&quot;
+
+result = generate_code(user_requirement)
+
+print(&quot;生成的贪吃蛇游戏代码:&quot;)
+print(result[&quot;code&quot;])
+print(&quot;\n游戏文档:&quot;)
+print(result[&quot;documentation&quot;])
+</code></pre></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
