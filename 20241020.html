@@ -1,0 +1,933 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>kotaemon vs Haystack，从UI界面到代码实现，企业级应用更得心应手</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-default_background {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(0, 0, 0, 0.06); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="1243b313-aef4-803d-b0a8-c1f50a7f307f" class="page sans"><header><h1 class="page-title"><strong>kotaemon vs Haystack，从UI界面到代码实现，企业级应用更得心应手</strong></h1><p class="page-description"></p></header><div class="page-body"><p id="1243b313-aef4-8031-8956-f19ff28e8552" class="">
+</p><p id="1243b313-aef4-806c-bb8d-d5f41cf28a67" class=""><a href="https://github.com/Cinnamon/kotaemon/tree/main">https://github.com/Cinnamon/kotaemon/tree/main</a></p><p id="1253b313-aef4-8026-b953-fc960eb8f720" class="">
+</p><h3 id="1243b313-aef4-80ab-be5a-de3a5b150421" class="">🔥安装<strong>kotaemon</strong></h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1243b313-aef4-80db-9f88-e7e90f05059c" class="code"><code class="language-Python">docker run \
+-e GRADIO_SERVER_NAME=0.0.0.0 \
+-e GRADIO_SERVER_PORT=7860 \
+-p 7860:7860 -it --rm \
+--platform linux/arm64 \
+ghcr.io/cinnamon/kotaemon:main-lite
+
+
+# Create a virtual environment
+python3.10 -m venv kotaemon_env
+
+# Activate the virtual environment
+# On Unix or MacOS, use:
+source kotaemon_env/bin/activate
+# On Windows, use:
+# kotaemon_env\Scripts\activate
+
+# Clone the repository
+git clone https://github.com/Cinnamon/kotaemon
+cd kotaemon
+
+# Install kotaemon and its dependencies
+pip install -e &quot;libs/kotaemon[all]&quot;
+pip install -e &quot;libs/ktem&quot;
+
+# When you&#x27;re done, you can deactivate the virtual environment
+# deactivate
+</code></pre><p id="1253b313-aef4-806e-acf9-d1b38c3105f9" class="">
+</p><h2 id="1253b313-aef4-8016-aea0-e481707ab26a" class=""><strong>👉👉👉如有问题或请联系我的徽信 stoeng</strong></h2><h2 id="1253b313-aef4-8011-8d10-dc11c2ae5143" class=""><strong>🔥🔥🔥本项目代码由AI超元域频道制作，观看更多大模型微调视频请访问我的频道⬇</strong></h2><h3 id="1253b313-aef4-8077-917f-d5c16414b68b" class=""><strong>👉👉👉</strong><strong><a href="https://space.bilibili.com/3493277319825652">我的哔哩哔哩频道</a></strong></h3><h3 id="1253b313-aef4-80f3-9983-dec8729de0f9" class=""><strong>👉👉👉</strong><strong><a href="https://www.youtube.com/@AIsuperdomain">我的YouTube频道</a></strong></h3><h3 id="1253b313-aef4-80d3-89cf-e8e66a0bb823" class=""><strong>👉👉👉我的开源项目 </strong><strong><a href="https://github.com/win4r/AISuperDomain">https://github.com/win4r/AISuperDomain</a></strong></h3><p id="1253b313-aef4-809e-8257-d6d67ed65c24" class="">
+</p><h3 id="1253b313-aef4-806a-a891-c35e139a4ff5" class=""><strong>充值openai api key或者ChatGPT会员可以使用wildcard虚拟卡充值。wildcard官方链接：</strong></h3><p id="1253b313-aef4-8073-8656-e56d7630fd38" class=""><a href="https://bewildcard.com/i/VLM">https://bewildcard.com/i/VLM</a></p><p id="1253b313-aef4-8004-8fbd-ff350e68145c" class="">
+</p><h3 id="1253b313-aef4-8027-8386-fc64b60c73ac" class=""><strong>wildcard注册教程和充值API教程(国内打开速度快)：</strong></h3><p id="1253b313-aef4-80c6-b44e-c1290caa5e6b" class=""><a href="https://mp.weixin.qq.com/s?__biz=MzU0NDc2MzQ3MA==&amp;mid=2247484020&amp;idx=1&amp;sn=fee448a207cbf3b4ccda8a775f4fe946&amp;chksm=fb767955cc01f043b9e4a5ae926c2e68cefc0ee12af9df715eb632a90003784c45e2108470f1#rd">https://mp.weixin.qq.com/s?__biz=MzU0NDc2MzQ3MA==&amp;mid=2247484020&amp;idx=1&amp;sn=fee448a207cbf3b4ccda8a775f4fe946&amp;chksm=fb767955cc01f043b9e4a5ae926c2e68cefc0ee12af9df715eb632a90003784c45e2108470f1#rd</a></p><p id="1253b313-aef4-806d-9bf2-f288847428d0" class="">
+</p><h3 id="1253b313-aef4-8033-a69f-f6e5d4b90069" class=""><strong>wildcard注册教程和充值API教程(海外打开速度快)：</strong></h3><p id="1253b313-aef4-80ad-a187-c75e006fa2c7" class=""><strong><a href="https://stoeng.medium.com/%E4%BF%9D%E5%A7%86%E7%BA%A7%E6%95%99%E7%A8%8B-%E9%80%9A%E8%BF%87wildcard%E8%99%9A%E6%8B%9F%E4%BF%A1%E7%94%A8%E5%8D%A1%E8%AE%A2%E9%98%85chatgpt-claude%E4%BC%9A%E5%91%98%E5%92%8Capi-%E7%99%BE%E5%88%86%E7%99%BE%E5%8F%AF%E7%94%A8-a2865a18df01">https://stoeng.medium.com/保姆级教程-通过wildcard虚拟信用卡订阅chatgpt-claude会员和api-百分百可用-a2865a18df01</a></strong></p><p id="1253b313-aef4-8007-ad3a-e8c65e793f4d" class="">
+</p><h3 id="1253b313-aef4-80f4-8631-c6132d2b59bf" class=""><strong>🔥kotaemon介绍</strong></h3><h3 id="1253b313-aef4-80c2-b7bd-c7ad7e42b744" class="">🚀Kotaemon 是一个开源的项目，专注于构建和使用基于检索增强生成（RAG）的管道，主要用于文档的问答任务。它提供了一个简洁的用户界面，允许用户通过混合检索（全文和向量检索相结合）在文档中进行高效查询，确保返回结果的高相关性。</h3><p id="1253b313-aef4-8073-9899-ce43e2f981aa" class="">
+</p><h3 id="1253b313-aef4-804d-b8bc-d3417b28ecca" class="">🚀Kotaemon 支持多个大语言模型（LLMs），包括来自 OpenAI 和 Azure 等提供商的 API，以及使用本地模型（如 llama-cpp-python）的能力。其主要功能包括支持多用户登录、管理私密和公共文档集合，并且能够组织和管理各种 LLM 和嵌入模型。</h3><p id="1253b313-aef4-808c-852b-d15ccb74f64d" class="">
+</p><h3 id="1253b313-aef4-8004-b48d-fe357f09d564" class="">🚀对于开发者，Kotaemon 提供了一个灵活的框架，能够轻松构建自定义的 RAG 管道，且集成了基于 Gradio 的交互式 UI，支持进一步的自定义。此外，该系统支持复杂推理功能，如问题分解、多跳问题推理等，并可通过 Docker 容器部署，简化安装和扩展。</h3><p id="1253b313-aef4-80bb-a106-dca99e9af551" class="">
+</p><p id="1253b313-aef4-8065-8db8-ff3f1d56701c" class="">
+</p><h3 id="1253b313-aef4-8083-9d01-ecc19dd27e73" class="">🔥Haystack介绍</h3><h3 id="1253b313-aef4-8024-9801-ea25e39e2509" class="">🚀Haystack 是一个开源的 AI 协作框架，旨在构建基于大型语言模型（LLM）的企业级应用程序。该框架非常适合构建检索增强生成（RAG）、问答系统、语义搜索和聊天机器人等应用。</h3><h3 id="1253b313-aef4-80e3-abae-f3eeaf5aa8a6" class="">🚀主要特点：</h3><ol type="1" id="1253b313-aef4-8007-abf2-db7bb1328629" class="numbered-list" start="1"><li><strong>模块化管道</strong>：Haystack 通过组合不同的组件，如检索器、生成器和文档存储，帮助开发者构建复杂的 AI 管道。每个组件可以根据具体需求进行自定义配置。</li></ol><ol type="1" id="1253b313-aef4-806d-a2b2-e1907eb4f4d8" class="numbered-list" start="2"><li><strong>技术无关性</strong>：Haystack 支持多种技术和模型集成，包括 OpenAI、Cohere、Hugging Face 等。用户可以根据不同的需求在各种模型和数据库之间灵活切换。</li></ol><ol type="1" id="1253b313-aef4-807d-a402-dfcd564a84d8" class="numbered-list" start="3"><li><strong>检索增强生成 (RAG) 和语义搜索</strong>：Haystack 擅长 RAG，检索器会根据查询获取相关文档，而 LLM 则生成上下文相关的答案。这个特性在客户支持、知识库等需要精确文档检索和生成答案的场景中非常有用。</li></ol><ol type="1" id="1253b313-aef4-80fd-b11b-c0ec1724a1d6" class="numbered-list" start="4"><li><strong>文档存储</strong>：Haystack 支持多种文档存储选项，如 Elasticsearch、FAISS 和 InMemoryDocumentStore，方便管理和快速检索大量数据。</li></ol><ol type="1" id="1253b313-aef4-80cb-92ca-c9b63dfd85b1" class="numbered-list" start="5"><li><strong>可扩展性</strong>：框架支持开发者创建自定义组件或与第三方服务集成，这使得 Haystack 适用于研究和企业级应用。</li></ol><p id="1253b313-aef4-80e7-a8ab-e238f74d63c8" class="">
+</p><p id="1253b313-aef4-80ea-894f-fea20c849811" class="">
+</p><h3 id="1253b313-aef4-80ac-a8c6-efe3e4877805" class="">Haystack代码</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1253b313-aef4-80cf-8614-ce28489257fe" class="code"><code class="language-Python">! pip install --upgrade --quiet pymilvus milvus-haystack markdown-it-py mdit_plain
+
+import os
+
+from google.colab import userdata
+
+
+os.environ[&quot;OPENAI_API_KEY&quot;] = userdata.get(&#x27;OPENAI_API_KEY&#x27;)
+
+
+import os
+import urllib.request
+
+url = &quot;https://raw.githubusercontent.com/win4r/mytest/refs/heads/main/book.txt&quot;
+file_path = &quot;./davinci.txt&quot;
+
+if not os.path.exists(file_path):
+    urllib.request.urlretrieve(url, file_path)
+    
+    
+from haystack import Pipeline
+from haystack.components.converters import MarkdownToDocument
+from haystack.components.embedders import OpenAIDocumentEmbedder, OpenAITextEmbedder
+from haystack.components.preprocessors import DocumentSplitter
+from haystack.components.writers import DocumentWriter
+from haystack.utils import Secret
+
+from milvus_haystack import MilvusDocumentStore
+from milvus_haystack.milvus_embedding_retriever import MilvusEmbeddingRetriever
+
+
+document_store = MilvusDocumentStore(
+    connection_args={&quot;uri&quot;: &quot;./milvus.db&quot;},
+    # connection_args={&quot;uri&quot;: &quot;http://localhost:19530&quot;},
+    # connection_args={&quot;uri&quot;: YOUR_ZILLIZ_CLOUD_URI, &quot;token&quot;: Secret.from_env_var(&quot;ZILLIZ_CLOUD_API_KEY&quot;)},
+    drop_old=True,
+)
+
+
+indexing_pipeline = Pipeline()
+indexing_pipeline.add_component(&quot;converter&quot;, MarkdownToDocument())
+indexing_pipeline.add_component(
+    &quot;splitter&quot;, DocumentSplitter(split_by=&quot;sentence&quot;, split_length=2)
+)
+indexing_pipeline.add_component(&quot;embedder&quot;, OpenAIDocumentEmbedder())
+indexing_pipeline.add_component(&quot;writer&quot;, DocumentWriter(document_store))
+indexing_pipeline.connect(&quot;converter&quot;, &quot;splitter&quot;)
+indexing_pipeline.connect(&quot;splitter&quot;, &quot;embedder&quot;)
+indexing_pipeline.connect(&quot;embedder&quot;, &quot;writer&quot;)
+indexing_pipeline.run({&quot;converter&quot;: {&quot;sources&quot;: [file_path]}})
+
+print(&quot;Number of documents:&quot;, document_store.count_documents())
+
+
+question = &#x27;Provide some examples of Seed-word Prompts&#x27;
+
+retrieval_pipeline = Pipeline()
+retrieval_pipeline.add_component(&quot;embedder&quot;, OpenAITextEmbedder())
+retrieval_pipeline.add_component(
+    &quot;retriever&quot;, MilvusEmbeddingRetriever(document_store=document_store, top_k=3)
+)
+retrieval_pipeline.connect(&quot;embedder&quot;, &quot;retriever&quot;)
+
+retrieval_results = retrieval_pipeline.run({&quot;embedder&quot;: {&quot;text&quot;: question}})
+
+for doc in retrieval_results[&quot;retriever&quot;][&quot;documents&quot;]:
+    print(doc.content)
+    print(&quot;-&quot; * 10)
+    
+from haystack.utils import Secret
+from haystack.components.builders import PromptBuilder
+from haystack.components.generators import OpenAIGenerator
+
+prompt_template = &quot;&quot;&quot;Answer the following query based on the provided context. If the context does
+                     not include an answer, reply with &#x27;I don&#x27;t know&#x27;.\n
+                     Query: {{query}}
+                     Documents:
+                     {% for doc in documents %}
+                        {{ doc.content }}
+                     {% endfor %}
+                     Answer:
+                  &quot;&quot;&quot;
+
+rag_pipeline = Pipeline()
+rag_pipeline.add_component(&quot;text_embedder&quot;, OpenAITextEmbedder())
+rag_pipeline.add_component(
+    &quot;retriever&quot;, MilvusEmbeddingRetriever(document_store=document_store, top_k=3)
+)
+rag_pipeline.add_component(&quot;prompt_builder&quot;, PromptBuilder(template=prompt_template))
+rag_pipeline.add_component(
+    &quot;generator&quot;,
+    OpenAIGenerator(
+        model=&quot;gpt-4o-mini&quot;,
+        api_key=Secret.from_token(os.environ[&quot;OPENAI_API_KEY&quot;]),
+        generation_kwargs={&quot;temperature&quot;: 0},
+    ),
+)
+rag_pipeline.connect(&quot;text_embedder.embedding&quot;, &quot;retriever.query_embedding&quot;)
+rag_pipeline.connect(&quot;retriever.documents&quot;, &quot;prompt_builder.documents&quot;)
+rag_pipeline.connect(&quot;prompt_builder&quot;, &quot;generator&quot;)
+
+results = rag_pipeline.run(
+    {
+        &quot;text_embedder&quot;: {&quot;text&quot;: question},
+        &quot;prompt_builder&quot;: {&quot;query&quot;: question},
+    }
+)
+print(&quot;RAG answer:&quot;, results[&quot;generator&quot;][&quot;replies&quot;][0])
+
+
+!pip install deepeval-haystack
+
+
+from haystack import Pipeline
+from haystack_integrations.components.evaluators.deepeval import DeepEvalEvaluator, DeepEvalMetric
+from tabulate import tabulate
+
+
+pipeline = Pipeline()
+evaluator = DeepEvalEvaluator(
+    metric=DeepEvalMetric.FAITHFULNESS,
+    metric_params={&quot;model&quot;: &quot;gpt-3.5-turbo-1106&quot;},
+)
+pipeline.add_component(&quot;evaluator&quot;, evaluator)
+
+
+
+results = pipeline.run({
+    &quot;evaluator&quot;: {
+        &quot;questions&quot;: [
+            &quot;When was the Rhodes Statue built?&quot;,
+            &quot;Where is the Pyramid of Giza located?&quot;,
+            &quot;Who wrote &#x27;To Kill a Mockingbird&#x27;?&quot;,
+            &quot;What is the capital of Japan?&quot;,
+            &quot;When did World War II end?&quot;,
+            &quot;What is the largest planet in our solar system?&quot;,
+            &quot;Who painted the Mona Lisa?&quot;,
+            &quot;What is the chemical symbol for gold?&quot;,
+            &quot;What year did the Titanic sink?&quot;,
+            &quot;Who is credited with inventing the telephone?&quot;
+        ],
+        &quot;contexts&quot;: [
+            [&quot;The Rhodes Statue, a memorial to Cecil John Rhodes, was erected in 1934 at the University of Cape Town. It was removed in 2015 following student protests.&quot;],
+            [&quot;The Great Pyramid of Giza is located on the Giza Plateau, on the west bank of the Nile River, on the outskirts of modern-day Cairo, Egypt.&quot;],
+            [&quot;&#x27;To Kill a Mockingbird&#x27; is a novel by Harper Lee published in 1960. It won the Pulitzer Prize and has become a classic of modern American literature.&quot;],
+            [&quot;Tokyo is the capital city of Japan. It became the official capital in 1868 when the Meiji Emperor moved his seat to the city from the old capital of Kyoto.&quot;],
+            [&quot;World War II ended in 1945. The war in Europe concluded on May 7, 1945, when German forces surrendered. The Pacific War ended on August 15, 1945, when Japan surrendered.&quot;],
+            [&quot;Jupiter is the largest planet in our solar system. It is a gas giant with a mass more than two and a half times that of all the other planets in the solar system combined.&quot;],
+            [&quot;The Mona Lisa was painted by the Italian Renaissance artist Leonardo da Vinci. It is believed to have been painted between 1503 and 1506, although Leonardo may have continued working on it until 1517.&quot;],
+            [&quot;The chemical symbol for gold is Au. This symbol comes from the Latin word for gold, &#x27;aurum&#x27;, which means &#x27;shining dawn&#x27;.&quot;],
+            [&quot;The RMS Titanic sank in the early morning hours of April 15, 1912, after striking an iceberg during her maiden voyage from Southampton to New York City.&quot;],
+            [&quot;Alexander Graham Bell is credited with inventing the telephone. He was granted the first U.S. patent for the telephone in 1876.&quot;]
+        ],
+        &quot;responses&quot;: [
+            &quot;The Rhodes Statue was built in 1934 at the University of Cape Town.&quot;,
+            &quot;The Pyramid of Giza is located in Egypt, near Cairo, on the west bank of the Nile River.&quot;,
+            &quot;To Kill a Mockingbird was written by Harper Lee.&quot;,
+            &quot;The capital of Japan is Tokyo.&quot;,
+            &quot;World War II ended in 1945, with Germany surrendering in May and Japan in August.&quot;,
+            &quot;Jupiter is the largest planet in our solar system.&quot;,
+            &quot;The Mona Lisa was painted by Leonardo da Vinci.&quot;,
+            &quot;The chemical symbol for gold is Au.&quot;,
+            &quot;The Titanic sank in 1912.&quot;,
+            &quot;Alexander Graham Bell invented the telephone.&quot;
+        ]
+    }
+})
+
+
+
+# Prepare data for tabulation
+table_data = []
+for i, evaluation in enumerate(results[&#x27;evaluator&#x27;][&#x27;results&#x27;], 1):
+    for result in evaluation:
+        table_data.append([
+            f&quot;Question {i}&quot;,
+            result[&#x27;name&#x27;],
+            result[&#x27;score&#x27;],
+            result[&#x27;explanation&#x27;]
+        ])
+
+# Print table
+print(&quot;\nEvaluation Results:&quot;)
+print(tabulate(table_data, headers=[&quot;Question&quot;, &quot;Metric&quot;, &quot;Score&quot;, &quot;Explanation&quot;], tablefmt=&quot;grid&quot;))
+
+
+
+
+from haystack.components.generators import OpenAIGenerator
+from haystack.utils import Secret
+import os
+
+client = OpenAIGenerator(model=&quot;gpt-4o-mini&quot;, api_key=Secret.from_token(os.environ[&quot;OPENAI_API_KEY&quot;]))
+response = client.run(&quot;tell me a joke.&quot;)
+print(response[&#x27;replies&#x27;][0])
+
+
+
+from haystack.components.generators import OpenAIGenerator
+from haystack.utils import Secret
+import os
+
+client = OpenAIGenerator(model=&quot;gpt-4o-mini&quot;, api_key=Secret.from_token(os.environ[&quot;OPENAI_API_KEY&quot;]),streaming_callback=lambda chunk: print(chunk.content, end=&quot;&quot;, flush=True))
+response = client.run(&quot;tell me a joke.&quot;)
+
+
+
+
+
+</code></pre></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
