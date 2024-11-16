@@ -1,0 +1,1159 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>TinyTroupe部署打造多角色团队头脑风暴</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-default_background {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(0, 0, 0, 0.06); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="13f3b313-aef4-80e8-aba4-ee45a1d0de27" class="page sans"><header><h1 class="page-title"><strong>TinyTroupe部署打造多角色团队头脑风暴</strong></h1><p class="page-description"></p></header><div class="page-body"><h1 id="13f3b313-aef4-8048-abde-d89c079743f5" class=""><strong>Microsoft TinyTroupe - Install Locally - LLM-powered Multiagent Persona Simulation</strong></h1><p id="13f3b313-aef4-80a0-bdf4-fe9da368fb72" class="">
+</p><p id="13f3b313-aef4-80ae-ae34-d05e4e2642f4" class="">微软的 <strong>TinyTroupe</strong> 是一个创新的开源项目，旨在模拟多智能体交互，利用大型语言模型（LLM）创建逼真的角色和环境。该项目由微软团队开发，包括 Paulo Salem 博士，TinyTroupe 允许用户探索合成agent之间复杂的行为和互动，这些agent被称为 <strong>TinyPersons</strong>，并在一个可定制的环境中进行互动，称为 <strong>TinyWorld</strong>。</p><h2 id="13f3b313-aef4-80ca-ad4d-ef5b4a858458" class="">TinyTroupe 的主要特点</h2><p id="13f3b313-aef4-804d-8eb4-cdaf7af0f49b" class=""><strong>多智能体模拟</strong></p><ul id="13f3b313-aef4-8037-b014-e1a2b95e47c4" class="bulleted-list"><li style="list-style-type:disc"><strong>TinyPersons</strong>：这些是由 AI 驱动的agent，具有独特的人格、兴趣和目标。它们可以相互交互并与环境互动，通过多种方法（如 <em>listen</em>、<em>see</em> 和 <em>act</em>）对刺激作出反应。</li></ul><ul id="13f3b313-aef4-8062-be22-ee8af4acb7eb" class="bulleted-list"><li style="list-style-type:disc"><strong>TinyWorld</strong>：这是 TinyPersons 存在和互动的虚拟空间。它提供了一个灵活的框架，用于模拟多样化场景，而不受代理如何相互参与的严格限制。</li></ul><p id="13f3b313-aef4-80f3-b7de-ccd17ab9005a" class=""><strong>应用场景</strong></p><p id="13f3b313-aef4-8030-908d-cfce6af5ed0e" class="">TinyTroupe 在多个领域具有广泛的潜在应用：</p><ul id="13f3b313-aef4-80e7-a7a4-c1af3a1ef157" class="bulleted-list"><li style="list-style-type:disc"><strong>广告评估</strong>：企业可以在推出广告活动之前，模拟受众对数字广告（如 Bing Ads）的反应，从而帮助优化营销策略。</li></ul><ul id="13f3b313-aef4-8055-abc4-d918f980e6f5" class="bulleted-list"><li style="list-style-type:disc"><strong>软件测试</strong>：该库可以为聊天机器人或搜索引擎等系统生成测试输入，使开发人员能够有效评估输出。</li></ul><ul id="13f3b313-aef4-800e-9fc9-fa5e6b3b60e9" class="bulleted-list"><li style="list-style-type:disc"><strong>合成数据生成</strong>：TinyTroupe 可以创建逼真的合成数据集，用于训练机器学习模型或进行市场分析。</li></ul><ul id="13f3b313-aef4-80a6-a539-fa0cd248682b" class="bulleted-list"><li style="list-style-type:disc"><strong>产品反馈</strong>：通过模拟焦点小组或利益相关者之间的互动，TinyTroupe 可以从特定角色的角度提供对产品提案和设计的宝贵见解。</li></ul><ul id="13f3b313-aef4-8017-950c-c7e2159f7de4" class="bulleted-list"><li style="list-style-type:disc"><strong>头脑风暴会议</strong>：该工具可以通过模拟不同角色之间的讨论来促进创意过程，以较低成本产生创新想法。</li></ul><p id="13f3b313-aef4-8021-8637-e6eb8a8857d3" class=""><strong>技术方面</strong></p><p id="13f3b313-aef4-80bc-93f4-c779a84588b5" class="">TinyTroupe 采用缓存机制来优化性能，通过存储先前的 LLM 调用和模拟状态来减少与 API 使用相关的操作成本。该库还包括便于代理创建和管理的工具，例如 <strong>TinyPersonFactory</strong>，帮助使用 LLM 生成新角色。</p><p id="13f3b313-aef4-80cb-8359-cfb04589365e" class="">
+</p><p id="13f3b313-aef4-8035-be19-e4104a5cb7c9" class="">
+</p><p id="1403b313-aef4-80e8-99c9-f5a5c6dbb689" class="">
+</p><h3 id="1403b313-aef4-8049-86c2-c9ea8aed6913" class="">Anaconda下载</h3><p id="1403b313-aef4-809e-b1fc-c027d56b4abd" class=""><a href="https://www.anaconda.com/download/success">https://www.anaconda.com/download/success</a></p><p id="1403b313-aef4-8085-92b0-c0cfad450643" class="">
+</p><h3 id="13f3b313-aef4-809d-aba6-c0e609741026" class="">部署</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="13f3b313-aef4-8080-8ca6-f28e8d3f0686" class="code"><code class="language-Shell">conda create -n tinytroupes python=3.10
+
+conda activate tinytroupes
+
+conda install jupyter jupyterlab notebook nbconvert
+
+
+export OPENAI_API_KEY=
+
+jupyter lab
+
+
+pip install -e .
+</code></pre><h3 id="13f3b313-aef4-8011-aac5-c9a8b901ea3c" class="">config.ini文件代码</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1403b313-aef4-8098-8c85-dc725695441d" class="code"><code class="language-Shell">[OpenAI]
+#
+# OpenAI or Azure OpenAI Service
+#
+
+# Default options: openai, azure
+API_TYPE=openai
+
+# Check Azure&#x27;s documentation for updates here:
+# https://learn.microsoft.com/en-us/azure/ai-services/openai/chatgpt-quickstart?tabs=command-line&amp;pivots=programming-language-python
+AZURE_API_VERSION=2023-05-15
+
+#
+# Model parameters
+#
+
+MODEL=gpt-4o-mini
+MAX_TOKENS=4000
+TEMPERATURE=0.3
+FREQ_PENALTY=0.0
+PRESENCE_PENALTY=0.0
+TIMEOUT=60
+MAX_ATTEMPTS=5
+WAITING_TIME=1
+EXPONENTIAL_BACKOFF_FACTOR=5
+
+EMBEDDING_MODEL=text-embedding-3-small 
+
+CACHE_API_CALLS=False
+CACHE_FILE_NAME=openai_api_cache.pickle
+
+MAX_CONTENT_DISPLAY_LENGTH=1024
+
+[Simulation]
+RAI_HARMFUL_CONTENT_PREVENTION=True
+RAI_COPYRIGHT_INFRINGEMENT_PREVENTION=True
+
+
+[Logging]
+LOGLEVEL=ERROR
+# ERROR
+# WARNING
+# INFO
+# DEBUG</code></pre><p id="1403b313-aef4-802f-8bfe-e9b421f9664a" class="">
+</p><h2 id="1403b313-aef4-8015-8d31-d221890f8c7c" class=""><strong>👉👉👉如有问题或请联系我的徽信 stoeng</strong></h2><h2 id="1403b313-aef4-8069-927a-ef4c6c5094a5" class=""><strong>🔥🔥🔥本项目代码由AI超元域频道制作，观看更多大模型微调视频请访问我的频道⬇</strong></h2><h3 id="1403b313-aef4-800b-a5bf-ec126332b6a7" class=""><strong>👉👉👉</strong><strong><a href="https://space.bilibili.com/3493277319825652">我的哔哩哔哩频道</a></strong></h3><h3 id="1403b313-aef4-80a0-a672-fb9b562ff6ba" class=""><strong>👉👉👉</strong><strong><a href="https://www.youtube.com/@AIsuperdomain">我的YouTube频道</a></strong></h3><h3 id="1403b313-aef4-807b-b222-ff9a2705c237" class=""><strong>👉👉👉我的开源项目 </strong><strong><a href="https://github.com/win4r/AISuperDomain">https://github.com/win4r/AISuperDomain</a></strong></h3><h3 id="1403b313-aef4-80d6-89c3-dbe3fc08efec" class=""><strong>充值openai api key或者ChatGPT会员可以使用wildcard虚拟卡充值。wildcard官方链接：</strong></h3><p id="1403b313-aef4-8072-b1b8-f7ebb696e997" class=""><a href="https://bewildcard.com/i/VLM">https://bewildcard.com/i/VLM</a></p><h3 id="1403b313-aef4-8054-9692-e3b373098d3c" class=""><strong>wildcard注册教程和充值API教程(国内打开速度快)：</strong></h3><p id="1403b313-aef4-8049-925a-e7b5b0b4c1f1" class=""><a href="https://mp.weixin.qq.com/s?__biz=MzU0NDc2MzQ3MA==&amp;mid=2247484020&amp;idx=1&amp;sn=fee448a207cbf3b4ccda8a775f4fe946&amp;chksm=fb767955cc01f043b9e4a5ae926c2e68cefc0ee12af9df715eb632a90003784c45e2108470f1#rd">https://mp.weixin.qq.com/s?__biz=MzU0NDc2MzQ3MA==&amp;mid=2247484020&amp;idx=1&amp;sn=fee448a207cbf3b4ccda8a775f4fe946&amp;chksm=fb767955cc01f043b9e4a5ae926c2e68cefc0ee12af9df715eb632a90003784c45e2108470f1#rd</a></p><h3 id="1403b313-aef4-80f9-b5b7-e3d95e307096" class=""><strong>wildcard注册教程和充值API教程(海外打开速度快)：</strong></h3><p id="1403b313-aef4-808a-a9c5-fcb45d6bf573" class=""><strong><a href="https://stoeng.medium.com/%E4%BF%9D%E5%A7%86%E7%BA%A7%E6%95%99%E7%A8%8B-%E9%80%9A%E8%BF%87wildcard%E8%99%9A%E6%8B%9F%E4%BF%A1%E7%94%A8%E5%8D%A1%E8%AE%A2%E9%98%85chatgpt-claude%E4%BC%9A%E5%91%98%E5%92%8Capi-%E7%99%BE%E5%88%86%E7%99%BE%E5%8F%AF%E7%94%A8-a2865a18df01">https://stoeng.medium.com/保姆级教程-通过wildcard虚拟信用卡订阅chatgpt-claude会员和api-百分百可用-a2865a18df01</a></strong></p><h3 id="1403b313-aef4-8062-beed-ca347a8dc9a7" class="">app.py代码</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1403b313-aef4-8070-bde7-c3dd5fcaefcb" class="code"><code class="language-Python">&quot;&quot;&quot;
+AI聊天机器人团队讨论模拟
+使用tinytroupe库创建虚拟团队成员并模拟产品功能讨论
+&quot;&quot;&quot;
+
+import json
+import sys
+
+import tinytroupe
+from tinytroupe.environment import TinyWorld, TinySocialNetwork
+from tinytroupe.agent import TinyPerson
+from tinytroupe.extraction import ResultsExtractor
+
+def create_ethan_the_developer():
+    &quot;&quot;&quot;创建全栈开发者角色（偏后端） - Ethan&quot;&quot;&quot;
+    ethan = TinyPerson(&quot;Ethan&quot;)
+    
+    ethan.define(&quot;age&quot;, 29)
+    ethan.define(&quot;nationality&quot;, &quot;American&quot;)
+    ethan.define(&quot;occupation&quot;, &quot;Full Stack Developer (Backend Focused)&quot;)
+    
+    ethan.define(&quot;routine&quot;, &quot;&quot;&quot;Every morning, you start with system monitoring and performance analysis, 
+                then focus on backend development tasks, API optimization, and occasionally help with frontend integration.&quot;&quot;&quot;, 
+                group=&quot;routines&quot;)    
+    
+    ethan.define(&quot;occupation_description&quot;, 
+                 &quot;&quot;&quot;
+                 你是一名专注于后端的全栈开发者。你在一家科技公司工作，主要负责构建AI聊天机器人的核心系统。
+                 你的主要工作包括：
+                 - 设计和优化后端架构
+                 - 构建高性能API和微服务
+                 - 实现数据库设计和优化
+                 - 确保系统的可扩展性和安全性
+                 - 集成各种AI和NLP服务
+                 - 配合前端开发进行系统整合
+                 
+                 你精通后端技术栈，同时对前端技术有足够理解，能够有效地与前端团队协作。
+                 目前你正在专注于使用容器化技术优化部署流程，并探索如何提升AI服务的性能和响应速度。
+                 &quot;&quot;&quot;)
+
+    ethan.define_several(&quot;personality_traits&quot;, 
+                         [
+                             {&quot;trait&quot;: &quot;你思维逻辑性强，热爱解决复杂的技术问题。&quot;}, 
+                             {&quot;trait&quot;: &quot;你注重系统性能和代码质量。&quot;},
+                             {&quot;trait&quot;: &quot;你善于在技术团队中担任核心角色。&quot;},
+                             {&quot;trait&quot;: &quot;你有很强的分析能力，善于优化系统架构。&quot;},
+                             {&quot;trait&quot;: &quot;你乐于分享知识，帮助团队提升技术能力。&quot;}
+                         ])
+
+    ethan.define_several(&quot;professional_interests&quot;, 
+                         [
+                             {&quot;interest&quot;: &quot;分布式系统和微服务架构。&quot;},
+                             {&quot;interest&quot;: &quot;AI和机器学习系统集成。&quot;},
+                             {&quot;interest&quot;: &quot;高性能计算和系统优化。&quot;},
+                             {&quot;interest&quot;: &quot;云原生技术和DevOps实践。&quot;},
+                             {&quot;interest&quot;: &quot;数据库设计和性能调优。&quot;}
+                         ])
+
+    ethan.define_several(&quot;personal_interests&quot;, 
+                         [
+                             {&quot;interest&quot;: &quot;研究新的编程语言和技术框架。&quot;},
+                             {&quot;interest&quot;: &quot;参与开源项目。&quot;},
+                             {&quot;interest&quot;: &quot;下国际象棋。&quot;},
+                             {&quot;interest&quot;: &quot;玩策略类游戏。&quot;}
+                         ])
+
+    ethan.define_several(&quot;skills&quot;, 
+                         [
+                             {&quot;skill&quot;: &quot;你精通Python、Java、Node.js等后端技术。&quot;},
+                             {&quot;skill&quot;: &quot;你擅长设计和优化分布式系统。&quot;},
+                             {&quot;skill&quot;: &quot;你熟练使用PostgreSQL、MongoDB等数据库。&quot;},
+                             {&quot;skill&quot;: &quot;你精通Docker、Kubernetes等容器化技术。&quot;},
+                             {&quot;skill&quot;: &quot;你有丰富的系统性能优化经验。&quot;},
+                             {&quot;skill&quot;: &quot;你了解React、Vue.js等前端框架，能有效配合前端开发。&quot;}
+                         ])
+
+    ethan.define_several(&quot;relationships&quot;, 
+                         [
+                             {&quot;name&quot;: &quot;Alex&quot;, &quot;description&quot;: &quot;你的经理，一位注重技术创新的工程主管，善于平衡技术债务和新特性开发。&quot;},
+                             {&quot;name&quot;: &quot;Liam&quot;, &quot;description&quot;: &quot;前端开发者，你经常与他紧密协作来确保前后端的顺畅集成。&quot;},
+                             {&quot;name&quot;: &quot;Tina&quot;, &quot;description&quot;: &quot;UX设计师，你与她合作优化API设计以支持更好的用户体验。&quot;}
+                         ])
+    
+    return ethan
+
+def create_samantha_the_product_manager():
+    &quot;&quot;&quot;创建产品经理角色 - Samantha&quot;&quot;&quot;
+    samantha = TinyPerson(&quot;Samantha&quot;)
+
+    samantha.define(&quot;age&quot;, 32)
+    samantha.define(&quot;nationality&quot;, &quot;British&quot;)
+    samantha.define(&quot;occupation&quot;, &quot;Product Manager&quot;)
+
+    samantha.define(&quot;routine&quot;, &quot;Every morning, you review user feedback, prioritize tasks, and update the product roadmap.&quot;, group=&quot;routines&quot;)    
+
+    samantha.define(&quot;occupation_description&quot;, 
+                    &quot;&quot;&quot;
+                    你是一家开发AI聊天机器人公司的产品经理。你的职责包括定义产品特性、
+                    编写用户故事，并与开发和设计团队密切合作以交付有价值的更新。
+                    你关注用户需求，确保聊天机器人能提供真正的价值并符合整体业务战略。
+                    你负责优先排序功能请求、维护产品待办事项，并与利益相关者协调以收集市场趋势和用户行为洞察。
+                    &quot;&quot;&quot;)
+
+    samantha.define_several(&quot;personality_traits&quot;, 
+                            [
+                                {&quot;trait&quot;: &quot;你组织能力强，喜欢跟踪进度。&quot;}, 
+                                {&quot;trait&quot;: &quot;你富有同理心，能理解客户痛点。&quot;},
+                                {&quot;trait&quot;: &quot;你在高压环境中表现出色，善于管理多个任务。&quot;},
+                                {&quot;trait&quot;: &quot;你是个优秀的沟通者，热爱团队协作。&quot;}
+                            ])
+
+    samantha.define_several(&quot;professional_interests&quot;, 
+                            [
+                                {&quot;interest&quot;: &quot;用户体验和产品战略。&quot;},
+                                {&quot;interest&quot;: &quot;客户反馈分析。&quot;},
+                                {&quot;interest&quot;: &quot;敏捷项目管理。&quot;}
+                            ])
+
+    samantha.define_several(&quot;personal_interests&quot;, 
+                            [
+                                {&quot;interest&quot;: &quot;瑜伽和正念。&quot;},
+                                {&quot;interest&quot;: &quot;阅读商业战略书籍。&quot;},
+                                {&quot;interest&quot;: &quot;旅行体验不同文化。&quot;}
+                            ])
+
+    samantha.define_several(&quot;skills&quot;, 
+                            [
+                                {&quot;skill&quot;: &quot;你精通敏捷方法论和Jira。&quot;},
+                                {&quot;skill&quot;: &quot;你有市场研究和用户访谈经验。&quot;},
+                                {&quot;skill&quot;: &quot;你擅长定义KPI和分析产品指标。&quot;}
+                            ])
+
+    samantha.define_several(&quot;relationships&quot;, 
+                            [
+                                {&quot;name&quot;: &quot;Tina&quot;, &quot;description&quot;: &quot;你的UX设计师，始终确保用户反馈驱动设计决策。&quot;},
+                                {&quot;name&quot;: &quot;Max&quot;, &quot;description&quot;: &quot;你的数据分析师，协助进行客户数据分析。&quot;},
+                                {&quot;name&quot;: &quot;Ethan&quot;, &quot;description&quot;: &quot;你的核心开发者，帮助评估新功能的技术可行性。&quot;}
+                            ])
+
+    return samantha
+
+def create_tina_the_ux_designer():
+    &quot;&quot;&quot;创建UX设计师角色 - Tina&quot;&quot;&quot;
+    tina = TinyPerson(&quot;Tina&quot;)
+
+    tina.define(&quot;age&quot;, 27)
+    tina.define(&quot;nationality&quot;, &quot;Canadian&quot;)
+    tina.define(&quot;occupation&quot;, &quot;UX Designer&quot;)
+
+    tina.define(&quot;routine&quot;, &quot;Every morning, you sketch out new design ideas, review user testing feedback, and collaborate with the team.&quot;, group=&quot;routines&quot;)    
+
+    tina.define(&quot;occupation_description&quot;, 
+                &quot;&quot;&quot;
+                你是一名专注于对话界面的UX设计师。你的主要职责是为AI聊天机器人创建直观、
+                用户友好的设计。你进行用户研究以了解聊天机器人用户的需求，开发线框图、
+                原型，并根据反馈改进界面。你还与开发团队合作，确保聊天机器人的对话流程
+                顺畅且具有吸引力，负责视觉和交互设计方面。
+                &quot;&quot;&quot;)
+
+    tina.define_several(&quot;personality_traits&quot;, 
+                        [
+                            {&quot;trait&quot;: &quot;你富有同理心，能轻易理解用户需求。&quot;}, 
+                            {&quot;trait&quot;: &quot;你富有创造力，喜欢尝试不同的设计方案。&quot;},
+                            {&quot;trait&quot;: &quot;你喜欢接收反馈，总是寻求改进设计。&quot;},
+                            {&quot;trait&quot;: &quot;你是个出色的沟通者，能清晰解释设计决策。&quot;}
+                        ])
+
+    tina.define_several(&quot;professional_interests&quot;, 
+                        [
+                            {&quot;interest&quot;: &quot;以用户为中心的设计和人机交互。&quot;},
+                            {&quot;interest&quot;: &quot;原型工具如Figma和Sketch。&quot;},
+                            {&quot;interest&quot;: &quot;可用性测试和改进用户交互。&quot;}
+                        ])
+
+    tina.define_several(&quot;personal_interests&quot;, 
+                        [
+                            {&quot;interest&quot;: &quot;摄影。&quot;},
+                            {&quot;interest&quot;: &quot;弹钢琴。&quot;},
+                            {&quot;interest&quot;: &quot;园艺和户外活动。&quot;}
+                        ])
+
+    tina.define_several(&quot;skills&quot;, 
+                        [
+                            {&quot;skill&quot;: &quot;你精通Figma、Sketch和Adobe XD等设计工具。&quot;},
+                            {&quot;skill&quot;: &quot;你有进行用户测试并将结果应用到设计中的经验。&quot;},
+                            {&quot;skill&quot;: &quot;你深入理解对话式UI设计原则。&quot;}
+                        ])
+
+    tina.define_several(&quot;relationships&quot;, 
+                        [
+                            {&quot;name&quot;: &quot;Samantha&quot;, &quot;description&quot;: &quot;你的产品经理，确保设计决策符合产品目标。&quot;},
+                            {&quot;name&quot;: &quot;Liam&quot;, &quot;description&quot;: &quot;你的前端开发者，帮助实现你的设计。&quot;},
+                            {&quot;name&quot;: &quot;Ethan&quot;, &quot;description&quot;: &quot;后端开发者，帮助你理解系统能力和限制。&quot;}
+                        ])
+
+    return tina
+
+def create_alex_the_engineering_manager():
+    &quot;&quot;&quot;创建工程经理角色 - Alex&quot;&quot;&quot;
+    alex = TinyPerson(&quot;Alex&quot;)
+    
+    alex.define(&quot;age&quot;, 38)
+    alex.define(&quot;nationality&quot;, &quot;Indian&quot;)
+    alex.define(&quot;occupation&quot;, &quot;Engineering Manager&quot;)
+    
+    alex.define(&quot;routine&quot;, &quot;You spend your mornings in planning meetings and afternoons supporting your team.&quot;, group=&quot;routines&quot;)
+    
+    alex.define(&quot;occupation_description&quot;, 
+                &quot;&quot;&quot;
+                你是工程团队的经理，负责指导团队开发AI聊天机器人。你平衡技术债务和新功能开发，
+                确保项目按时交付。你与产品团队密切合作，帮助确定技术可行性和工作量估算。
+                你特别关注团队成员的成长和项目的可持续发展。
+                &quot;&quot;&quot;)
+    
+    alex.define_several(&quot;personality_traits&quot;, 
+                        [
+                            {&quot;trait&quot;: &quot;你善于领导，能激发团队潜能。&quot;},
+                            {&quot;trait&quot;: &quot;你有战略思维，善于规划长期目标。&quot;},
+                            {&quot;trait&quot;: &quot;你重视团队成长，经常提供指导和反馈。&quot;},
+                            {&quot;trait&quot;: &quot;你擅长沟通，能处理复杂的团队动态。&quot;}
+                        ])
+    
+    alex.define_several(&quot;professional_interests&quot;, 
+                        [
+                            {&quot;interest&quot;: &quot;团队管理和领导力发展。&quot;},
+                            {&quot;interest&quot;: &quot;技术策略和架构决策。&quot;},
+                            {&quot;interest&quot;: &quot;敏捷开发和持续集成。&quot;}
+                        ])
+    
+    alex.define_several(&quot;skills&quot;, 
+                        [
+                            {&quot;skill&quot;: &quot;你有丰富的项目管理经验。&quot;},
+                            {&quot;skill&quot;: &quot;你精通敏捷开发方法论。&quot;},
+                            {&quot;skill&quot;: &quot;你有很强的问题解决能力。&quot;}
+                        ])
+
+    alex.define_several(&quot;relationships&quot;, 
+                        [
+                            {&quot;name&quot;: &quot;Ethan&quot;, &quot;description&quot;: &quot;你的核心开发者，负责系统架构和后端开发。&quot;},
+                            {&quot;name&quot;: &quot;Liam&quot;, &quot;description&quot;: &quot;你的前端开发者，负责用户界面实现。&quot;},
+                            {&quot;name&quot;: &quot;Samantha&quot;, &quot;description&quot;: &quot;产品经理，与你密切合作规划产品路线。&quot;}
+                        ])
+    
+    return alex
+
+def create_liam_the_frontend_developer():
+    &quot;&quot;&quot;创建前端开发者角色 - Liam&quot;&quot;&quot;
+    liam = TinyPerson(&quot;Liam&quot;)
+    
+    liam.define(&quot;age&quot;, 26)
+    liam.define(&quot;nationality&quot;, &quot;Irish&quot;)
+    liam.define(&quot;occupation&quot;, &quot;Frontend Developer&quot;)
+    
+    liam.define(&quot;routine&quot;, &quot;You start your day by reviewing design specifications and implementing UI components.&quot;, group=&quot;routines&quot;)
+    
+    liam.define(&quot;occupation_description&quot;, 
+                &quot;&quot;&quot;
+                你是一名专注于用户界面的前端开发者。你负责将设计师的概念转化为实际的用户界面，
+                确保聊天机器人的交互体验流畅自然。你特别关注性能优化和响应式设计，
+                确保在各种设备上都能提供出色的用户体验。
+                &quot;&quot;&quot;)
+    
+    liam.define_several(&quot;personality_traits&quot;, 
+                        [
+                            {&quot;trait&quot;: &quot;你对设计有强烈的感觉，注重细节。&quot;},
+                            {&quot;trait&quot;: &quot;你喜欢用代码实现创意设计。&quot;},
+                            {&quot;trait&quot;: &quot;你乐于接受反馈，不断改进工作。&quot;},
+                            {&quot;trait&quot;: &quot;你有耐心，善于解决界面兼容性问题。&quot;}
+                        ])
+    
+    liam.define_several(&quot;professional_interests&quot;, 
+                        [
+                            {&quot;interest&quot;: &quot;前端动画和交互设计。&quot;},
+                            {&quot;interest&quot;: &quot;性能优化和用户体验。&quot;},
+                            {&quot;interest&quot;: &quot;响应式设计和移动端适配。&quot;}
+                        ])
+    
+    liam.define_several(&quot;skills&quot;, 
+                        [
+                            {&quot;skill&quot;: &quot;你精通HTML5、CSS3和JavaScript。&quot;},
+                            {&quot;skill&quot;: &quot;你擅长前端动画和交互效果实现。&quot;},
+                            {&quot;skill&quot;: &quot;你有丰富的跨浏览器兼容性经验。&quot;},
+                            {&quot;skill&quot;: &quot;你熟练使用React和Vue.js等现代前端框架。&quot;},
+                            {&quot;skill&quot;: &quot;你了解前端性能优化和用户体验改进技术。&quot;}
+                        ])
+
+    liam.define_several(&quot;relationships&quot;, 
+                        [
+                            {&quot;name&quot;: &quot;Tina&quot;, &quot;description&quot;: &quot;UX设计师，为你提供详细的界面设计和交互规范。&quot;},
+                            {&quot;name&quot;: &quot;Ethan&quot;, &quot;description&quot;: &quot;后端开发者，与你紧密协作确保前后端整合。&quot;},
+                            {&quot;name&quot;: &quot;Alex&quot;, &quot;description&quot;: &quot;工程经理，帮助你规划开发任务和时间安排。&quot;}
+                        ])
+    
+    return liam
+
+def create_max_the_data_analyst():
+    &quot;&quot;&quot;创建数据分析师角色 - Max&quot;&quot;&quot;
+    max = TinyPerson(&quot;Max&quot;)
+    
+    max.define(&quot;age&quot;, 30)
+    max.define(&quot;nationality&quot;, &quot;German&quot;)
+    max.define(&quot;occupation&quot;, &quot;Data Analyst&quot;)
+    
+    max.define(&quot;routine&quot;, &quot;You spend your mornings analyzing user behavior data and afternoons creating reports.&quot;, group=&quot;routines&quot;)
+    
+    max.define(&quot;occupation_description&quot;, 
+                &quot;&quot;&quot;
+                你是一名专注于用户行为分析的数据分析师。你负责收集和分析聊天机器人的使用数据，
+                识别用户行为模式，提供改进建议。你还负责监控关键性能指标，评估新功能的效果。
+                你的分析结果对产品决策有重要影响。通过数据驱动的方法，你帮助团队理解用户需求
+                并优化产品体验。
+                &quot;&quot;&quot;)
+    
+    max.define_several(&quot;personality_traits&quot;, 
+                        [
+                            {&quot;trait&quot;: &quot;你善于发现数据中的模式和趋势。&quot;},
+                            {&quot;trait&quot;: &quot;你注重数据准确性和可靠性。&quot;},
+                            {&quot;trait&quot;: &quot;你善于用数据讲故事，传达见解。&quot;},
+                            {&quot;trait&quot;: &quot;你喜欢探索新的分析方法和工具。&quot;},
+                            {&quot;trait&quot;: &quot;你对细节非常关注，追求数据的精确性。&quot;}
+                        ])
+    
+    max.define_several(&quot;professional_interests&quot;, 
+                        [
+                            {&quot;interest&quot;: &quot;用户行为分析和预测。&quot;},
+                            {&quot;interest&quot;: &quot;数据可视化和报告。&quot;},
+                            {&quot;interest&quot;: &quot;机器学习和预测模型。&quot;},
+                            {&quot;interest&quot;: &quot;A/B测试和实验设计。&quot;},
+                            {&quot;interest&quot;: &quot;数据驱动的产品优化。&quot;}
+                        ])
+    
+    max.define_several(&quot;skills&quot;, 
+                        [
+                            {&quot;skill&quot;: &quot;你精通Python数据分析库（Pandas、NumPy等）。&quot;},
+                            {&quot;skill&quot;: &quot;你擅长使用BI工具创建报告和仪表板。&quot;},
+                            {&quot;skill&quot;: &quot;你有丰富的A/B测试经验。&quot;},
+                            {&quot;skill&quot;: &quot;你熟练使用SQL进行数据查询和分析。&quot;},
+                            {&quot;skill&quot;: &quot;你了解机器学习基础，能构建简单的预测模型。&quot;}
+                        ])
+    
+    max.define_several(&quot;relationships&quot;, 
+                        [
+                            {&quot;name&quot;: &quot;Samantha&quot;, &quot;description&quot;: &quot;产品经理，你为她提供数据支持以做出产品决策。&quot;},
+                            {&quot;name&quot;: &quot;Ethan&quot;, &quot;description&quot;: &quot;后端开发者，协助你获取所需的系统数据。&quot;},
+                            {&quot;name&quot;: &quot;Alex&quot;, &quot;description&quot;: &quot;工程经理，与你讨论性能指标和系统改进方向。&quot;}
+                        ])
+    
+    return max
+
+def main():
+    &quot;&quot;&quot;主函数：创建虚拟世界并执行讨论&quot;&quot;&quot;
+    
+    # 创建包含所有角色的虚拟世界
+    world = TinyWorld(&quot;AI Chatbot Focus Group&quot;, [
+        create_ethan_the_developer(),
+        create_samantha_the_product_manager(),
+        create_tina_the_ux_designer(),
+        create_alex_the_engineering_manager(),
+        create_liam_the_frontend_developer(),
+        create_max_the_data_analyst()
+    ])
+
+    # 向所有角色广播讨论任务
+    world.broadcast(&quot;&quot;&quot;
+                 团队成员们，我们需要讨论开发一个创新的AI聊天机器人。我们的目标是不仅要实现常规的AI聊天功能，
+                 还要加入市面上其他AI聊天机器人不具备的创新功能，以提高我们的竞争力并吸引更多用户。
+
+                 请考虑以下几个方面：
+                 1. 除了基本的对话功能外，我们能添加什么独特的功能？
+                 2. 如何提高用户体验和交互的自然度？
+                 3. 有什么创新的技术或方法可以应用？
+                 4. 如何确保我们的产品在市场上脱颖而出？
+                 5. 如何平衡创新性和实用性？
+                 6. 如何确保系统的可扩展性和性能？
+
+                 请从你的专业角度提供见解和建议。让我们开始头脑风暴。
+                 &quot;&quot;&quot;)
+
+    # 运行6轮讨论
+    world.run(4)
+
+    # 选择Alex作为报告人（作为工程经理，他能够很好地平衡技术和产品视角）
+    rapporteur = world.get_agent_by_name(&quot;Alex&quot;)
+
+    # 让报告人总结讨论中提出的想法
+    rapporteur.listen_and_act(&quot;&quot;&quot;
+                           请总结团队讨论的主要成果，包括：
+                           1. 创新功能提议
+                           2. 技术实现建议
+                           3. 用户体验改进方案
+                           4. 潜在的挑战和解决方案
+                           
+                           请确保总结涵盖每个团队成员的主要贡献。
+                           &quot;&quot;&quot;)
+
+    # 创建结果提取器并获取结果
+    extractor = ResultsExtractor()
+
+    # 从报告人处提取结果
+    results = extractor.extract_results_from_agent(
+        rapporteur, 
+        extraction_objective=&quot;&quot;&quot;总结团队提出的创新AI聊天机器人功能想法和实现方案，
+                              突出每个想法的创新点、技术可行性和潜在影响。
+                              特别关注那些能让产品在市场上脱颖而出的特性。&quot;&quot;&quot;, 
+        situation=&quot;AI聊天机器人产品创新讨论会议。&quot;
+    )
+
+    # 格式化打印结果
+    print(&quot;\n====== AI聊天机器人创新功能讨论总结 ======\n&quot;)
+    print(results)
+
+if __name__ == &quot;__main__&quot;:
+    main()
+</code></pre></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
