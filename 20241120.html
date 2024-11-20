@@ -1,0 +1,1507 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Mistral-Large-Instruct-2411 &amp; Pixtral-Large-Instruct-2411</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-default_background {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(0, 0, 0, 0.06); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="1443b313-aef4-802d-8900-fff2a2c2e414" class="page sans"><header><h1 class="page-title">Mistral-Large-Instruct-2411 &amp; Pixtral-Large-Instruct-2411</h1><p class="page-description"></p></header><div class="page-body"><p id="1443b313-aef4-8069-9087-e334f0bf4b29" class="">
+</p><h3 id="1443b313-aef4-80a0-8618-e93f442a981e" class=""></h3><p id="1443b313-aef4-8071-80e7-d26f10835013" class="">
+</p><p id="1443b313-aef4-809c-8045-c002a27e04d7" class="">
+</p><table id="1443b313-aef4-8041-85a3-ce04e4ad98f1" class="simple-table"><tbody><tr id="1443b313-aef4-8071-a851-f9bd02307623"><td id="nrfR" class="">Name</td><td id="VDM=" class="">Number of parameters</td><td id="ZZa&lt;" class="">Number of active parameters</td><td id="aSaO" class="">Min. GPU RAM for inference (GB)</td></tr><tr id="1443b313-aef4-8047-9c98-e4f737f68acb"><td id="nrfR" class="">Mistral-Large-Instruct-2411</td><td id="VDM=" class="">123B</td><td id="ZZa&lt;" class="">123B</td><td id="aSaO" class="">250</td></tr><tr id="1443b313-aef4-8005-8687-d226dffb513a"><td id="nrfR" class="">Pixtral-Large-Instruct-2411</td><td id="VDM=" class="">124B</td><td id="ZZa&lt;" class="">124B</td><td id="aSaO" class="">250</td></tr></tbody></table><p id="1443b313-aef4-8069-ba17-c56dbde21b73" class="">
+</p><p id="1443b313-aef4-8064-8ebd-da0ebe5e2a90" class="">
+</p><p id="1443b313-aef4-8011-a338-cda624afc02e" class="">
+</p><h3 id="1443b313-aef4-803f-b64b-ce6e2f4ff6b5" class="">LangFlow</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1443b313-aef4-8067-bf62-c184587e55fb" class="code"><code class="language-Python">python -m pip install langflow
+
+python -m langflow run
+</code></pre><h3 id="1443b313-aef4-8033-b585-c31dba3c8333" class="">API</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1443b313-aef4-8074-99f8-d4d2948e73d7" class="code"><code class="language-Python">curl --location &quot;https://api.mistral.ai/v1/chat/completions&quot; \
+     --header &#x27;Content-Type: application/json&#x27; \
+     --header &#x27;Accept: application/json&#x27; \
+     --header &quot;Authorization: Bearer $MISTRAL_API_KEY&quot; \
+     --data &#x27;{
+    &quot;model&quot;: &quot;mistral-large-latest&quot;,
+    &quot;messages&quot;: [{&quot;role&quot;: &quot;user&quot;, &quot;content&quot;: &quot;Who is the most renowned French painter?&quot;}]
+  }&#x27;</code></pre><p id="1443b313-aef4-80fa-9afd-de5274deb884" class="">
+</p><h3 id="1443b313-aef4-8094-a2fa-fdf9e8d7b89a" class="">API</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1443b313-aef4-8030-82e7-d3cf70cccca0" class="code"><code class="language-Python">!pip install mistralai
+
+from google.colab import userdata
+
+from mistralai import Mistral
+api_key = userdata.get(&#x27;MISTRAL_API_KEY&#x27;)
+
+
+model = &quot;mistral-large-latest&quot;
+
+client = Mistral(api_key=api_key)
+
+chat_response = client.chat.complete(
+    model=model,
+    messages=[{&quot;role&quot;:&quot;user&quot;, &quot;content&quot;:&quot;你的知识库/训练数据截止日期?&quot;}]
+)
+
+print(chat_response.choices[0].message.content)</code></pre><p id="1443b313-aef4-806a-b1dc-e4abaabbc6e5" class="">
+</p><h3 id="1443b313-aef4-80f8-8daf-ec911e316414" class="">代码</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1443b313-aef4-800b-b55b-c816961ebd01" class="code"><code class="language-Python">import os
+from mistralai import Mistral
+
+# Retrieve the API key from environment variables
+api_key = userdata.get(&#x27;MISTRAL_API_KEY&#x27;)
+
+# Specify model
+model = &quot;pixtral-large-latest&quot;
+
+# Initialize the Mistral client
+client = Mistral(api_key=api_key)
+
+# Define the messages for the chat
+messages = [
+    {
+        &quot;role&quot;: &quot;user&quot;,
+        &quot;content&quot;: [
+            {
+                &quot;type&quot;: &quot;text&quot;,
+                &quot;text&quot;: &quot;图中是否有一个穿着黑色无袖上衣、红色裤子的女性？如果有，请详细描述她的体貌特征(衣着、体态、肤色、发型、是否佩戴装饰品等)。&quot;
+                #  &quot;text&quot;: &quot;图中是否有一个穿着长袖的小男孩，看上去七八岁左右&quot;
+                # &quot;text&quot;: &quot;请详细描述图中每个人物的体貌特征。&quot;
+                
+
+            },
+            {
+                &quot;type&quot;: &quot;image_url&quot;,
+                &quot;image_url&quot;: &quot;https://cdn.pixabay.com/photo/2013/10/09/20/47/large-193357_1280.jpg&quot;
+            }
+        ]
+    }
+]
+
+# Get the chat response
+chat_response = client.chat.complete(
+    model=model,
+    messages=messages
+)
+
+# Print the content of the response
+print(chat_response.choices[0].message.content)
+</code></pre><h2 id="1443b313-aef4-808c-aec5-e1456cd2ac58" class=""><strong>👉👉👉如有问题或请联系我的徽信 stoeng</strong></h2><h2 id="1443b313-aef4-8068-b268-d66051ce30f2" class=""><strong>🔥🔥🔥本项目代码由AI超元域频道制作，观看更多大模型微调视频请访问我的频道⬇</strong></h2><h3 id="1443b313-aef4-80d3-ac48-fc59541af431" class=""><strong>👉👉👉</strong><strong><a href="https://space.bilibili.com/3493277319825652">我的哔哩哔哩频道</a></strong></h3><h3 id="1443b313-aef4-804a-9e7a-e61161aa9f72" class=""><strong>👉👉👉</strong><strong><a href="https://www.youtube.com/@AIsuperdomain">我的YouTube频道</a></strong></h3><h3 id="1443b313-aef4-8049-a52d-d230bc5ae122" class=""><strong>👉👉👉我的开源项目 </strong><strong><a href="https://github.com/win4r/AISuperDomain">https://github.com/win4r/AISuperDomain</a></strong></h3><h3 id="1443b313-aef4-80ae-a5d9-d58a1b3db295" class=""><strong>充值openai api key或者ChatGPT会员可以使用wildcard虚拟卡充值。wildcard官方链接：</strong></h3><p id="1443b313-aef4-80c1-b3b4-d125cfbc7fcf" class=""><a href="https://bewildcard.com/i/VLM">https://bewildcard.com/i/VLM</a></p><h3 id="1443b313-aef4-805e-bc9e-e34fad74d678" class=""><strong>wildcard注册教程和充值API教程(国内打开速度快)：</strong></h3><p id="1443b313-aef4-80c9-91e4-c2948c3f719b" class=""><a href="https://mp.weixin.qq.com/s?__biz=MzU0NDc2MzQ3MA==&amp;mid=2247484020&amp;idx=1&amp;sn=fee448a207cbf3b4ccda8a775f4fe946&amp;chksm=fb767955cc01f043b9e4a5ae926c2e68cefc0ee12af9df715eb632a90003784c45e2108470f1#rd">https://mp.weixin.qq.com/s?__biz=MzU0NDc2MzQ3MA==&amp;mid=2247484020&amp;idx=1&amp;sn=fee448a207cbf3b4ccda8a775f4fe946&amp;chksm=fb767955cc01f043b9e4a5ae926c2e68cefc0ee12af9df715eb632a90003784c45e2108470f1#rd</a></p><h3 id="1443b313-aef4-808f-8001-cbccdb0c425f" class=""><strong>wildcard注册教程和充值API教程(海外打开速度快)：</strong></h3><p id="1443b313-aef4-8053-95c1-fa29dc1f5fe9" class=""><strong><a href="https://stoeng.medium.com/%E4%BF%9D%E5%A7%86%E7%BA%A7%E6%95%99%E7%A8%8B-%E9%80%9A%E8%BF%87wildcard%E8%99%9A%E6%8B%9F%E4%BF%A1%E7%94%A8%E5%8D%A1%E8%AE%A2%E9%98%85chatgpt-claude%E4%BC%9A%E5%91%98%E5%92%8Capi-%E7%99%BE%E5%88%86%E7%99%BE%E5%8F%AF%E7%94%A8-a2865a18df01">https://stoeng.medium.com/保姆级教程-通过wildcard虚拟信用卡订阅chatgpt-claude会员和api-百分百可用-a2865a18df01</a></strong></p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1443b313-aef4-801d-8943-ff9bf1391bbf" class="code"><code class="language-Python">!pip install bert-score
+
+import torch
+from bert_score import BERTScorer
+
+def calculate_bertscore(references, candidates, model_type=&quot;bert-base-uncased&quot;, lang=&quot;en&quot;):
+    &quot;&quot;&quot;
+    使用BERTScore计算参考文本和候选文本之间的相似度
+
+    参数:
+    references: 参考文本列表
+    candidates: 候选（生成）文本列表
+    model_type: 使用的BERT模型类型
+    lang: 文本语言
+
+    返回:
+    包含精确度(P)、召回率(R)和F1分数的字典
+    &quot;&quot;&quot;
+    # 初始化BERTScorer
+    scorer = BERTScorer(model_type=model_type, lang=lang)
+
+    # 计算BERTScore
+    P, R, F1 = scorer.score(candidates, references)
+
+    # 转换为Python原生数据类型
+    P = P.tolist()
+    R = R.tolist()
+    F1 = F1.tolist()
+
+    return {
+        &quot;Precision&quot;: P,
+        &quot;Recall&quot;: R,
+        &quot;F1&quot;: F1
+    }
+
+# 示例使用
+references = [
+    &quot;The cat is sitting on the mat.&quot;,
+    &quot;A dog is playing in the park.&quot;
+]
+candidates = [
+    &quot;A feline is resting on a rug.&quot;,
+    &quot;A canine is running on grass in a park.&quot;
+]
+
+# 计算BERTScore
+results = calculate_bertscore(references, candidates)
+
+# 打印结果
+for i, (ref, cand) in enumerate(zip(references, candidates)):
+    print(f&quot;Example {i+1}:&quot;)
+    print(f&quot;Reference: {ref}&quot;)
+    print(f&quot;Candidate: {cand}&quot;)
+    print(f&quot;Precision: {results[&#x27;Precision&#x27;][i]:.4f}&quot;)
+    print(f&quot;Recall: {results[&#x27;Recall&#x27;][i]:.4f}&quot;)
+    print(f&quot;F1: {results[&#x27;F1&#x27;][i]:.4f}&quot;)
+    print()
+
+# 计算平均分数
+avg_precision = sum(results[&#x27;Precision&#x27;]) / len(results[&#x27;Precision&#x27;])
+avg_recall = sum(results[&#x27;Recall&#x27;]) / len(results[&#x27;Recall&#x27;])
+avg_f1 = sum(results[&#x27;F1&#x27;]) / len(results[&#x27;F1&#x27;])
+
+print(&quot;Average Scores:&quot;)
+print(f&quot;Precision: {avg_precision:.4f}&quot;)
+print(f&quot;Recall: {avg_recall:.4f}&quot;)
+print(f&quot;F1: {avg_f1:.4f}&quot;)</code></pre><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1443b313-aef4-8057-80bb-e3b31aa415e2" class="code"><code class="language-Python">import os
+from mistralai import Mistral
+import torch
+from bert_score import BERTScorer
+from typing import List, Dict, Union, Tuple
+from dataclasses import dataclass
+from datetime import datetime
+
+@dataclass
+class MatchDetails:
+    &quot;&quot;&quot;匹配详情数据类&quot;&quot;&quot;
+    score: float
+    threshold: float
+    difference: float
+    status: str
+    confidence: str
+
+class ImageSemanticAnalyzer:
+    def __init__(self, 
+                 api_key: str = None, 
+                 model_type: str = &quot;bert-base-chinese&quot;, 
+                 lang: str = &quot;zh&quot;,
+                 threshold: Dict[str, float] = None,
+                 log_results: bool = True):
+        &quot;&quot;&quot;
+        初始化图像语义分析器
+        
+        参数:
+        api_key: Mistral API密钥
+        model_type: BERT模型类型
+        lang: 文本语言
+        threshold: 匹配阈值字典
+        log_results: 是否记录分析结果
+        &quot;&quot;&quot;
+        self.threshold = threshold or {
+            &#x27;precision&#x27;: 0.7,
+            &#x27;recall&#x27;: 0.7,
+            &#x27;f1&#x27;: 0.7
+        }
+        
+        self.log_results = log_results
+        self.api_key = userdata.get(&#x27;MISTRAL_API_KEY&#x27;)
+        
+        if not self.api_key:
+            raise ValueError(
+                &quot;No API key provided. Please either pass the API key directly &quot;
+                &quot;or set the MISTRAL_API_KEY environment variable.&quot;
+            )
+        
+        try:
+            self.model = &quot;pixtral-large-latest&quot;
+            self.client = Mistral(api_key=self.api_key)
+            self.scorer = BERTScorer(model_type=model_type, lang=lang)
+        except Exception as e:
+            raise Exception(f&quot;Failed to initialize Mistral client: {str(e)}&quot;)
+    
+    def analyze_image(self, prompt: str, image_url: str) -&gt; str:
+        &quot;&quot;&quot;分析图像并返回AI的描述&quot;&quot;&quot;
+        try:
+            messages = [
+                {
+                    &quot;role&quot;: &quot;user&quot;,
+                    &quot;content&quot;: [
+                        {
+                            &quot;type&quot;: &quot;text&quot;,
+                            &quot;text&quot;: prompt
+                        },
+                        {
+                            &quot;type&quot;: &quot;image_url&quot;,
+                            &quot;image_url&quot;: image_url
+                        }
+                    ]
+                }
+            ]
+            
+            chat_response = self.client.chat.complete(
+                model=self.model,
+                messages=messages
+            )
+            
+            return chat_response.choices[0].message.content
+            
+        except Exception as e:
+            raise Exception(f&quot;Error during image analysis: {str(e)}&quot;)
+    
+    def calculate_semantic_similarity(self, 
+                                   prompt: str, 
+                                   ai_response: str) -&gt; Tuple[Dict[str, float], bool]:
+        &quot;&quot;&quot;计算语义相似度并判断是否匹配目标&quot;&quot;&quot;
+        try:
+            references = [prompt]
+            candidates = [ai_response]
+            
+            P, R, F1 = self.scorer.score(candidates, references)
+            
+            scores = {
+                &quot;Precision&quot;: P[0].item(),
+                &quot;Recall&quot;: R[0].item(),
+                &quot;F1&quot;: F1[0].item()
+            }
+            
+            is_match = (
+                scores[&quot;Precision&quot;] &gt;= self.threshold[&#x27;precision&#x27;] and
+                scores[&quot;Recall&quot;] &gt;= self.threshold[&#x27;recall&#x27;] and
+                scores[&quot;F1&quot;] &gt;= self.threshold[&#x27;f1&#x27;]
+            )
+            
+            return scores, is_match
+            
+        except Exception as e:
+            raise Exception(f&quot;Error calculating semantic similarity: {str(e)}&quot;)
+    
+    def analyze_match_details(self, similarity_scores: Dict[str, float]) -&gt; Dict[str, MatchDetails]:
+        &quot;&quot;&quot;分析匹配细节，提供每个指标的详细评估&quot;&quot;&quot;
+        analysis = {}
+        
+        for metric, score in similarity_scores.items():
+            threshold = self.threshold[metric.lower()]
+            difference = score - threshold
+            status = &quot;通过&quot; if score &gt;= threshold else &quot;未通过&quot;
+            confidence = self._calculate_confidence(difference)
+            
+            analysis[metric] = MatchDetails(
+                score=score,
+                threshold=threshold,
+                difference=difference,
+                status=status,
+                confidence=confidence
+            )
+        
+        return analysis
+    
+    def _calculate_confidence(self, difference: float) -&gt; str:
+        &quot;&quot;&quot;根据与阈值的差距计算置信度级别&quot;&quot;&quot;
+        if difference &gt;= 0.1:
+            return &quot;高&quot;
+        elif difference &gt;= 0.05:
+            return &quot;中&quot;
+        elif difference &gt;= 0:
+            return &quot;低&quot;
+        else:
+            return &quot;不满足&quot;
+    
+    def log_result(self, result: Dict) -&gt; None:
+        &quot;&quot;&quot;记录分析结果到文件&quot;&quot;&quot;
+        if not self.log_results:
+            return
+            
+        timestamp = datetime.now().strftime(&quot;%Y%m%d_%H%M%S&quot;)
+        filename = f&quot;analysis_log_{timestamp}.txt&quot;
+        
+        try:
+            with open(filename, &quot;w&quot;, encoding=&quot;utf-8&quot;) as f:
+                f.write(&quot;=== 图像分析结果 ===\n\n&quot;)
+                f.write(f&quot;时间: {timestamp}\n\n&quot;)
+                
+                f.write(&quot;AI响应:\n&quot;)
+                f.write(f&quot;{result[&#x27;ai_response&#x27;]}\n\n&quot;)
+                
+                f.write(&quot;语义相似度分数:\n&quot;)
+                for metric, score in result[&#x27;similarity_scores&#x27;].items():
+                    f.write(f&quot;{metric}: {score:.4f}\n&quot;)
+                
+                f.write(&quot;\n详细匹配分析:\n&quot;)
+                for metric, details in result[&#x27;match_analysis&#x27;].items():
+                    f.write(f&quot;\n{metric}分析:\n&quot;)
+                    f.write(f&quot;  得分: {details.score:.4f}\n&quot;)
+                    f.write(f&quot;  阈值: {details.threshold:.4f}\n&quot;)
+                    f.write(f&quot;  差距: {details.difference:.4f}\n&quot;)
+                    f.write(f&quot;  状态: {details.status}\n&quot;)
+                    f.write(f&quot;  置信度: {details.confidence}\n&quot;)
+                
+                f.write(&quot;\n目标匹配结果:\n&quot;)
+                f.write(f&quot;是否匹配目标: {&#x27;是&#x27; if result[&#x27;is_target_match&#x27;] else &#x27;否&#x27;}\n&quot;)
+                
+        except Exception as e:
+            print(f&quot;Warning: Failed to log results: {str(e)}&quot;)
+    
+    def analyze_and_evaluate(self, prompt: str, image_url: str) -&gt; Dict:
+        &quot;&quot;&quot;完整的分析流程：包含详细的匹配分析&quot;&quot;&quot;
+        try:
+            ai_response = self.analyze_image(prompt, image_url)
+            similarity_scores, is_match = self.calculate_semantic_similarity(prompt, ai_response)
+            match_analysis = self.analyze_match_details(similarity_scores)
+            
+            result = {
+                &quot;ai_response&quot;: ai_response,
+                &quot;similarity_scores&quot;: similarity_scores,
+                &quot;is_target_match&quot;: is_match,
+                &quot;match_analysis&quot;: match_analysis
+            }
+            
+            if self.log_results:
+                self.log_result(result)
+            
+            return result
+            
+        except Exception as e:
+            raise Exception(f&quot;Error in analysis and evaluation: {str(e)}&quot;)
+
+def format_analysis_result(result: Dict) -&gt; str:
+    &quot;&quot;&quot;格式化分析结果为易读的字符串&quot;&quot;&quot;
+    output = []
+    
+    output.append(&quot;AI响应:&quot;)
+    output.append(result[&quot;ai_response&quot;])
+    
+    output.append(&quot;\n语义相似度分数:&quot;)
+    for metric, score in result[&#x27;similarity_scores&#x27;].items():
+        output.append(f&quot;{metric}: {score:.4f}&quot;)
+    
+    output.append(&quot;\n详细匹配分析:&quot;)
+    for metric, details in result[&#x27;match_analysis&#x27;].items():
+        output.append(f&quot;\n{metric}分析:&quot;)
+        output.append(f&quot;  得分: {details.score:.4f}&quot;)
+        output.append(f&quot;  阈值: {details.threshold:.4f}&quot;)
+        output.append(f&quot;  差距: {details.difference:.4f}&quot;)
+        output.append(f&quot;  状态: {details.status}&quot;)
+        output.append(f&quot;  置信度: {details.confidence}&quot;)
+    
+    output.append(&quot;\n目标匹配结果:&quot;)
+    output.append(f&quot;是否匹配目标: {&#x27;是&#x27; if result[&#x27;is_target_match&#x27;] else &#x27;否&#x27;}&quot;)
+    
+    if result[&#x27;is_target_match&#x27;]:
+        output.append(&quot;目标匹配成功！&quot;)
+        min_confidence = min(
+            details.confidence 
+            for details in result[&#x27;match_analysis&#x27;].values()
+        )
+        output.append(f&quot;整体置信度: {min_confidence}&quot;)
+    else:
+        output.append(&quot;未达到匹配阈值，建议检查以下方面:&quot;)
+        failed_metrics = [
+            metric for metric, details in result[&#x27;match_analysis&#x27;].items()
+            if details.status == &quot;未通过&quot;
+        ]
+        output.extend([f&quot;  - {metric}&quot; for metric in failed_metrics])
+    
+    return &quot;\n&quot;.join(output)
+
+def main():
+    &quot;&quot;&quot;主函数：演示如何使用ImageSemanticAnalyzer&quot;&quot;&quot;
+    try:
+        # 设置自定义阈值
+        custom_threshold = {
+            &#x27;precision&#x27;: 0.7,
+            &#x27;recall&#x27;: 0.7,
+            &#x27;f1&#x27;: 0.7
+        }
+        
+        # 初始化分析器
+        api_key = &quot;your-api-key-here&quot;  # 替换为实际的API密钥
+        analyzer = ImageSemanticAnalyzer(
+            api_key=api_key, 
+            threshold=custom_threshold,
+            log_results=True  # 启用结果记录
+        )
+        
+        # 测试prompt和图片URL
+        prompt = &quot;图中是否有一个穿着黑色无袖上衣、红色裤子的女性？如果有，请详细描述她的体貌特征。&quot;
+        image_url = &quot;https://cdn.pixabay.com/photo/2013/10/09/20/47/large-193357_1280.jpg&quot;
+        
+        # 进行分析
+        result = analyzer.analyze_and_evaluate(prompt, image_url)
+        
+        # 格式化并打印结果
+        formatted_result = format_analysis_result(result)
+        print(formatted_result)
+        
+    except Exception as e:
+        print(f&quot;发生错误: {str(e)}&quot;)
+
+if __name__ == &quot;__main__&quot;:
+    main()</code></pre><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1443b313-aef4-8002-af0b-fdafb751708c" class="code"><code class="language-Python">!pip install mistralai torch bert-score matplotlib seaborn numpy
+
+import os
+from mistralai import Mistral
+import torch
+from bert_score import BERTScorer
+from typing import List, Dict, Union, Tuple
+from dataclasses import dataclass
+from datetime import datetime
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from pathlib import Path
+
+@dataclass
+class MatchDetails:
+    &quot;&quot;&quot;匹配详情数据类&quot;&quot;&quot;
+    score: float
+    threshold: float
+    difference: float
+    status: str
+    confidence: str
+
+class ImageSemanticAnalyzer:
+    def __init__(self, 
+                 api_key: str = None, 
+                 model_type: str = &quot;bert-base-chinese&quot;, 
+                 lang: str = &quot;zh&quot;,
+                 threshold: Dict[str, float] = None,
+                 log_results: bool = True,
+                 output_dir: str = &quot;analysis_results&quot;):
+        &quot;&quot;&quot;初始化图像语义分析器&quot;&quot;&quot;
+        self.threshold = threshold or {
+            &#x27;precision&#x27;: 0.7,
+            &#x27;recall&#x27;: 0.7,
+            &#x27;f1&#x27;: 0.7
+        }
+        
+        self.log_results = log_results
+        self.output_dir = Path(output_dir)
+        if log_results:
+            self.output_dir.mkdir(parents=True, exist_ok=True)
+            
+        self.api_key = userdata.get(&#x27;MISTRAL_API_KEY&#x27;)
+        if not self.api_key:
+            raise ValueError(
+                &quot;No API key provided. Please either pass the API key directly &quot;
+                &quot;or set the MISTRAL_API_KEY environment variable.&quot;
+            )
+        
+        try:
+            self.model = &quot;pixtral-large-latest&quot;
+            self.client = Mistral(api_key=self.api_key)
+            self.scorer = BERTScorer(model_type=model_type, lang=lang)
+            
+            # 设置matplotlib中文字体
+            plt.rcParams[&#x27;font.sans-serif&#x27;] = [&#x27;SimHei&#x27;]
+            plt.rcParams[&#x27;axes.unicode_minus&#x27;] = False
+            
+        except Exception as e:
+            raise Exception(f&quot;Failed to initialize Mistral client: {str(e)}&quot;)
+
+    def analyze_image(self, prompt: str, image_url: str) -&gt; str:
+        &quot;&quot;&quot;分析图像并返回AI的描述&quot;&quot;&quot;
+        try:
+            messages = [
+                {
+                    &quot;role&quot;: &quot;user&quot;,
+                    &quot;content&quot;: [
+                        {
+                            &quot;type&quot;: &quot;text&quot;,
+                            &quot;text&quot;: prompt
+                        },
+                        {
+                            &quot;type&quot;: &quot;image_url&quot;,
+                            &quot;image_url&quot;: image_url
+                        }
+                    ]
+                }
+            ]
+            
+            chat_response = self.client.chat.complete(
+                model=self.model,
+                messages=messages
+            )
+            
+            return chat_response.choices[0].message.content
+            
+        except Exception as e:
+            raise Exception(f&quot;Error during image analysis: {str(e)}&quot;)
+
+    def calculate_semantic_similarity(self, prompt: str, ai_response: str) -&gt; Tuple[Dict[str, float], bool]:
+        &quot;&quot;&quot;计算语义相似度并判断是否匹配目标&quot;&quot;&quot;
+        try:
+            references = [prompt]
+            candidates = [ai_response]
+            
+            P, R, F1 = self.scorer.score(candidates, references)
+            
+            scores = {
+                &quot;Precision&quot;: P[0].item(),
+                &quot;Recall&quot;: R[0].item(),
+                &quot;F1&quot;: F1[0].item()
+            }
+            
+            is_match = (
+                scores[&quot;Precision&quot;] &gt;= self.threshold[&#x27;precision&#x27;] and
+                scores[&quot;Recall&quot;] &gt;= self.threshold[&#x27;recall&#x27;] and
+                scores[&quot;F1&quot;] &gt;= self.threshold[&#x27;f1&#x27;]
+            )
+            
+            return scores, is_match
+            
+        except Exception as e:
+            raise Exception(f&quot;Error calculating semantic similarity: {str(e)}&quot;)
+
+    def analyze_match_details(self, similarity_scores: Dict[str, float]) -&gt; Dict[str, MatchDetails]:
+        &quot;&quot;&quot;分析匹配细节，提供每个指标的详细评估&quot;&quot;&quot;
+        analysis = {}
+        
+        for metric, score in similarity_scores.items():
+            threshold = self.threshold[metric.lower()]
+            difference = score - threshold
+            status = &quot;通过&quot; if score &gt;= threshold else &quot;未通过&quot;
+            confidence = self._calculate_confidence(difference)
+            
+            analysis[metric] = MatchDetails(
+                score=score,
+                threshold=threshold,
+                difference=difference,
+                status=status,
+                confidence=confidence
+            )
+        
+        return analysis
+
+    def _calculate_confidence(self, difference: float) -&gt; str:
+        &quot;&quot;&quot;根据与阈值的差距计算置信度级别&quot;&quot;&quot;
+        if difference &gt;= 0.1:
+            return &quot;高&quot;
+        elif difference &gt;= 0.05:
+            return &quot;中&quot;
+        elif difference &gt;= 0:
+            return &quot;低&quot;
+        else:
+            return &quot;不满足&quot;
+
+    def count_matched_features(self, ai_response: str, target_features: List[str]) -&gt; Dict[str, Union[int, float, List[str]]]:
+        &quot;&quot;&quot;计算目标特征的匹配数量&quot;&quot;&quot;
+        matched_features = []
+        total_features = len(target_features)
+        
+        for feature in target_features:
+            if feature.lower() in ai_response.lower():
+                matched_features.append(feature)
+        
+        match_count = len(matched_features)
+        match_rate = match_count / total_features if total_features &gt; 0 else 0
+        
+        return {
+            &quot;total_features&quot;: total_features,
+            &quot;matched_count&quot;: match_count,
+            &quot;match_rate&quot;: match_rate,
+            &quot;matched_features&quot;: matched_features,
+            &quot;unmatched_features&quot;: [f for f in target_features if f not in matched_features]
+        }
+
+    def visualize_results(self, result: Dict, timestamp: str) -&gt; str:
+        &quot;&quot;&quot;生成分析结果的可视化报告&quot;&quot;&quot;
+        plt.figure(figsize=(15, 10))
+        
+        # 1. 相似度分数条形图
+        plt.subplot(2, 2, 1)
+        scores = result[&#x27;similarity_scores&#x27;]
+        sns.barplot(x=list(scores.keys()), y=list(scores.values()))
+        plt.axhline(y=0.7, color=&#x27;r&#x27;, linestyle=&#x27;--&#x27;, label=&#x27;阈值&#x27;)
+        plt.title(&#x27;语义相似度分数&#x27;)
+        plt.ylim(0, 1)
+        
+        # 2. 置信度雷达图
+        metrics = list(result[&#x27;match_analysis&#x27;].keys())
+        confidence_map = {&#x27;高&#x27;: 3, &#x27;中&#x27;: 2, &#x27;低&#x27;: 1, &#x27;不满足&#x27;: 0}
+        confidence_scores = [confidence_map[result[&#x27;match_analysis&#x27;][m].confidence] for m in metrics]
+        
+        angles = np.linspace(0, 2*np.pi, len(metrics), endpoint=False)
+        confidence_scores.append(confidence_scores[0])
+        angles = np.concatenate((angles, [angles[0]]))
+        
+        ax = plt.subplot(2, 2, 2, projection=&#x27;polar&#x27;)
+        ax.plot(angles, confidence_scores)
+        ax.fill(angles, confidence_scores, alpha=0.25)
+        ax.set_xticks(angles[:-1])
+        ax.set_xticklabels(metrics)
+        plt.title(&#x27;置信度分布&#x27;)
+        
+        # 3. 特征匹配分析
+        if &#x27;feature_matches&#x27; in result:
+            plt.subplot(2, 2, 3)
+            match_data = result[&#x27;feature_matches&#x27;]
+            plt.pie([match_data[&#x27;matched_count&#x27;], 
+                    len(match_data[&#x27;unmatched_features&#x27;])],
+                   labels=[&#x27;已匹配&#x27;, &#x27;未匹配&#x27;],
+                   autopct=&#x27;%1.1f%%&#x27;)
+            plt.title(&#x27;特征匹配率&#x27;)
+        
+        # 保存结果
+        viz_path = self.output_dir / f&#x27;analysis_viz_{timestamp}.png&#x27;
+        plt.suptitle(f&#x27;图像分析结果可视化 - {timestamp}&#x27;)
+        plt.tight_layout()
+        plt.savefig(viz_path)
+        plt.close()
+        
+        return str(viz_path)
+
+    def log_result(self, result: Dict, timestamp: str) -&gt; str:
+        &quot;&quot;&quot;记录分析结果到文件&quot;&quot;&quot;
+        if not self.log_results:
+            return &quot;&quot;
+            
+        log_path = self.output_dir / f&#x27;analysis_log_{timestamp}.txt&#x27;
+        
+        try:
+            with open(log_path, &quot;w&quot;, encoding=&quot;utf-8&quot;) as f:
+                f.write(&quot;=== 图像分析结果 ===\n\n&quot;)
+                f.write(f&quot;时间: {timestamp}\n\n&quot;)
+                
+                f.write(&quot;AI响应:\n&quot;)
+                f.write(f&quot;{result[&#x27;ai_response&#x27;]}\n\n&quot;)
+                
+                f.write(&quot;语义相似度分数:\n&quot;)
+                for metric, score in result[&#x27;similarity_scores&#x27;].items():
+                    f.write(f&quot;{metric}: {score:.4f}\n&quot;)
+                
+                f.write(&quot;\n详细匹配分析:\n&quot;)
+                for metric, details in result[&#x27;match_analysis&#x27;].items():
+                    f.write(f&quot;\n{metric}分析:\n&quot;)
+                    f.write(f&quot;  得分: {details.score:.4f}\n&quot;)
+                    f.write(f&quot;  阈值: {details.threshold:.4f}\n&quot;)
+                    f.write(f&quot;  差距: {details.difference:.4f}\n&quot;)
+                    f.write(f&quot;  状态: {details.status}\n&quot;)
+                    f.write(f&quot;  置信度: {details.confidence}\n&quot;)
+                
+                if &#x27;feature_matches&#x27; in result:
+                    f.write(&quot;\n特征匹配分析:\n&quot;)
+                    feature_matches = result[&#x27;feature_matches&#x27;]
+                    f.write(f&quot;总特征数: {feature_matches[&#x27;total_features&#x27;]}\n&quot;)
+                    f.write(f&quot;已匹配数: {feature_matches[&#x27;matched_count&#x27;]}\n&quot;)
+                    f.write(f&quot;匹配率: {feature_matches[&#x27;match_rate&#x27;]*100:.1f}%\n&quot;)
+                    
+                    f.write(&quot;\n已匹配特征:\n&quot;)
+                    for feature in feature_matches[&#x27;matched_features&#x27;]:
+                        f.write(f&quot;- {feature}\n&quot;)
+                    
+                    f.write(&quot;\n未匹配特征:\n&quot;)
+                    for feature in feature_matches[&#x27;unmatched_features&#x27;]:
+                        f.write(f&quot;- {feature}\n&quot;)
+                
+                f.write(&quot;\n目标匹配结果:\n&quot;)
+                f.write(f&quot;是否匹配目标: {&#x27;是&#x27; if result[&#x27;is_target_match&#x27;] else &#x27;否&#x27;}\n&quot;)
+                
+            return str(log_path)
+                
+        except Exception as e:
+            print(f&quot;Warning: Failed to log results: {str(e)}&quot;)
+            return &quot;&quot;
+
+    def analyze_and_evaluate(self, prompt: str, image_url: str, target_features: List[str] = None) -&gt; Dict:
+        &quot;&quot;&quot;完整的分析流程：包含特征匹配和可视化&quot;&quot;&quot;
+        try:
+            # 基本分析
+            ai_response = self.analyze_image(prompt, image_url)
+            similarity_scores, is_match = self.calculate_semantic_similarity(prompt, ai_response)
+            match_analysis = self.analyze_match_details(similarity_scores)
+            
+            # 整合结果
+            result = {
+                &quot;ai_response&quot;: ai_response,
+                &quot;similarity_scores&quot;: similarity_scores,
+                &quot;is_target_match&quot;: is_match,
+                &quot;match_analysis&quot;: match_analysis
+            }
+            
+            # 特征匹配分析
+            if target_features:
+                result[&#x27;feature_matches&#x27;] = self.count_matched_features(
+                    ai_response, 
+                    target_features
+                )
+            
+            # 生成时间戳
+            timestamp = datetime.now().strftime(&quot;%Y%m%d_%H%M%S&quot;)
+            
+            # 记录和可视化
+            if self.log_results:
+                log_path = self.log_result(result, timestamp)
+                viz_path = self.visualize_results(result, timestamp)
+                result[&#x27;log_path&#x27;] = log_path
+                result[&#x27;visualization_path&#x27;] = viz_path
+            
+            return result
+            
+        except Exception as e:
+            raise Exception(f&quot;Error in analysis and evaluation: {str(e)}&quot;)
+
+def format_analysis_result(result: Dict) -&gt; str:
+    &quot;&quot;&quot;格式化分析结果为易读的字符串&quot;&quot;&quot;
+    output = []
+    
+    output.append(&quot;AI响应:&quot;)
+    output.append(result[&quot;ai_response&quot;])
+    
+    output.append(&quot;\n语义相似度分数:&quot;)
+    for metric, score in result[&#x27;similarity_scores&#x27;].items():
+        output.append(f&quot;{metric}: {score:.4f}&quot;)
+    
+    output.append(&quot;\n详细匹配分析:&quot;)
+    for metric, details in result[&#x27;match_analysis&#x27;].items():
+        output.append(f&quot;\n{metric}分析:&quot;)
+        output.append(f&quot;  得分: {details.score:.4f}&quot;)
+        output.append(f&quot;  阈值: {details.threshold:.4f}&quot;)
+        output.append(f&quot;  差距: {details.difference:.4f}&quot;)
+        output.append(f&quot;  状态: {details.status}&quot;)
+        output.append(f&quot;  置信度: {details.confidence}&quot;)
+    
+    if &#x27;feature_matches&#x27; in result:
+        feature_matches = result[&#x27;feature_matches&#x27;]
+        output.append(&quot;\n\n特征匹配分析:&quot;)
+        output.append(f&quot;总特征数: {feature_matches[&#x27;total_features&#x27;]}&quot;)
+        output.append(f&quot;已匹配数: {feature_matches[&#x27;matched_count&#x27;]}&quot;)
+        output.append(f&quot;匹配率: {feature_matches[&#x27;match_rate&#x27;]*100:.1f}%&quot;)
+        
+        output.append(&quot;\n已匹配特征:&quot;)
+        for feature in feature_matches[&#x27;matched_features&#x27;]:
+            output.append(f&quot;- {feature}&quot;)
+        
+        output.append(&quot;\n未匹配特征:&quot;)
+        for feature in feature_matches[&#x27;unmatched_features&#x27;]:
+            output.append(f&quot;- {feature}&quot;)
+    
+    output.append(&quot;\n目标匹配结果:&quot;)
+    output.append(f&quot;是否匹配目标: {&#x27;是&#x27; if result[&#x27;is_target_match&#x27;] else &#x27;否&#x27;}&quot;)
+    
+    if result[&#x27;is_target_match&#x27;]:
+        output.append(&quot;目标匹配成功！&quot;)
+        min_confidence = min(
+            details.confidence 
+            for details in result[&#x27;match_analysis&#x27;].values()
+        )
+        output.append(f&quot;整体置信度: {min_confidence}&quot;)
+    else:
+        output.append(&quot;未达到匹配阈值，建议检查以下方面:&quot;)
+        failed_metrics = [
+            metric for metric, details in result[&#x27;match_analysis&#x27;].items()
+            if details.status == &quot;未通过&quot;
+        ]
+        output.extend([f&quot;  - {metric}&quot; for metric in failed_metrics])
+    
+    if &#x27;log_path&#x27; in result:
+        output.append(f&quot;\n分析日志已保存至: {result[&#x27;log_path&#x27;]}&quot;)
+    if &#x27;visualization_path&#x27; in result:
+        output.append(f&quot;可视化结果已保存至: {result[&#x27;visualization_path&#x27;]}&quot;)
+    
+    return &quot;\n&quot;.join(output)
+
+def main():
+    try:
+        # 设置自定义阈值
+        custom_threshold = {
+            &#x27;precision&#x27;: 0.7,
+            &#x27;recall&#x27;: 0.7,
+            &#x27;f1&#x27;: 0.7
+        }
+        
+        # 定义输出目录
+        output_dir = &quot;analysis_results&quot;
+        
+        # 初始化分析器（使用环境变量中的API密钥）
+        analyzer = ImageSemanticAnalyzer(
+            threshold=custom_threshold,
+            log_results=True,
+            output_dir=output_dir
+        )
+        
+        # 定义目标特征列表
+        target_features = [
+            &quot;黑色无袖上衣&quot;,
+            &quot;红色裤子&quot;,
+            &quot;深色头发&quot;,
+            &quot;发髻&quot;,
+            &quot;棕色包&quot;,
+            &quot;浅色鞋子&quot;
+        ]
+        
+        # 测试prompt和图片URL
+        prompt = &quot;图中是否有一个穿着黑色无袖上衣、红色裤子的女性？如果有，请详细描述她的体貌特征。&quot;
+        image_url = &quot;https://cdn.pixabay.com/photo/2013/10/09/20/47/large-193357_1280.jpg&quot;
+        
+        # 进行分析
+        result = analyzer.analyze_and_evaluate(prompt, image_url, target_features)
+        
+        # 格式化并打印结果
+        formatted_result = format_analysis_result(result)
+        print(formatted_result)
+        
+    except Exception as e:
+        print(f&quot;发生错误: {str(e)}&quot;)
+
+if __name__ == &quot;__main__&quot;:
+    main()</code></pre></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
