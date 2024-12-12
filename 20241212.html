@@ -1,0 +1,1221 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Gemini 2.0震撼发布遭遇滑铁卢！能否击败Claude3.5？逻辑推理到算法实现的全面测试！gemini-exp-1206+LlamaIndex实现Text to SQL多表联合查询！含完整源码</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	padding-inline-start: 0;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.page-description {
+    margin-bottom: 2em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-default_background {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-default_background {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+.select-value-color-translucentGray { background-color: rgba(0, 0, 0, 0.06); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+.select-value-color-pageGlass { background-color: undefined; }
+.select-value-color-washGlass { background-color: undefined; }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="15a3b313-aef4-8079-a71a-ec600ba131d2" class="page sans"><header><h1 class="page-title">Gemini 2.0震撼发布遭遇滑铁卢！能否击败Claude3.5？逻辑推理到算法实现的全面测试！gemini-exp-1206+LlamaIndex实现Text to SQL多表联合查询！含完整源码</h1><p class="page-description"></p></header><div class="page-body"><p id="15a3b313-aef4-8031-a295-c6e3b9a6574c" class="">
+</p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="15a3b313-aef4-8096-9bbc-ca19170d23fd" class="code"><code class="language-JavaScript">使用unsloth微调llama3，请给出完整代码
+
+用python实现赛博朋克风格的贪吃蛇游戏
+
+用 Python 实现一个程序，判断 32416190071 是否是一个素数。
+
+how many &#x27;r&#x27;s in strawberrrry?</code></pre><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="15a3b313-aef4-80d0-94cd-fcd3e891f018" class="code"><code class="language-JavaScript">用python实现计算179424673是第几个质数？不要引入外部库</code></pre><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="15a3b313-aef4-8012-95b8-c63a3b711020" class="code"><code class="language-JavaScript">用 Python 实现一个程序，检查12345678910111213141516和1718192021222324252627是否互质。
+
+
+###答案：
+互质</code></pre><p id="15a3b313-aef4-8013-96e3-ea1a4462e5a3" class="">
+</p><h3 id="15a3b313-aef4-803e-a68e-d1f27fd774b6" class="">完全数探索：</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="15a3b313-aef4-80c3-85b2-cbd4da16e0ab" class="code"><code class="language-JavaScript">编写python程序解决下面的题目：
+如果一个数等于它所有真因子（除了自身以外的因子）的和，那么这个数被称为完全数。 
+例如：6=1+2+3是完全数。 求第5个完全数的位数。
+
+###答案：
+第5个完全数是: 33550336
+它的位数是: 8
+
+</code></pre><h3 id="15a3b313-aef4-8006-8a00-e34781238c98" class="">数列模式识别题：</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="15a3b313-aef4-8022-b903-d2c710a82e94" class="code"><code class="language-JavaScript">已知一个特殊的数列，第1项为1，从第2项开始，
+每一项等于前一项的各位数字的平方和，
+直到某一项重复出现为止，形成循环。
+编写Python程序计算第2024项的值。
+
+#答案是1</code></pre><h3 id="15a3b313-aef4-805e-99ee-f0ccde922e98" class="">大数分解与质数探索题：</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="15a3b313-aef4-8010-b445-e4966f91e16b" class="code"><code class="language-JavaScript">
+编写Python程序，找出区间[10^12, 10^12 + 1000]内的所有孪生质数对。
+(孪生质数是指差为2的两个质数，如(3,5), (5,7), (11,13)等)
+
+
+###答案：
+在区间[1000000000000, 1000000001000]内找到4对孪生质数：
+1. (1000000000061, 1000000000063)
+2. (1000000000331, 1000000000333)
+3. (1000000000787, 1000000000789)
+4. (1000000000931, 1000000000933)</code></pre><h3 id="15a3b313-aef4-8067-98d1-dafe9fdc4075" class="">算法思维转换题：</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="15a3b313-aef4-806a-bb45-d5af3f00d5fc" class="code"><code class="language-JavaScript">定义一个正整数的&quot;镜像质数对&quot;：如果一个数是质数，且将其十进制表示左右翻转后得到的数也是质数，则这两个数构成一个镜像质数对。
+例如：13和31构成一个镜像质数对。
+请编写程序找出所有小于10^7的镜像质数对的数量。注意：一个数的镜像如果等于自身，只能算作一个镜像质数对。
+
+
+
+###答案：
+小于10000000的镜像质数对数量为：41610
+
+前10个镜像质数对示例：
+2 &lt;-&gt; 2
+3 &lt;-&gt; 3
+5 &lt;-&gt; 5
+7 &lt;-&gt; 7
+11 &lt;-&gt; 11
+13 &lt;-&gt; 31
+17 &lt;-&gt; 71
+37 &lt;-&gt; 73
+79 &lt;-&gt; 97
+101 &lt;-&gt; 101
+
+其中回文质数的数量：781</code></pre><h3 id="15a3b313-aef4-8040-a3fc-d85d2d09fff8" class="">组合数学题：</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="15a3b313-aef4-809e-8b8d-c17b5d89b84d" class="code"><code class="language-JavaScript">编写Python程序，找出满足以下条件的最小正整数n：
+- n的十进制表示恰好有2024位
+- n是7的倍数
+- n的所有数位都是1或3
+
+###答案
+数字是: 11111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111331
+验证:
+位数: 2024
+是7的倍数: True
+只包含1和3: True</code></pre><p id="15a3b313-aef4-8074-b50f-debea927b4aa" class="">
+</p><h3 id="15a3b313-aef4-80bc-8110-c05d9bb36ec2" class="">元认知推理难题:</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="15a3b313-aef4-800b-b7d5-f3d7767e301a" class="code"><code class="language-JavaScript">三位哲学家参加一个实验:
+- 实验者在每人背后贴一个数字标签
+- 每人只能看到其他人的标签,看不到自己的
+- 标签上的数字可能相同也可能不同
+- 实验者问:&quot;你能确定自己标签上的数字吗?&quot;
+
+第一位哲学家说:&quot;我不能确定&quot;
+第二位哲学家说:&quot;我也不能确定&quot;
+第三位哲学家说:&quot;我现在知道我的数字了&quot;
+
+已知标签上的数字都是1到5之间的整数。
+请推理第三位哲学家的标签数字是多少。要求详细说明推理过程。
+
+###答案：3</code></pre><h3 id="15a3b313-aef4-8027-932c-c84fa8cbc2c5" class="">蓝眼睛和红眼睛</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="15a3b313-aef4-809c-bc65-c0954fba8e80" class="code"><code class="language-JavaScript">一个岛上有100个人，其中95个是蓝眼睛，5个是红眼睛。岛上有三个奇怪的规则：
+1. 不能通过镜子和水面来看自己眼睛的颜色。
+2. 不能告诉对方别人的眼睛颜色。
+3. 一旦知道自己眼睛的颜色，必须在当夜离岛。
+虽然题设说有5个红眼睛，但岛民并不知道。 
+一天，有一个旅行者来到岛上，当着所有人的面，
+不留神说了一句：你们这里有红眼睛的人，岛民都听到了这句话。
+假设岛民都是聪明人，问这个岛接下来会发生什么事情？
+
+
+
+
+
+
+</code></pre><h3 id="15a3b313-aef4-80c8-878b-f4d7125fd136" class="">提示词遵循能力</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="15a3b313-aef4-8028-bcc0-d7394e532aad" class="code"><code class="language-JavaScript">You are an expert AI assistant tasked with providing thorough, step-by-step reasoning for complex problems or questions. Follow these guidelines:
+
+1. For each step in your reasoning process:
+   - Provide a clear, descriptive title
+   - Explain your thought process in detail
+   - Use markdown formatting for better readability
+
+2. Use at least 3 different methods or approaches to analyze the problem
+
+3. Include exploration of alternative answers and potential errors in your reasoning
+
+4. Be aware of your limitations as a language model and explicitly state what you can and cannot do
+
+5. When re-examining your reasoning, use a genuinely different approach
+
+6. Apply best practices in problem-solving and critical thinking
+
+7. Conclude with a final answer only when you&#x27;ve exhausted your analysis
+
+8. Structure your response as follows:
+
+```json
+{
+  &quot;step&quot;: 1,
+  &quot;title&quot;: &quot;Identifying Key Information&quot;,
+  &quot;content&quot;: &quot;## Identifying Key Information\n\nTo begin solving this problem, we need to carefully examine the given information and identify the crucial elements that will guide our solution process. This involves...&quot;,
+  &quot;next_action&quot;: &quot;continue&quot;
+}
+```
+
+9. For the final step, use &quot;next_action&quot;: &quot;final_answer&quot; and include your conclusion
+
+10. Strive for clarity, thoroughness, and intellectual honesty in your analysis
+
+How many &#x27;r&#x27;s in strawberrrry?
+
+
+
+
+
+
+
+</code></pre><h2 id="15a3b313-aef4-808c-8732-e4e3f31366ed" class=""><strong>🔥🔥🔥如有问题，请联系我的徽信 stoeng</strong></h2><h2 id="15a3b313-aef4-80f5-97b7-e46c8bbb2ff4" class=""><strong>🔥🔥🔥本项目代码由AI超元域频道制作，观看更多大模型微调视频请访问我的频道⬇</strong></h2><h3 id="15a3b313-aef4-8029-bf55-d597597ce1ca" class=""><strong>👉👉👉</strong><strong><a href="https://space.bilibili.com/3493277319825652">我的哔哩哔哩频道</a></strong></h3><h3 id="15a3b313-aef4-8024-b6f9-ed8b9377712d" class=""><strong>👉👉👉</strong><strong><a href="https://www.youtube.com/@AIsuperdomain">我的YouTube频道</a></strong></h3><h3 id="15a3b313-aef4-80fc-9097-fc4db7e3c004" class=""><strong>👉👉👉我的开源项目 </strong><strong><a href="https://github.com/win4r/AISuperDomain">https://github.com/win4r/AISuperDomain</a></strong></h3><h3 id="15a3b313-aef4-8088-884c-eb918d7075ad" class=""><strong>充值openai api key或者ChatGPT会员可以使用wildcard虚拟卡充值。wildcard官方链接：</strong></h3><p id="15a3b313-aef4-80b1-9988-e49076e8268e" class=""><a href="https://bewildcard.com/i/VLM">https://bewildcard.com/i/VLM</a></p><h3 id="15a3b313-aef4-807d-a3be-f54e103c2e86" class=""><strong>wildcard注册教程和充值API教程(国内打开速度快)：</strong></h3><p id="15a3b313-aef4-8009-9249-d1f0bbb31691" class=""><a href="https://mp.weixin.qq.com/s?__biz=MzU0NDc2MzQ3MA==&amp;mid=2247484020&amp;idx=1&amp;sn=fee448a207cbf3b4ccda8a775f4fe946&amp;chksm=fb767955cc01f043b9e4a5ae926c2e68cefc0ee12af9df715eb632a90003784c45e2108470f1#rd">https://mp.weixin.qq.com/s?__biz=MzU0NDc2MzQ3MA==&amp;mid=2247484020&amp;idx=1&amp;sn=fee448a207cbf3b4ccda8a775f4fe946&amp;chksm=fb767955cc01f043b9e4a5ae926c2e68cefc0ee12af9df715eb632a90003784c45e2108470f1#rd</a></p><h3 id="15a3b313-aef4-8038-bb3f-ce185cf77bba" class=""><strong>wildcard注册教程和充值API教程(海外打开速度快)：</strong></h3><p id="15a3b313-aef4-8007-8af5-d9aa9aded204" class=""><strong><a href="https://stoeng.medium.com/%E4%BF%9D%E5%A7%86%E7%BA%A7%E6%95%99%E7%A8%8B-%E9%80%9A%E8%BF%87wildcard%E8%99%9A%E6%8B%9F%E4%BF%A1%E7%94%A8%E5%8D%A1%E8%AE%A2%E9%98%85chatgpt-claude%E4%BC%9A%E5%91%98%E5%92%8Capi-%E7%99%BE%E5%88%86%E7%99%BE%E5%8F%AF%E7%94%A8-a2865a18df01">https://stoeng.medium.com/保姆级教程-通过wildcard虚拟信用卡订阅chatgpt-claude会员和api-百分百可用-a2865a18df01</a></strong></p><h3 id="15a3b313-aef4-8000-b869-def9e44585f7" class="">text to sql</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="15a3b313-aef4-80c8-820b-f1dcc8ee88d5" class="code"><code class="language-JavaScript">import os
+import pandas as pd
+from datetime import datetime
+from sqlalchemy import (
+    create_engine,
+    MetaData,
+    Table,
+    Column,
+    String,
+    Integer,
+    Float,
+    DateTime,
+    ForeignKey,
+    select,
+    text
+)
+from llama_index.core import SQLDatabase
+from llama_index.core.query_engine import NLSQLTableQueryEngine
+from llama_index.llms.openai import OpenAI
+from llama_index.llms.gemini import Gemini  
+
+
+# 创建数据库引擎和元数据对象
+engine = create_engine(&quot;sqlite:///:memory:&quot;)
+metadata_obj = MetaData()
+
+# 创建员工表
+employees_table = Table(
+    &quot;employees&quot;,
+    metadata_obj,
+    Column(&quot;employee_id&quot;, String(10), primary_key=True),
+    Column(&quot;name&quot;, String(50)),
+    Column(&quot;department&quot;, String(50)),
+    Column(&quot;position&quot;, String(50)),
+    Column(&quot;hire_date&quot;, DateTime),
+    Column(&quot;salary&quot;, Float),
+    Column(&quot;manager_id&quot;, String(10), ForeignKey(&quot;employees.employee_id&quot;))
+)
+
+# 创建产品表
+products_table = Table(
+    &quot;products&quot;,
+    metadata_obj,
+    Column(&quot;product_id&quot;, String(10), primary_key=True),
+    Column(&quot;name&quot;, String(100)),
+    Column(&quot;category&quot;, String(50)),
+    Column(&quot;unit_price&quot;, Float),
+    Column(&quot;stock_quantity&quot;, Integer),
+    Column(&quot;supplier&quot;, String(100))
+)
+
+# 创建订单表
+orders_table = Table(
+    &quot;orders&quot;,
+    metadata_obj,
+    Column(&quot;order_id&quot;, String(20), primary_key=True),
+    Column(&quot;customer_name&quot;, String(100)),
+    Column(&quot;product_id&quot;, String(10), ForeignKey(&quot;products.product_id&quot;)),
+    Column(&quot;employee_id&quot;, String(10), ForeignKey(&quot;employees.employee_id&quot;)),
+    Column(&quot;order_date&quot;, DateTime),
+    Column(&quot;quantity&quot;, Integer),
+    Column(&quot;total_amount&quot;, Float),
+    Column(&quot;status&quot;, String(20))
+)
+
+# 创建所有表
+metadata_obj.create_all(engine)
+
+def safe_read_csv(file_path, **kwargs):
+    &quot;&quot;&quot;安全地读取CSV文件，支持多种编码和错误处理&quot;&quot;&quot;
+    encodings = [&#x27;utf-8&#x27;, &#x27;gbk&#x27;, &#x27;gb2312&#x27;, &#x27;utf-8-sig&#x27;]
+    
+    for encoding in encodings:
+        try:
+            df = pd.read_csv(file_path, encoding=encoding, **kwargs)
+            return df
+        except Exception as e:
+            print(f&quot;尝试使用 {encoding} 编码: {str(e)}&quot;)
+            continue
+    raise ValueError(f&quot;无法读取文件 {file_path}&quot;)
+
+def check_table_exists(table_name):
+    &quot;&quot;&quot;检查表是否存在且有数据&quot;&quot;&quot;
+    query = f&quot;&quot;&quot;
+    SELECT COUNT(*) as count
+    FROM {table_name}
+    &quot;&quot;&quot;
+    try:
+        with engine.connect() as conn:
+            result = pd.read_sql(query, conn)
+            return result[&#x27;count&#x27;].iloc[0] &gt; 0
+    except Exception:
+        return False
+
+def clear_table(table_name):
+    &quot;&quot;&quot;清空指定表的所有数据&quot;&quot;&quot;
+    with engine.connect() as conn:
+        conn.execute(text(f&quot;DELETE FROM {table_name}&quot;))
+        conn.commit()
+
+def load_sample_data():
+    &quot;&quot;&quot;加载更多的示例数据到数据库&quot;&quot;&quot;
+    # 示例员工数据
+    employees_data = [
+        {
+            &quot;employee_id&quot;: &quot;E001&quot;,
+            &quot;name&quot;: &quot;张三&quot;,
+            &quot;department&quot;: &quot;销售部&quot;,
+            &quot;position&quot;: &quot;销售经理&quot;,
+            &quot;hire_date&quot;: datetime(2020, 1, 15),
+            &quot;salary&quot;: 15000.0,
+            &quot;manager_id&quot;: None
+        },
+        {
+            &quot;employee_id&quot;: &quot;E002&quot;,
+            &quot;name&quot;: &quot;李四&quot;,
+            &quot;department&quot;: &quot;销售部&quot;,
+            &quot;position&quot;: &quot;销售代表&quot;,
+            &quot;hire_date&quot;: datetime(2021, 3, 1),
+            &quot;salary&quot;: 8000.0,
+            &quot;manager_id&quot;: &quot;E001&quot;
+        },
+        {
+            &quot;employee_id&quot;: &quot;E003&quot;,
+            &quot;name&quot;: &quot;王五&quot;,
+            &quot;department&quot;: &quot;销售部&quot;,
+            &quot;position&quot;: &quot;销售代表&quot;,
+            &quot;hire_date&quot;: datetime(2021, 6, 1),
+            &quot;salary&quot;: 8500.0,
+            &quot;manager_id&quot;: &quot;E001&quot;
+        },
+        {
+            &quot;employee_id&quot;: &quot;E004&quot;,
+            &quot;name&quot;: &quot;赵六&quot;,
+            &quot;department&quot;: &quot;市场部&quot;,
+            &quot;position&quot;: &quot;市场经理&quot;,
+            &quot;hire_date&quot;: datetime(2020, 3, 15),
+            &quot;salary&quot;: 14000.0,
+            &quot;manager_id&quot;: None
+        },
+        {
+            &quot;employee_id&quot;: &quot;E005&quot;,
+            &quot;name&quot;: &quot;钱七&quot;,
+            &quot;department&quot;: &quot;市场部&quot;,
+            &quot;position&quot;: &quot;市场专员&quot;,
+            &quot;hire_date&quot;: datetime(2022, 1, 10),
+            &quot;salary&quot;: 7500.0,
+            &quot;manager_id&quot;: &quot;E004&quot;
+        }
+    ]
+    
+    # 示例产品数据
+    products_data = [
+        {
+            &quot;product_id&quot;: &quot;P001&quot;,
+            &quot;name&quot;: &quot;高性能笔记本电脑&quot;,
+            &quot;category&quot;: &quot;电子产品&quot;,
+            &quot;unit_price&quot;: 6999.0,
+            &quot;stock_quantity&quot;: 50,
+            &quot;supplier&quot;: &quot;科技有限公司&quot;
+        },
+        {
+            &quot;product_id&quot;: &quot;P002&quot;,
+            &quot;name&quot;: &quot;无线蓝牙耳机&quot;,
+            &quot;category&quot;: &quot;配件&quot;,
+            &quot;unit_price&quot;: 999.0,
+            &quot;stock_quantity&quot;: 500,
+            &quot;supplier&quot;: &quot;音频科技公司&quot;
+        },
+        {
+            &quot;product_id&quot;: &quot;P003&quot;,
+            &quot;name&quot;: &quot;智能手机&quot;,
+            &quot;category&quot;: &quot;电子产品&quot;,
+            &quot;unit_price&quot;: 4999.0,
+            &quot;stock_quantity&quot;: 200,
+            &quot;supplier&quot;: &quot;科技有限公司&quot;
+        },
+        {
+            &quot;product_id&quot;: &quot;P004&quot;,
+            &quot;name&quot;: &quot;显示器&quot;,
+            &quot;category&quot;: &quot;电子产品&quot;,
+            &quot;unit_price&quot;: 2999.0,
+            &quot;stock_quantity&quot;: 80,
+            &quot;supplier&quot;: &quot;显示技术公司&quot;
+        },
+        {
+            &quot;product_id&quot;: &quot;P005&quot;,
+            &quot;name&quot;: &quot;机械键盘&quot;,
+            &quot;category&quot;: &quot;配件&quot;,
+            &quot;unit_price&quot;: 599.0,
+            &quot;stock_quantity&quot;: 300,
+            &quot;supplier&quot;: &quot;外设科技公司&quot;
+        }
+    ]
+    
+    # 生成更多的订单数据
+    orders_data = [
+        {
+            &quot;order_id&quot;: &quot;O20240101001&quot;,
+            &quot;customer_name&quot;: &quot;陈一&quot;,
+            &quot;product_id&quot;: &quot;P001&quot;,
+            &quot;employee_id&quot;: &quot;E002&quot;,
+            &quot;order_date&quot;: datetime(2024, 1, 1),
+            &quot;quantity&quot;: 2,
+            &quot;total_amount&quot;: 13998.0,
+            &quot;status&quot;: &quot;已完成&quot;
+        },
+        {
+            &quot;order_id&quot;: &quot;O20240102001&quot;,
+            &quot;customer_name&quot;: &quot;刘二&quot;,
+            &quot;product_id&quot;: &quot;P002&quot;,
+            &quot;employee_id&quot;: &quot;E002&quot;,
+            &quot;order_date&quot;: datetime(2024, 1, 2),
+            &quot;quantity&quot;: 5,
+            &quot;total_amount&quot;: 4995.0,
+            &quot;status&quot;: &quot;已完成&quot;
+        },
+        {
+            &quot;order_id&quot;: &quot;O20240115001&quot;,
+            &quot;customer_name&quot;: &quot;张明&quot;,
+            &quot;product_id&quot;: &quot;P003&quot;,
+            &quot;employee_id&quot;: &quot;E003&quot;,
+            &quot;order_date&quot;: datetime(2024, 1, 15),
+            &quot;quantity&quot;: 3,
+            &quot;total_amount&quot;: 14997.0,
+            &quot;status&quot;: &quot;已完成&quot;
+        },
+        {
+            &quot;order_id&quot;: &quot;O20240120001&quot;,
+            &quot;customer_name&quot;: &quot;李明&quot;,
+            &quot;product_id&quot;: &quot;P001&quot;,
+            &quot;employee_id&quot;: &quot;E003&quot;,
+            &quot;order_date&quot;: datetime(2024, 1, 20),
+            &quot;quantity&quot;: 1,
+            &quot;total_amount&quot;: 6999.0,
+            &quot;status&quot;: &quot;已完成&quot;
+        },
+        {
+            &quot;order_id&quot;: &quot;O20240125001&quot;,
+            &quot;customer_name&quot;: &quot;王海&quot;,
+            &quot;product_id&quot;: &quot;P004&quot;,
+            &quot;employee_id&quot;: &quot;E002&quot;,
+            &quot;order_date&quot;: datetime(2024, 1, 25),
+            &quot;quantity&quot;: 4,
+            &quot;total_amount&quot;: 11996.0,
+            &quot;status&quot;: &quot;处理中&quot;
+        }
+    ]
+    
+    # 将数据转换为DataFrame并导入数据库
+    employees_df = pd.DataFrame(employees_data)
+    products_df = pd.DataFrame(products_data)
+    orders_df = pd.DataFrame(orders_data)
+    
+    employees_df.to_sql(&#x27;employees&#x27;, engine, if_exists=&#x27;append&#x27;, index=False)
+    products_df.to_sql(&#x27;products&#x27;, engine, if_exists=&#x27;append&#x27;, index=False)
+    orders_df.to_sql(&#x27;orders&#x27;, engine, if_exists=&#x27;append&#x27;, index=False)
+    
+    print(&quot;示例数据加载成功！&quot;)
+
+
+def setup_query_engine():
+    &quot;&quot;&quot;设置查询引擎，添加表关系描述&quot;&quot;&quot;
+    sql_database = SQLDatabase(engine, include_tables=[&quot;employees&quot;, &quot;products&quot;, &quot;orders&quot;])
+    
+    # 定义表关系和业务含义
+    table_context = &quot;&quot;&quot;
+    表关系说明：
+    1. employees(员工表):
+       - employee_id: 员工ID，主键
+       - manager_id: 上级主管ID，关联employee_id
+       - 其他字段：name(姓名), department(部门), position(职位), hire_date(入职日期), salary(薪资)
+    
+    2. products(产品表):
+       - product_id: 产品ID，主键
+       - 其他字段：name(产品名), category(类别), unit_price(单价), stock_quantity(库存), supplier(供应商)
+    
+    3. orders(订单表):
+       - order_id: 订单ID，主键
+       - product_id: 产品ID，关联products表
+       - employee_id: 销售员工ID，关联employees表
+       - 其他字段：customer_name(客户名), order_date(订单日期), quantity(数量), total_amount(总金额), status(状态)
+    
+    关联关系：
+    - orders.employee_id 关联 employees.employee_id (订单与销售员工关系)
+    - orders.product_id 关联 products.product_id (订单与产品关系)
+    - employees.manager_id 关联 employees.employee_id (员工与主管关系)
+    &quot;&quot;&quot;
+
+    llm = Gemini(temperature=0.1,  model=&quot;models/gemini-exp-1206&quot;,)  # 可以根据需要更改模型
+    # llm = OpenAI(temperature=0.1, model=&quot;gpt-4&quot;)
+
+    query_engine = NLSQLTableQueryEngine(
+        sql_database=sql_database,
+        tables=[&quot;employees&quot;, &quot;products&quot;, &quot;orders&quot;],
+        llm=llm,
+        table_context=table_context
+    )
+
+    return query_engine
+
+def run_complex_queries():
+    &quot;&quot;&quot;执行复杂的多表联动查询示例&quot;&quot;&quot;
+    query_engine = setup_query_engine()
+    
+    # 更新后的多表联动查询示例
+    complex_queries = [
+        # 销售业绩分析（明确区分employee表的自关联）
+        &quot;&quot;&quot;分析每个销售员（employees表）的业绩，显示他们的姓名、
+           所属部门、主管姓名（通过manager_id关联查询），
+           以及负责的订单数量和总销售额（通过orders表关联）&quot;&quot;&quot;,
+        
+        # 产品销售趋势（明确时间范围）
+        &quot;&quot;&quot;分析2024年1月的产品销售情况，按产品类别统计
+           销售额、销售数量，并显示负责销售的员工人数&quot;&quot;&quot;,
+        
+        # 部门绩效分析（加入更多维度）
+        &quot;&quot;&quot;统计销售部的整体表现，包括：
+           1. 部门总销售额
+           2. 每个销售员的平均订单金额
+           3. 按产品类别统计的销售分布&quot;&quot;&quot;,
+        
+        # 高价值客户分析（避免列名歧义）
+        &quot;&quot;&quot;查找订单总金额超过10000元的客户信息，显示：
+           1. 客户姓名
+           2. 购买的产品名称和类别
+           3. 负责销售的员工姓名和部门&quot;&quot;&quot;,
+        
+        # 库存预警分析
+        &quot;&quot;&quot;分析库存量低于100的产品的销售情况，显示：
+           1. 产品名称和当前库存
+           2. 最近的销售记录
+           3. 负责销售的员工信息&quot;&quot;&quot;
+    ]
+
+    for query in complex_queries:
+        try:
+            print(&quot;\n执行查询:&quot;, query)
+            response = query_engine.query(query)
+            print(&quot;查询结果:&quot;, response)
+            print(&quot;\n&quot; + &quot;=&quot;*50)
+        except Exception as e:
+            print(f&quot;查询执行错误: {str(e)}&quot;)
+
+
+# 示例SQL实现（用于参考）
+complex_sql_examples = {
+    &quot;销售业绩分析&quot;: &quot;&quot;&quot;
+    SELECT 
+        e.name as employee_name,
+        e.department,
+        m.name as manager_name,
+        COUNT(o.order_id) as order_count,
+        SUM(o.total_amount) as total_sales
+    FROM employees e
+    LEFT JOIN employees m ON e.manager_id = m.employee_id
+    LEFT JOIN orders o ON e.employee_id = o.employee_id
+    GROUP BY e.employee_id, e.name, e.department, m.name
+    &quot;&quot;&quot;,
+    
+    &quot;产品类别销售趋势&quot;: &quot;&quot;&quot;
+    SELECT 
+        p.category,
+        DATE_FORMAT(o.order_date, &#x27;%Y-%m&#x27;) as month,
+        SUM(o.total_amount) as monthly_sales,
+        SUM(o.quantity) as total_quantity,
+        COUNT(DISTINCT o.employee_id) as sales_staff_count
+    FROM products p
+    JOIN orders o ON p.product_id = o.product_id
+    WHERE o.order_date &gt;= DATE_SUB(NOW(), INTERVAL 3 MONTH)
+    GROUP BY p.category, DATE_FORMAT(o.order_date, &#x27;%Y-%m&#x27;)
+    ORDER BY p.category, month
+    &quot;&quot;&quot;,
+    
+    &quot;部门销售绩效&quot;: &quot;&quot;&quot;
+    SELECT 
+        e.department,
+        SUM(o.total_amount) as total_sales,
+        AVG(o.total_amount) as avg_order_amount,
+        COUNT(o.order_id) / COUNT(DISTINCT e.employee_id) as avg_orders_per_employee
+    FROM employees e
+    LEFT JOIN orders o ON e.employee_id = o.employee_id
+    GROUP BY e.department
+    &quot;&quot;&quot;
+}
+
+def main():
+    try:
+        # 设置 OpenAI API 密钥
+        # os.environ[&quot;OPENAI_API_KEY&quot;] = userdata.get(&#x27;OPENAI_API_KEY&#x27;)
+        os.environ[&quot;GEMINI_API_KEY&quot;] = userdata.get(&#x27;GEMINI_API_KEY&#x27;)
+        # 加载示例数据
+        load_sample_data()
+
+        # 运行复杂查询示例
+        run_complex_queries()
+
+    except Exception as e:
+        print(f&quot;主程序错误: {str(e)}&quot;)
+
+if __name__ == &quot;__main__&quot;:
+    main()</code></pre></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
