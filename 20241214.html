@@ -1,908 +1,908 @@
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>重磅更新！Cline+Gemini Flash 2.0 轻松实现零代码开发MCP Server打造最强Claude AI Agent！为Claude实现RAG！超越windsurf和cursor</title><style>
-/* cspell:disable-file */
-/* webkit printing magic: print all background colors */
-html {
-	-webkit-print-color-adjust: exact;
-}
-* {
-	box-sizing: border-box;
-	-webkit-print-color-adjust: exact;
-}
-
-html,
-body {
-	margin: 0;
-	padding: 0;
-}
-@media only screen {
-	body {
-		margin: 2em auto;
-		max-width: 900px;
-		color: rgb(55, 53, 47);
-	}
-}
-
-body {
-	line-height: 1.5;
-	white-space: pre-wrap;
-}
-
-a,
-a.visited {
-	color: inherit;
-	text-decoration: underline;
-}
-
-.pdf-relative-link-path {
-	font-size: 80%;
-	color: #444;
-}
-
-h1,
-h2,
-h3 {
-	letter-spacing: -0.01em;
-	line-height: 1.2;
-	font-weight: 600;
-	margin-bottom: 0;
-}
-
-.page-title {
-	font-size: 2.5rem;
-	font-weight: 700;
-	margin-top: 0;
-	margin-bottom: 0.75em;
-}
-
-h1 {
-	font-size: 1.875rem;
-	margin-top: 1.875rem;
-}
-
-h2 {
-	font-size: 1.5rem;
-	margin-top: 1.5rem;
-}
-
-h3 {
-	font-size: 1.25rem;
-	margin-top: 1.25rem;
-}
-
-.source {
-	border: 1px solid #ddd;
-	border-radius: 3px;
-	padding: 1.5em;
-	word-break: break-all;
-}
-
-.callout {
-	border-radius: 3px;
-	padding: 1rem;
-}
-
-figure {
-	margin: 1.25em 0;
-	page-break-inside: avoid;
-}
-
-figcaption {
-	opacity: 0.5;
-	font-size: 85%;
-	margin-top: 0.5em;
-}
-
-mark {
-	background-color: transparent;
-}
-
-.indented {
-	padding-left: 1.5em;
-}
-
-hr {
-	background: transparent;
-	display: block;
-	width: 100%;
-	height: 1px;
-	visibility: visible;
-	border: none;
-	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
-}
-
-img {
-	max-width: 100%;
-}
-
-@media only print {
-	img {
-		max-height: 100vh;
-		object-fit: contain;
-	}
-}
-
-@page {
-	margin: 1in;
-}
-
-.collection-content {
-	font-size: 0.875rem;
-}
-
-.column-list {
-	display: flex;
-	justify-content: space-between;
-}
-
-.column {
-	padding: 0 1em;
-}
-
-.column:first-child {
-	padding-left: 0;
-}
-
-.column:last-child {
-	padding-right: 0;
-}
-
-.table_of_contents-item {
-	display: block;
-	font-size: 0.875rem;
-	line-height: 1.3;
-	padding: 0.125rem;
-}
-
-.table_of_contents-indent-1 {
-	margin-left: 1.5rem;
-}
-
-.table_of_contents-indent-2 {
-	margin-left: 3rem;
-}
-
-.table_of_contents-indent-3 {
-	margin-left: 4.5rem;
-}
-
-.table_of_contents-link {
-	text-decoration: none;
-	opacity: 0.7;
-	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
-}
-
-table,
-th,
-td {
-	border: 1px solid rgba(55, 53, 47, 0.09);
-	border-collapse: collapse;
-}
-
-table {
-	border-left: none;
-	border-right: none;
-}
-
-th,
-td {
-	font-weight: normal;
-	padding: 0.25em 0.5em;
-	line-height: 1.5;
-	min-height: 1.5em;
-	text-align: left;
-}
-
-th {
-	color: rgba(55, 53, 47, 0.6);
-}
-
-ol,
-ul {
-	margin: 0;
-	margin-block-start: 0.6em;
-	margin-block-end: 0.6em;
-}
-
-li > ol:first-child,
-li > ul:first-child {
-	margin-block-start: 0.6em;
-}
-
-ul > li {
-	list-style: disc;
-}
-
-ul.to-do-list {
-	padding-inline-start: 0;
-}
-
-ul.to-do-list > li {
-	list-style: none;
-}
-
-.to-do-children-checked {
-	text-decoration: line-through;
-	opacity: 0.375;
-}
-
-ul.toggle > li {
-	list-style: none;
-}
-
-ul {
-	padding-inline-start: 1.7em;
-}
-
-ul > li {
-	padding-left: 0.1em;
-}
-
-ol {
-	padding-inline-start: 1.6em;
-}
-
-ol > li {
-	padding-left: 0.2em;
-}
-
-.mono ol {
-	padding-inline-start: 2em;
-}
-
-.mono ol > li {
-	text-indent: -0.4em;
-}
-
-.toggle {
-	padding-inline-start: 0em;
-	list-style-type: none;
-}
-
-/* Indent toggle children */
-.toggle > li > details {
-	padding-left: 1.7em;
-}
-
-.toggle > li > details > summary {
-	margin-left: -1.1em;
-}
-
-.selected-value {
-	display: inline-block;
-	padding: 0 0.5em;
-	background: rgba(206, 205, 202, 0.5);
-	border-radius: 3px;
-	margin-right: 0.5em;
-	margin-top: 0.3em;
-	margin-bottom: 0.3em;
-	white-space: nowrap;
-}
-
-.collection-title {
-	display: inline-block;
-	margin-right: 1em;
-}
-
-.page-description {
-    margin-bottom: 2em;
-}
-
-.simple-table {
-	margin-top: 1em;
-	font-size: 0.875rem;
-	empty-cells: show;
-}
-.simple-table td {
-	height: 29px;
-	min-width: 120px;
-}
-
-.simple-table th {
-	height: 29px;
-	min-width: 120px;
-}
-
-.simple-table-header-color {
-	background: rgb(247, 246, 243);
-	color: black;
-}
-.simple-table-header {
-	font-weight: 500;
-}
-
-time {
-	opacity: 0.5;
-}
-
-.icon {
-	display: inline-block;
-	max-width: 1.2em;
-	max-height: 1.2em;
-	text-decoration: none;
-	vertical-align: text-bottom;
-	margin-right: 0.5em;
-}
-
-img.icon {
-	border-radius: 3px;
-}
-
-.user-icon {
-	width: 1.5em;
-	height: 1.5em;
-	border-radius: 100%;
-	margin-right: 0.5rem;
-}
-
-.user-icon-inner {
-	font-size: 0.8em;
-}
-
-.text-icon {
-	border: 1px solid #000;
-	text-align: center;
-}
-
-.page-cover-image {
-	display: block;
-	object-fit: cover;
-	width: 100%;
-	max-height: 30vh;
-}
-
-.page-header-icon {
-	font-size: 3rem;
-	margin-bottom: 1rem;
-}
-
-.page-header-icon-with-cover {
-	margin-top: -0.72em;
-	margin-left: 0.07em;
-}
-
-.page-header-icon img {
-	border-radius: 3px;
-}
-
-.link-to-page {
-	margin: 1em 0;
-	padding: 0;
-	border: none;
-	font-weight: 500;
-}
-
-p > .user {
-	opacity: 0.5;
-}
-
-td > .user,
-td > time {
-	white-space: nowrap;
-}
-
-input[type="checkbox"] {
-	transform: scale(1.5);
-	margin-right: 0.6em;
-	vertical-align: middle;
-}
-
-p {
-	margin-top: 0.5em;
-	margin-bottom: 0.5em;
-}
-
-.image {
-	border: none;
-	margin: 1.5em 0;
-	padding: 0;
-	border-radius: 0;
-	text-align: center;
-}
-
-.code,
-code {
-	background: rgba(135, 131, 120, 0.15);
-	border-radius: 3px;
-	padding: 0.2em 0.4em;
-	border-radius: 3px;
-	font-size: 85%;
-	tab-size: 2;
-}
-
-code {
-	color: #eb5757;
-}
-
-.code {
-	padding: 1.5em 1em;
-}
-
-.code-wrap {
-	white-space: pre-wrap;
-	word-break: break-all;
-}
-
-.code > code {
-	background: none;
-	padding: 0;
-	font-size: 100%;
-	color: inherit;
-}
-
-blockquote {
-	font-size: 1.25em;
-	margin: 1em 0;
-	padding-left: 1em;
-	border-left: 3px solid rgb(55, 53, 47);
-}
-
-.bookmark {
-	text-decoration: none;
-	max-height: 8em;
-	padding: 0;
-	display: flex;
-	width: 100%;
-	align-items: stretch;
-}
-
-.bookmark-title {
-	font-size: 0.85em;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	height: 1.75em;
-	white-space: nowrap;
-}
-
-.bookmark-text {
-	display: flex;
-	flex-direction: column;
-}
-
-.bookmark-info {
-	flex: 4 1 180px;
-	padding: 12px 14px 14px;
-	display: flex;
-	flex-direction: column;
-	justify-content: space-between;
-}
-
-.bookmark-image {
-	width: 33%;
-	flex: 1 1 180px;
-	display: block;
-	position: relative;
-	object-fit: cover;
-	border-radius: 1px;
-}
-
-.bookmark-description {
-	color: rgba(55, 53, 47, 0.6);
-	font-size: 0.75em;
-	overflow: hidden;
-	max-height: 4.5em;
-	word-break: break-word;
-}
-
-.bookmark-href {
-	font-size: 0.75em;
-	margin-top: 0.25em;
-}
-
-.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
-.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
-.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
-.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
-.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
-.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
-.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
-.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
-.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
-.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
-.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
-.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
-.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
-.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
-.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
-.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
-.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
-.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
-.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
-.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
-.highlight-default {
-	color: rgba(55, 53, 47, 1);
-}
-.highlight-gray {
-	color: rgba(120, 119, 116, 1);
-	fill: rgba(120, 119, 116, 1);
-}
-.highlight-brown {
-	color: rgba(159, 107, 83, 1);
-	fill: rgba(159, 107, 83, 1);
-}
-.highlight-orange {
-	color: rgba(217, 115, 13, 1);
-	fill: rgba(217, 115, 13, 1);
-}
-.highlight-yellow {
-	color: rgba(203, 145, 47, 1);
-	fill: rgba(203, 145, 47, 1);
-}
-.highlight-teal {
-	color: rgba(68, 131, 97, 1);
-	fill: rgba(68, 131, 97, 1);
-}
-.highlight-blue {
-	color: rgba(51, 126, 169, 1);
-	fill: rgba(51, 126, 169, 1);
-}
-.highlight-purple {
-	color: rgba(144, 101, 176, 1);
-	fill: rgba(144, 101, 176, 1);
-}
-.highlight-pink {
-	color: rgba(193, 76, 138, 1);
-	fill: rgba(193, 76, 138, 1);
-}
-.highlight-red {
-	color: rgba(212, 76, 71, 1);
-	fill: rgba(212, 76, 71, 1);
-}
-.highlight-default_background {
-	color: rgba(55, 53, 47, 1);
-}
-.highlight-gray_background {
-	background: rgba(241, 241, 239, 1);
-}
-.highlight-brown_background {
-	background: rgba(244, 238, 238, 1);
-}
-.highlight-orange_background {
-	background: rgba(251, 236, 221, 1);
-}
-.highlight-yellow_background {
-	background: rgba(251, 243, 219, 1);
-}
-.highlight-teal_background {
-	background: rgba(237, 243, 236, 1);
-}
-.highlight-blue_background {
-	background: rgba(231, 243, 248, 1);
-}
-.highlight-purple_background {
-	background: rgba(244, 240, 247, 0.8);
-}
-.highlight-pink_background {
-	background: rgba(249, 238, 243, 0.8);
-}
-.highlight-red_background {
-	background: rgba(253, 235, 236, 1);
-}
-.block-color-default {
-	color: inherit;
-	fill: inherit;
-}
-.block-color-gray {
-	color: rgba(120, 119, 116, 1);
-	fill: rgba(120, 119, 116, 1);
-}
-.block-color-brown {
-	color: rgba(159, 107, 83, 1);
-	fill: rgba(159, 107, 83, 1);
-}
-.block-color-orange {
-	color: rgba(217, 115, 13, 1);
-	fill: rgba(217, 115, 13, 1);
-}
-.block-color-yellow {
-	color: rgba(203, 145, 47, 1);
-	fill: rgba(203, 145, 47, 1);
-}
-.block-color-teal {
-	color: rgba(68, 131, 97, 1);
-	fill: rgba(68, 131, 97, 1);
-}
-.block-color-blue {
-	color: rgba(51, 126, 169, 1);
-	fill: rgba(51, 126, 169, 1);
-}
-.block-color-purple {
-	color: rgba(144, 101, 176, 1);
-	fill: rgba(144, 101, 176, 1);
-}
-.block-color-pink {
-	color: rgba(193, 76, 138, 1);
-	fill: rgba(193, 76, 138, 1);
-}
-.block-color-red {
-	color: rgba(212, 76, 71, 1);
-	fill: rgba(212, 76, 71, 1);
-}
-.block-color-default_background {
-	color: inherit;
-	fill: inherit;
-}
-.block-color-gray_background {
-	background: rgba(241, 241, 239, 1);
-}
-.block-color-brown_background {
-	background: rgba(244, 238, 238, 1);
-}
-.block-color-orange_background {
-	background: rgba(251, 236, 221, 1);
-}
-.block-color-yellow_background {
-	background: rgba(251, 243, 219, 1);
-}
-.block-color-teal_background {
-	background: rgba(237, 243, 236, 1);
-}
-.block-color-blue_background {
-	background: rgba(231, 243, 248, 1);
-}
-.block-color-purple_background {
-	background: rgba(244, 240, 247, 0.8);
-}
-.block-color-pink_background {
-	background: rgba(249, 238, 243, 0.8);
-}
-.block-color-red_background {
-	background: rgba(253, 235, 236, 1);
-}
-.select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
-.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
-.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
-.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
-.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
-.select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
-.select-value-color-translucentGray { background-color: rgba(0, 0, 0, 0.06); }
-.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
-.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
-.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
-.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
-.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
-.select-value-color-pageGlass { background-color: undefined; }
-.select-value-color-washGlass { background-color: undefined; }
-
-.checkbox {
-	display: inline-flex;
-	vertical-align: text-bottom;
-	width: 16;
-	height: 16;
-	background-size: 16px;
-	margin-left: 2px;
-	margin-right: 5px;
-}
-
-.checkbox-on {
-	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
-}
-
-.checkbox-off {
-	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
-}
-	
-</style></head><body><article id="15b3b313-aef4-8003-ae30-f9c69853bdcd" class="page sans"><header><h1 class="page-title">重磅更新！Cline+Gemini Flash 2.0 轻松实现零代码开发MCP Server打造最强Claude AI Agent！为Claude实现RAG！超越windsurf和cursor</h1><p class="page-description"></p></header><div class="page-body"><p id="15b3b313-aef4-805d-8fc2-fdeade4653eb" class="">
-</p><h3 id="15b3b313-aef4-80f7-b404-e1f911b58675" class="">✅天气预报+MCP</h3><h3 id="15b3b313-aef4-8003-b251-f78d1cc95101" class="">✅RAG+MCP 【langflow】</h3><h3 id="15b3b313-aef4-80fe-859d-f3c34867b0ad" class="">✅搜索引擎+MCP 【serpapi】</h3><h3 id="15b3b313-aef4-802e-a345-d81ba3bf2888" class="">✅serp api <a href="https://serpapi.com/dashboard">https://serpapi.com/dashboard</a></h3><p id="15c3b313-aef4-8051-b586-f1a295911fd8" class="">
-</p><h3 id="15b3b313-aef4-8034-8ccc-ce49a014d5b8" class="">Prompt</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="15b3b313-aef4-8001-998f-f3a8d5b30756" class="code"><code class="language-JavaScript">
-Add a tool that can extract the top 10 search results from DuckDuckGo.
-
-Please add this tool to the Claude Desktop App
-
-Search for the latest AI news from DuckDuckGo.
-
-
-
-&quot;...fetches Jira tickets&quot;: Get ticket ACs and put Cline to work
-&quot;...manages AWS EC2s&quot;: Check server metrics and scale up or down
-&quot;...pulls PagerDuty incidents&quot;: Pulls details to help Cline fix bugs
-</code></pre><h3 id="15c3b313-aef4-80d6-9759-fc41c718c043" class="">天气预报示例</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="15b3b313-aef4-8038-a4fe-f28878ba731e" class="code"><code class="language-JavaScript">
-#链接 https://openweathermap.org/
-
-Add a tool that can help get weather forecast information. Below is the API link and an example of the response content:
-
-API Link:
-https://api.openweathermap.org/data/2.5/weather?lat=44.34&amp;lon=10.99&amp;appid=a2b8512c08d3ee7407e25a2f5f03cbc8
-
-
-Response Content:
-{
-  &quot;coord&quot;: {
-    &quot;lon&quot;: 10.99,
-    &quot;lat&quot;: 44.34
-  },
-  &quot;weather&quot;: [
-    {
-      &quot;id&quot;: 804,
-      &quot;main&quot;: &quot;Clouds&quot;,
-      &quot;description&quot;: &quot;overcast clouds&quot;,
-      &quot;icon&quot;: &quot;04d&quot;
+    /* cspell:disable-file */
+    /* webkit printing magic: print all background colors */
+    html {
+        -webkit-print-color-adjust: exact;
     }
-  ],
-  &quot;base&quot;: &quot;stations&quot;,
-  &quot;main&quot;: {
-    &quot;temp&quot;: 275.74,
-    &quot;feels_like&quot;: 275.74,
-    &quot;temp_min&quot;: 272.16,
-    &quot;temp_max&quot;: 277.08,
-    &quot;pressure&quot;: 1030,
-    &quot;humidity&quot;: 91,
-    &quot;sea_level&quot;: 1030,
-    &quot;grnd_level&quot;: 959
-  },
-  &quot;visibility&quot;: 6446,
-  &quot;wind&quot;: {
-    &quot;speed&quot;: 1.15,
-    &quot;deg&quot;: 35,
-    &quot;gust&quot;: 1.51
-  },
-  &quot;clouds&quot;: {
-    &quot;all&quot;: 99
-  },
-  &quot;dt&quot;: 1734081976,
-  &quot;sys&quot;: {
-    &quot;type&quot;: 2,
-    &quot;id&quot;: 2004688,
-    &quot;country&quot;: &quot;IT&quot;,
-    &quot;sunrise&quot;: 1734072230,
-    &quot;sunset&quot;: 1734104225
-  },
-  &quot;timezone&quot;: 3600,
-  &quot;id&quot;: 3163858,
-  &quot;name&quot;: &quot;Zocca&quot;,
-  &quot;cod&quot;: 200
-}
-
-</code></pre><h2 id="15c3b313-aef4-808d-a3f3-dcadaa005b8c" class=""><strong>🔥🔥🔥如有问题，请联系我的徽信 stoeng</strong></h2><h2 id="15c3b313-aef4-8041-a0fc-e6e325f7c363" class=""><strong>🔥🔥🔥本项目代码由AI超元域频道制作，观看更多大模型微调视频请访问我的频道⬇</strong></h2><h3 id="15c3b313-aef4-808e-8ff4-e5a3761f120f" class=""><strong>👉👉👉</strong><strong><a href="https://space.bilibili.com/3493277319825652">我的哔哩哔哩频道</a></strong></h3><h3 id="15c3b313-aef4-80bc-b5b8-fe025624b3f9" class=""><strong>👉👉👉</strong><strong><a href="https://www.youtube.com/@AIsuperdomain">我的YouTube频道</a></strong></h3><h3 id="15c3b313-aef4-805c-ac25-f346237a6025" class=""><strong>👉👉👉我的开源项目 </strong><strong><a href="https://github.com/win4r/AISuperDomain">https://github.com/win4r/AISuperDomain</a></strong></h3><h3 id="15c3b313-aef4-801a-a8f4-de469a8fb169" class=""><strong>充值openai api key或者ChatGPT会员可以使用wildcard虚拟卡充值。wildcard官方链接：</strong></h3><p id="15c3b313-aef4-808e-8dcd-ea79f25bbd58" class=""><a href="https://bewildcard.com/i/VLM">https://bewildcard.com/i/VLM</a></p><h3 id="15c3b313-aef4-80e0-8e91-cd5c784ac3f4" class=""><strong>wildcard注册教程和充值API教程(国内打开速度快)：</strong></h3><p id="15c3b313-aef4-809a-9506-d967507345e4" class=""><a href="https://mp.weixin.qq.com/s?__biz=MzU0NDc2MzQ3MA==&amp;mid=2247484020&amp;idx=1&amp;sn=fee448a207cbf3b4ccda8a775f4fe946&amp;chksm=fb767955cc01f043b9e4a5ae926c2e68cefc0ee12af9df715eb632a90003784c45e2108470f1#rd">https://mp.weixin.qq.com/s?__biz=MzU0NDc2MzQ3MA==&amp;mid=2247484020&amp;idx=1&amp;sn=fee448a207cbf3b4ccda8a775f4fe946&amp;chksm=fb767955cc01f043b9e4a5ae926c2e68cefc0ee12af9df715eb632a90003784c45e2108470f1#rd</a></p><h3 id="15c3b313-aef4-807e-9895-ced4fe9823d3" class=""><strong>wildcard注册教程和充值API教程(海外打开速度快)：</strong></h3><p id="15c3b313-aef4-802e-953d-e210bee1cc72" class=""><strong><a href="https://stoeng.medium.com/%E4%BF%9D%E5%A7%86%E7%BA%A7%E6%95%99%E7%A8%8B-%E9%80%9A%E8%BF%87wildcard%E8%99%9A%E6%8B%9F%E4%BF%A1%E7%94%A8%E5%8D%A1%E8%AE%A2%E9%98%85chatgpt-claude%E4%BC%9A%E5%91%98%E5%92%8Capi-%E7%99%BE%E5%88%86%E7%99%BE%E5%8F%AF%E7%94%A8-a2865a18df01">https://stoeng.medium.com/保姆级教程-通过wildcard虚拟信用卡订阅chatgpt-claude会员和api-百分百可用-a2865a18df01</a></strong></p><p id="15c3b313-aef4-8048-8479-f7767e066c35" class="">
-</p><p id="15c3b313-aef4-8089-83e2-f21df72af249" class="">
-</p><p id="15c3b313-aef4-8056-95e6-c45fb667af05" class="">
-</p><h3 id="15c3b313-aef4-8013-8300-f7ed9896311e" class="">Google News API</h3><p id="15c3b313-aef4-80ba-87bf-c304940a1fde" class="">✅<a href="https://serpapi.com/google-news-api">https://serpapi.com/google-news-api</a></p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="15c3b313-aef4-8002-984b-c07834a9e546" class="code"><code class="language-JavaScript">Add a tool that can search for news from Google News using the SERP API. The tool should process the retrieved results to extract key information, such as the title, source, publication date, and link for each news article. The extracted data should then be used to generate a contextually accurate and detailed response to the user&#x27;s query. 
-
-The following is an example of how to use the SERP API with a cURL command. It includes an example request and response to demonstrate the expected input and output format.
-
-Request:
-
-curl --get https://serpapi.com/search \
- -d engine=&quot;google_news&quot; \
- -d q=&quot;pizza&quot; \
- -d gl=&quot;us&quot; \
- -d hl=&quot;en&quot; \
- -d api_key=&quot;daafd52eec6092450963a1910b9be1adae39cb245a25afc7821a0c32335ec7b4&quot;
-
-Response:
-
-{
-  &quot;search_metadata&quot;: {
-    &quot;id&quot;: &quot;6734b33796b8f8a59b244ae1&quot;,
-    &quot;status&quot;: &quot;Success&quot;,
-    &quot;json_endpoint&quot;: &quot;https://serpapi.com/searches/87b042ba1547994d/6734b33796b8f8a59b244ae1.json&quot;,
-    &quot;created_at&quot;: &quot;2024-11-13 14:09:59 UTC&quot;,
-    &quot;processed_at&quot;: &quot;2024-11-13 14:09:59 UTC&quot;,
-    &quot;google_news_url&quot;: &quot;https://news.google.com/search?q=pizza&amp;hl=en&amp;gl=US&quot;,
-    &quot;raw_html_file&quot;: &quot;https://serpapi.com/searches/87b042ba1547994d/6734b33796b8f8a59b244ae1.html&quot;,
-    &quot;total_time_taken&quot;: 1.62
-  },
-  &quot;search_parameters&quot;: {
-    &quot;engine&quot;: &quot;google_news&quot;,
-    &quot;gl&quot;: &quot;us&quot;,
-    &quot;hl&quot;: &quot;en&quot;,
-    &quot;q&quot;: &quot;pizza&quot;
-  },
-  &quot;news_results&quot;: [
-    {
-      &quot;position&quot;: 1,
-      &quot;title&quot;: &quot;Industrial Taphouse owners opening Steampunk Pizza in Ashland&quot;,
-      &quot;source&quot;: {
-        &quot;name&quot;: &quot;RichmondBizSense&quot;,
-        &quot;icon&quot;: &quot;https://encrypted-tbn0.gstatic.com/faviconV2?url=https://richmondbizsense.com&amp;client=NEWS_360&amp;size=96&amp;type=FAVICON&amp;fallback_opts=TYPE,SIZE,URL&quot;,
-        &quot;authors&quot;: [
-          &quot;Mike Platania&quot;
-        ]
-      },
-      &quot;link&quot;: &quot;https://richmondbizsense.com/2024/11/12/industrial-taphouse-owners-opening-steampunk-pizza-in-ashland/&quot;,
-      &quot;thumbnail&quot;: &quot;https://richmondbizsense.com/wp-content/uploads/2024/11/steampunk-pizza1-Cropped.jpg&quot;,
-      &quot;thumbnail_small&quot;: &quot;https://news.google.com/api/attachments/CC8iI0NnNDVjM3BhYjFwZlJreG1aV05ZVFJDb0FSaXNBaWdCTWdB&quot;,
-      &quot;date&quot;: &quot;11/12/2024, 09:03 AM, +0200 EET&quot;
-    },
-    {
-      &quot;position&quot;: 2,
-      &quot;title&quot;: &quot;A Top LA Pizzeria Makes a Big Move to the Westside Next Year&quot;,
-      &quot;source&quot;: {
-        &quot;name&quot;: &quot;Eater LA&quot;,
-        &quot;icon&quot;: &quot;https://lh3.googleusercontent.com/Etyvq1qAM7RUdeLuULrKii11AFXQoHHgNx5bKBWLlByYuMa91G3F-EC2J0Qv_xQSCVh8agge&quot;,
-        &quot;authors&quot;: [
-          &quot;Matthew Kang&quot;
-        ]
-      },
-      &quot;link&quot;: &quot;https://la.eater.com/2024/11/11/24293844/pizzeria-sei-william-joo-moving-palms-los-angeles&quot;,
-      &quot;thumbnail&quot;: &quot;https://cdn.vox-cdn.com/thumbor/VasMxoW8YdbQK21KtDos_W_3ar8=/0x0:4032x3024/1200x800/filters:focal(1873x937:2517x1581)/cdn.vox-cdn.com/uploads/chorus_image/image/73716446/PXL_20220216_204449626.PORTRAIT.0.jpg&quot;,
-      &quot;thumbnail_small&quot;: &quot;https://news.google.com/api/attachments/CC8iK0NnNWlORlZtT0RWM1VsTnpObTV4VFJDM0FSaVRBaWdCTWdhQkFZejBBQTA&quot;,
-      &quot;date&quot;: &quot;11/12/2024, 01:27 AM, +0200 EET&quot;
-    },
-    {
-      &quot;position&quot;: 3,
-      &quot;title&quot;: &quot;Best Bites | Homemade sauce and loaded toppings makes this pizza place a favorite in Appleton&quot;,
-      &quot;source&quot;: {
-        &quot;name&quot;: &quot;Post-Crescent&quot;,
-        &quot;icon&quot;: &quot;https://encrypted-tbn0.gstatic.com/faviconV2?url=https://www.postcrescent.com&amp;client=NEWS_360&amp;size=96&amp;type=FAVICON&amp;fallback_opts=TYPE,SIZE,URL&quot;,
-        &quot;authors&quot;: [
-          &quot;Jelissa Burns&quot;
-        ]
-      },
-      &quot;link&quot;: &quot;https://www.postcrescent.com/story/life/food/2024/11/13/stucs-pizza-is-known-for-its-award-winning-pizza-and-calzones/75823785007/&quot;,
-      &quot;thumbnail&quot;: &quot;https://www.postcrescent.com/gcdn/authoring/authoring-images/2024/10/25/PAPN/75841461007-apc-stucs-pizza-1010240313-djp-1.jpg?width=660&amp;height=440&amp;fit=crop&amp;format=pjpg&amp;auto=webp&quot;,
-      &quot;thumbnail_small&quot;: &quot;https://news.google.com/api/attachments/CC8iK0NnNXBWMDF3WmtZM1JtWktUMFJUVFJDM0FSaVRBaWdCTWdZQlI0eUduZ2c&quot;,
-      &quot;date&quot;: &quot;11/13/2024, 01:01 PM, +0200 EET&quot;
-    },
-    ...
-  ],
-  &quot;menu_links&quot;: [
-    {
-      &quot;title&quot;: &quot;U.S.&quot;,
-      &quot;topic_token&quot;: &quot;CAAqIggKIhxDQkFTRHdvSkwyMHZNRGxqTjNjd0VnSmxiaWdBUAE&quot;,
-      &quot;serpapi_link&quot;: &quot;https://serpapi.com/search.json?engine=google_news&amp;gl=us&amp;topic_token=CAAqIggKIhxDQkFTRHdvSkwyMHZNRGxqTjNjd0VnSmxiaWdBUAE&quot;
-    },
-    ...
-  ]
-}</code></pre><p id="15c3b313-aef4-8041-8be1-f0850dad9fde" class="">
-</p><p id="15c3b313-aef4-80d6-84a9-f93da3d60fce" class="">
-</p><p id="15c3b313-aef4-80e9-b38d-cf5aba3bdb33" class="">
-</p><h3 id="15c3b313-aef4-80f5-9dda-dc93ca84981b" class="">LangFlow</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="15c3b313-aef4-800c-8bb7-e51a20b501db" class="code"><code class="language-JavaScript">
-python -m pip install langflow
-
-python -m langflow run
-</code></pre><h3 id="15c3b313-aef4-8088-acac-ce31db05cb47" class="">FAISS路径</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="15c3b313-aef4-807b-bca8-f403e35e1ebc" class="code"><code class="language-JavaScript">/Users/charlesqin/Downloads/testfaiss/</code></pre><h3 id="15c3b313-aef4-80db-8db4-f24952ef6aaf" class="">cURL</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="15c3b313-aef4-8076-b865-d94127f54fb6" class="code"><code class="language-JavaScript">Add a tool that retrieves relevant search results from an API, processes the results to extract information, and uses the extracted data to generate a contextually accurate and detailed response to the user&#x27;s query. The tool should integrate retrieval and response generation in a Retrieval-Augmented Generation (RAG) workflow.
-
-The following is an example of how to use the API with a cURL command. It includes an example request and response to demonstrate the expected input and output format.
-
-
-cURL:
-
-curl -X POST \
-    &quot;http://127.0.0.1:7860/api/v1/run/da021761-1feb-4b45-bd28-148dcd3693b5?stream=false&quot; \
-    -H &#x27;Content-Type: application/json&#x27;\
-    -d &#x27;{&quot;input_value&quot;: &quot;message&quot;,# Query content
-    &quot;output_type&quot;: &quot;chat&quot;,
-    &quot;input_type&quot;: &quot;chat&quot;,
-    &quot;tweaks&quot;: {
-  &quot;ChatInput-UF6l2&quot;: {},
-  &quot;ParseData-ezHSd&quot;: {},
-  &quot;Prompt-Zl6V5&quot;: {},
-  &quot;SplitText-yHqNN&quot;: {},
-  &quot;ChatOutput-iQnhL&quot;: {},
-  &quot;File-msFnr&quot;: {},
-  &quot;NVIDIAEmbeddingsComponent-SU7Lm&quot;: {},
-  &quot;NVIDIAEmbeddingsComponent-PmCRD&quot;: {},
-  &quot;FAISS-EDe30&quot;: {},
-  &quot;FAISS-JheoQ&quot;: {},
-  &quot;NVIDIAModelComponent-vd9j8&quot;: {}
-}}&#x27;
-
-
-Example:
-
-curl -X POST \
-    &quot;http://127.0.0.1:7860/api/v1/run/da021761-1feb-4b45-bd28-148dcd3693b5?stream=false&quot; \
-    -H &#x27;Content-Type: application/json&#x27;\
-    -d &#x27;{&quot;input_value&quot;: &quot;provide some examples of Self-Consistency Prompt&quot;,
-    &quot;output_type&quot;: &quot;chat&quot;,
-    &quot;input_type&quot;: &quot;chat&quot;,
-    &quot;tweaks&quot;: {
-  &quot;ChatInput-UF6l2&quot;: {},
-  &quot;ParseData-ezHSd&quot;: {},
-  &quot;Prompt-Zl6V5&quot;: {},
-  &quot;SplitText-yHqNN&quot;: {},
-  &quot;ChatOutput-iQnhL&quot;: {},
-  &quot;File-msFnr&quot;: {},
-  &quot;NVIDIAEmbeddingsComponent-SU7Lm&quot;: {},
-  &quot;NVIDIAEmbeddingsComponent-PmCRD&quot;: {},
-  &quot;FAISS-EDe30&quot;: {},
-  &quot;FAISS-JheoQ&quot;: {},
-  &quot;NVIDIAModelComponent-vd9j8&quot;: {}
-}}&#x27;
+    * {
+        box-sizing: border-box;
+        -webkit-print-color-adjust: exact;
+    }
+    
+    html,
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    @media only screen {
+        body {
+            margin: 2em auto;
+            max-width: 900px;
+            color: rgb(55, 53, 47);
+        }
+    }
+    
+    body {
+        line-height: 1.5;
+        white-space: pre-wrap;
+    }
+    
+    a,
+    a.visited {
+        color: inherit;
+        text-decoration: underline;
+    }
+    
+    .pdf-relative-link-path {
+        font-size: 80%;
+        color: #444;
+    }
+    
+    h1,
+    h2,
+    h3 {
+        letter-spacing: -0.01em;
+        line-height: 1.2;
+        font-weight: 600;
+        margin-bottom: 0;
+    }
+    
+    .page-title {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-top: 0;
+        margin-bottom: 0.75em;
+    }
+    
+    h1 {
+        font-size: 1.875rem;
+        margin-top: 1.875rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+        margin-top: 1.5rem;
+    }
+    
+    h3 {
+        font-size: 1.25rem;
+        margin-top: 1.25rem;
+    }
+    
+    .source {
+        border: 1px solid #ddd;
+        border-radius: 3px;
+        padding: 1.5em;
+        word-break: break-all;
+    }
+    
+    .callout {
+        border-radius: 3px;
+        padding: 1rem;
+    }
+    
+    figure {
+        margin: 1.25em 0;
+        page-break-inside: avoid;
+    }
+    
+    figcaption {
+        opacity: 0.5;
+        font-size: 85%;
+        margin-top: 0.5em;
+    }
+    
+    mark {
+        background-color: transparent;
+    }
+    
+    .indented {
+        padding-left: 1.5em;
+    }
+    
+    hr {
+        background: transparent;
+        display: block;
+        width: 100%;
+        height: 1px;
+        visibility: visible;
+        border: none;
+        border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+    }
+    
+    img {
+        max-width: 100%;
+    }
+    
+    @media only print {
+        img {
+            max-height: 100vh;
+            object-fit: contain;
+        }
+    }
+    
+    @page {
+        margin: 1in;
+    }
+    
+    .collection-content {
+        font-size: 0.875rem;
+    }
+    
+    .column-list {
+        display: flex;
+        justify-content: space-between;
+    }
+    
+    .column {
+        padding: 0 1em;
+    }
+    
+    .column:first-child {
+        padding-left: 0;
+    }
+    
+    .column:last-child {
+        padding-right: 0;
+    }
+    
+    .table_of_contents-item {
+        display: block;
+        font-size: 0.875rem;
+        line-height: 1.3;
+        padding: 0.125rem;
+    }
+    
+    .table_of_contents-indent-1 {
+        margin-left: 1.5rem;
+    }
+    
+    .table_of_contents-indent-2 {
+        margin-left: 3rem;
+    }
+    
+    .table_of_contents-indent-3 {
+        margin-left: 4.5rem;
+    }
+    
+    .table_of_contents-link {
+        text-decoration: none;
+        opacity: 0.7;
+        border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+    }
+    
+    table,
+    th,
+    td {
+        border: 1px solid rgba(55, 53, 47, 0.09);
+        border-collapse: collapse;
+    }
+    
+    table {
+        border-left: none;
+        border-right: none;
+    }
+    
+    th,
+    td {
+        font-weight: normal;
+        padding: 0.25em 0.5em;
+        line-height: 1.5;
+        min-height: 1.5em;
+        text-align: left;
+    }
+    
+    th {
+        color: rgba(55, 53, 47, 0.6);
+    }
+    
+    ol,
+    ul {
+        margin: 0;
+        margin-block-start: 0.6em;
+        margin-block-end: 0.6em;
+    }
+    
+    li > ol:first-child,
+    li > ul:first-child {
+        margin-block-start: 0.6em;
+    }
+    
+    ul > li {
+        list-style: disc;
+    }
+    
+    ul.to-do-list {
+        padding-inline-start: 0;
+    }
+    
+    ul.to-do-list > li {
+        list-style: none;
+    }
+    
+    .to-do-children-checked {
+        text-decoration: line-through;
+        opacity: 0.375;
+    }
+    
+    ul.toggle > li {
+        list-style: none;
+    }
+    
+    ul {
+        padding-inline-start: 1.7em;
+    }
+    
+    ul > li {
+        padding-left: 0.1em;
+    }
+    
+    ol {
+        padding-inline-start: 1.6em;
+    }
+    
+    ol > li {
+        padding-left: 0.2em;
+    }
+    
+    .mono ol {
+        padding-inline-start: 2em;
+    }
+    
+    .mono ol > li {
+        text-indent: -0.4em;
+    }
+    
+    .toggle {
+        padding-inline-start: 0em;
+        list-style-type: none;
+    }
+    
+    /* Indent toggle children */
+    .toggle > li > details {
+        padding-left: 1.7em;
+    }
+    
+    .toggle > li > details > summary {
+        margin-left: -1.1em;
+    }
+    
+    .selected-value {
+        display: inline-block;
+        padding: 0 0.5em;
+        background: rgba(206, 205, 202, 0.5);
+        border-radius: 3px;
+        margin-right: 0.5em;
+        margin-top: 0.3em;
+        margin-bottom: 0.3em;
+        white-space: nowrap;
+    }
+    
+    .collection-title {
+        display: inline-block;
+        margin-right: 1em;
+    }
+    
+    .page-description {
+        margin-bottom: 2em;
+    }
+    
+    .simple-table {
+        margin-top: 1em;
+        font-size: 0.875rem;
+        empty-cells: show;
+    }
+    .simple-table td {
+        height: 29px;
+        min-width: 120px;
+    }
+    
+    .simple-table th {
+        height: 29px;
+        min-width: 120px;
+    }
+    
+    .simple-table-header-color {
+        background: rgb(247, 246, 243);
+        color: black;
+    }
+    .simple-table-header {
+        font-weight: 500;
+    }
+    
+    time {
+        opacity: 0.5;
+    }
+    
+    .icon {
+        display: inline-block;
+        max-width: 1.2em;
+        max-height: 1.2em;
+        text-decoration: none;
+        vertical-align: text-bottom;
+        margin-right: 0.5em;
+    }
+    
+    img.icon {
+        border-radius: 3px;
+    }
+    
+    .user-icon {
+        width: 1.5em;
+        height: 1.5em;
+        border-radius: 100%;
+        margin-right: 0.5rem;
+    }
+    
+    .user-icon-inner {
+        font-size: 0.8em;
+    }
+    
+    .text-icon {
+        border: 1px solid #000;
+        text-align: center;
+    }
+    
+    .page-cover-image {
+        display: block;
+        object-fit: cover;
+        width: 100%;
+        max-height: 30vh;
+    }
+    
+    .page-header-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+    }
+    
+    .page-header-icon-with-cover {
+        margin-top: -0.72em;
+        margin-left: 0.07em;
+    }
+    
+    .page-header-icon img {
+        border-radius: 3px;
+    }
+    
+    .link-to-page {
+        margin: 1em 0;
+        padding: 0;
+        border: none;
+        font-weight: 500;
+    }
+    
+    p > .user {
+        opacity: 0.5;
+    }
+    
+    td > .user,
+    td > time {
+        white-space: nowrap;
+    }
+    
+    input[type="checkbox"] {
+        transform: scale(1.5);
+        margin-right: 0.6em;
+        vertical-align: middle;
+    }
+    
+    p {
+        margin-top: 0.5em;
+        margin-bottom: 0.5em;
+    }
+    
+    .image {
+        border: none;
+        margin: 1.5em 0;
+        padding: 0;
+        border-radius: 0;
+        text-align: center;
+    }
+    
+    .code,
+    code {
+        background: rgba(135, 131, 120, 0.15);
+        border-radius: 3px;
+        padding: 0.2em 0.4em;
+        border-radius: 3px;
+        font-size: 85%;
+        tab-size: 2;
+    }
+    
+    code {
+        color: #eb5757;
+    }
+    
+    .code {
+        padding: 1.5em 1em;
+    }
+    
+    .code-wrap {
+        white-space: pre-wrap;
+        word-break: break-all;
+    }
+    
+    .code > code {
+        background: none;
+        padding: 0;
+        font-size: 100%;
+        color: inherit;
+    }
+    
+    blockquote {
+        font-size: 1.25em;
+        margin: 1em 0;
+        padding-left: 1em;
+        border-left: 3px solid rgb(55, 53, 47);
+    }
+    
+    .bookmark {
+        text-decoration: none;
+        max-height: 8em;
+        padding: 0;
+        display: flex;
+        width: 100%;
+        align-items: stretch;
+    }
+    
+    .bookmark-title {
+        font-size: 0.85em;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        height: 1.75em;
+        white-space: nowrap;
+    }
+    
+    .bookmark-text {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .bookmark-info {
+        flex: 4 1 180px;
+        padding: 12px 14px 14px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+    
+    .bookmark-image {
+        width: 33%;
+        flex: 1 1 180px;
+        display: block;
+        position: relative;
+        object-fit: cover;
+        border-radius: 1px;
+    }
+    
+    .bookmark-description {
+        color: rgba(55, 53, 47, 0.6);
+        font-size: 0.75em;
+        overflow: hidden;
+        max-height: 4.5em;
+        word-break: break-word;
+    }
+    
+    .bookmark-href {
+        font-size: 0.75em;
+        margin-top: 0.25em;
+    }
+    
+    .sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+    .code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+    .serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+    .mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+    .pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+    .pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+    .pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+    .pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Display", "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+    .pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+    .pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+    .pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+    .pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+    .pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+    .pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+    .pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+    .pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+    .pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+    .pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+    .pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+    .pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+    .highlight-default {
+        color: rgba(55, 53, 47, 1);
+    }
+    .highlight-gray {
+        color: rgba(120, 119, 116, 1);
+        fill: rgba(120, 119, 116, 1);
+    }
+    .highlight-brown {
+        color: rgba(159, 107, 83, 1);
+        fill: rgba(159, 107, 83, 1);
+    }
+    .highlight-orange {
+        color: rgba(217, 115, 13, 1);
+        fill: rgba(217, 115, 13, 1);
+    }
+    .highlight-yellow {
+        color: rgba(203, 145, 47, 1);
+        fill: rgba(203, 145, 47, 1);
+    }
+    .highlight-teal {
+        color: rgba(68, 131, 97, 1);
+        fill: rgba(68, 131, 97, 1);
+    }
+    .highlight-blue {
+        color: rgba(51, 126, 169, 1);
+        fill: rgba(51, 126, 169, 1);
+    }
+    .highlight-purple {
+        color: rgba(144, 101, 176, 1);
+        fill: rgba(144, 101, 176, 1);
+    }
+    .highlight-pink {
+        color: rgba(193, 76, 138, 1);
+        fill: rgba(193, 76, 138, 1);
+    }
+    .highlight-red {
+        color: rgba(212, 76, 71, 1);
+        fill: rgba(212, 76, 71, 1);
+    }
+    .highlight-default_background {
+        color: rgba(55, 53, 47, 1);
+    }
+    .highlight-gray_background {
+        background: rgba(241, 241, 239, 1);
+    }
+    .highlight-brown_background {
+        background: rgba(244, 238, 238, 1);
+    }
+    .highlight-orange_background {
+        background: rgba(251, 236, 221, 1);
+    }
+    .highlight-yellow_background {
+        background: rgba(251, 243, 219, 1);
+    }
+    .highlight-teal_background {
+        background: rgba(237, 243, 236, 1);
+    }
+    .highlight-blue_background {
+        background: rgba(231, 243, 248, 1);
+    }
+    .highlight-purple_background {
+        background: rgba(244, 240, 247, 0.8);
+    }
+    .highlight-pink_background {
+        background: rgba(249, 238, 243, 0.8);
+    }
+    .highlight-red_background {
+        background: rgba(253, 235, 236, 1);
+    }
+    .block-color-default {
+        color: inherit;
+        fill: inherit;
+    }
+    .block-color-gray {
+        color: rgba(120, 119, 116, 1);
+        fill: rgba(120, 119, 116, 1);
+    }
+    .block-color-brown {
+        color: rgba(159, 107, 83, 1);
+        fill: rgba(159, 107, 83, 1);
+    }
+    .block-color-orange {
+        color: rgba(217, 115, 13, 1);
+        fill: rgba(217, 115, 13, 1);
+    }
+    .block-color-yellow {
+        color: rgba(203, 145, 47, 1);
+        fill: rgba(203, 145, 47, 1);
+    }
+    .block-color-teal {
+        color: rgba(68, 131, 97, 1);
+        fill: rgba(68, 131, 97, 1);
+    }
+    .block-color-blue {
+        color: rgba(51, 126, 169, 1);
+        fill: rgba(51, 126, 169, 1);
+    }
+    .block-color-purple {
+        color: rgba(144, 101, 176, 1);
+        fill: rgba(144, 101, 176, 1);
+    }
+    .block-color-pink {
+        color: rgba(193, 76, 138, 1);
+        fill: rgba(193, 76, 138, 1);
+    }
+    .block-color-red {
+        color: rgba(212, 76, 71, 1);
+        fill: rgba(212, 76, 71, 1);
+    }
+    .block-color-default_background {
+        color: inherit;
+        fill: inherit;
+    }
+    .block-color-gray_background {
+        background: rgba(241, 241, 239, 1);
+    }
+    .block-color-brown_background {
+        background: rgba(244, 238, 238, 1);
+    }
+    .block-color-orange_background {
+        background: rgba(251, 236, 221, 1);
+    }
+    .block-color-yellow_background {
+        background: rgba(251, 243, 219, 1);
+    }
+    .block-color-teal_background {
+        background: rgba(237, 243, 236, 1);
+    }
+    .block-color-blue_background {
+        background: rgba(231, 243, 248, 1);
+    }
+    .block-color-purple_background {
+        background: rgba(244, 240, 247, 0.8);
+    }
+    .block-color-pink_background {
+        background: rgba(249, 238, 243, 0.8);
+    }
+    .block-color-red_background {
+        background: rgba(253, 235, 236, 1);
+    }
+    .select-value-color-uiBlue { background-color: rgba(35, 131, 226, .07); }
+    .select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+    .select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+    .select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+    .select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+    .select-value-color-transparentGray { background-color: rgba(227, 226, 224, 0); }
+    .select-value-color-translucentGray { background-color: rgba(0, 0, 0, 0.06); }
+    .select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+    .select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+    .select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+    .select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+    .select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+    .select-value-color-pageGlass { background-color: undefined; }
+    .select-value-color-washGlass { background-color: undefined; }
+    
+    .checkbox {
+        display: inline-flex;
+        vertical-align: text-bottom;
+        width: 16;
+        height: 16;
+        background-size: 16px;
+        margin-left: 2px;
+        margin-right: 5px;
+    }
+    
+    .checkbox-on {
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+    }
+    
+    .checkbox-off {
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+    }
+        
+    </style></head><body><article id="15b3b313-aef4-8003-ae30-f9c69853bdcd" class="page sans"><header><h1 class="page-title">重磅更新！Cline+Gemini Flash 2.0 轻松实现零代码开发MCP Server打造最强Claude AI Agent！为Claude实现RAG！超越windsurf和cursor</h1><p class="page-description"></p></header><div class="page-body"><p id="15b3b313-aef4-805d-8fc2-fdeade4653eb" class="">
+    </p><h3 id="15b3b313-aef4-80f7-b404-e1f911b58675" class="">✅天气预报+MCP</h3><h3 id="15b3b313-aef4-8003-b251-f78d1cc95101" class="">✅RAG+MCP 【langflow】</h3><h3 id="15b3b313-aef4-80fe-859d-f3c34867b0ad" class="">✅搜索引擎+MCP 【serpapi】</h3><h3 id="15b3b313-aef4-802e-a345-d81ba3bf2888" class="">✅serp api <a href="https://serpapi.com/dashboard">https://serpapi.com/dashboard</a></h3><p id="15c3b313-aef4-8051-b586-f1a295911fd8" class="">
+    </p><h3 id="15b3b313-aef4-8034-8ccc-ce49a014d5b8" class="">Prompt</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="15b3b313-aef4-8001-998f-f3a8d5b30756" class="code"><code class="language-JavaScript">
+    Add a tool that can extract the top 10 search results from DuckDuckGo.
+    
+    Please add this tool to the Claude Desktop App
+    
+    Search for the latest AI news from DuckDuckGo.
     
     
-Response:
     
-{&quot;session_id&quot;:&quot;da021761-1feb-4b45-bd28-148dcd3693b5&quot;,&quot;outputs&quot;:[{&quot;inputs&quot;:{&quot;input_value&quot;:&quot;provide some examples of Self-Consistency Prompt&quot;},&quot;outputs&quot;:[{&quot;results&quot;:{&quot;message&quot;:{&quot;text_key&quot;:&quot;text&quot;,&quot;data&quot;:{&quot;timestamp&quot;:&quot;2024-12-14T07:05:58&quot;,&quot;sender&quot;:&quot;Machine&quot;,&quot;sender_name&quot;:&quot;AI&quot;,&quot;session_id&quot;:&quot;da021761-1feb-4b45-bd28-148dcd3693b5&quot;,&quot;text&quot;:&quot;Here are some examples of Self-Consistency Prompt:\n\n1. **Text Generation**: \&quot;Generate a product review that is consistent with the following product information [insert product information]\&quot;\n2. **Text Summarization**: \&quot;Summarize the following news article in a way that is consistent with the information provided [insert news article]\&quot;\n3. **Text Completion**: \&quot;Complete the following sentence by selecting one of the following options: [insert sentence] [insert option 1] [insert option 2] [insert option 3]\&quot;\n4. **Question Answering**: \&quot;Answer the following question by selecting one of the following options: [insert question] [insert option 1] [insert option 2] [insert option 3]\&quot;\n5. **Sentiment Analysis**: \&quot;Classify the following text as positive, neutral or negative by selecting one of the following options: [insert text] [positive] [neutral] [negative]\&quot;\n6. **Knowledge Integration**: \&quot;Integrate the following information with the existing knowledge about [specific topic]: [insert new information]\&quot;\n7. **Connecting pieces of information**: \&quot;Connect the following pieces of information in a way that is relevant and logical: [insert information 1] [insert information 2]\&quot;\n8. **Updating existing knowledge**: \&quot;Update the existing knowledge about [specific topic] with the following information: [insert new information]\&quot;\n\nThese examples illustrate how the Self-Consistency Prompt can be used to ensure that the output of ChatGPT is consistent with the input provided, and to perform various tasks such as text generation, summarization, completion, and analysis.&quot;,&quot;files&quot;:[],&quot;error&quot;:false,&quot;edit&quot;:false,&quot;properties&quot;:{&quot;text_color&quot;:&quot;&quot;,&quot;background_color&quot;:&quot;&quot;,&quot;edited&quot;:false,&quot;source&quot;:{&quot;id&quot;:&quot;NVIDIAModelComponent-vd9j8&quot;,&quot;display_name&quot;:&quot;NVIDIA&quot;,&quot;source&quot;:&quot;meta/llama-3.1-70b-instruct&quot;},&quot;icon&quot;:&quot;NVIDIA&quot;,&quot;allow_markdown&quot;:false,&quot;state&quot;:&quot;complete&quot;,&quot;targets&quot;:[]},&quot;category&quot;:&quot;message&quot;,&quot;content_blocks&quot;:[],&quot;id&quot;:&quot;8d81c6c1-061b-432a-b14f-746e65390b36&quot;,&quot;flow_id&quot;:&quot;da021761-1feb-4b45-bd28-148dcd3693b5&quot;},&quot;default_value&quot;:&quot;&quot;,&quot;text&quot;:&quot;Here are some examples of Self-Consistency Prompt:\n\n1. **Text Generation**: \&quot;Generate a product review that is consistent with the following product information [insert product information]\&quot;\n2. **Text Summarization**: \&quot;Summarize the following news article in a way that is consistent with the information provided [insert news article]\&quot;\n3. **Text Completion**: \&quot;Complete the following sentence by selecting one of the following options: [insert sentence] [insert option 1] [insert option 2] [insert option 3]\&quot;\n4. **Question Answering**: \&quot;Answer the following question by selecting one of the following options: [insert question] [insert option 1] [insert option 2] [insert option 3]\&quot;\n5. **Sentiment Analysis**: \&quot;Classify the following text as positive, neutral or negative by selecting one of the following options: [insert text] [positive] [neutral] [negative]\&quot;\n6. **Knowledge Integration**: \&quot;Integrate the following information with the existing knowledge about [specific topic]: [insert new information]\&quot;\n7. **Connecting pieces of information**: \&quot;Connect the following pieces of information in a way that is relevant and logical: [insert information 1] [insert information 2]\&quot;\n8. **Updating existing knowledge**: \&quot;Update the existing knowledge about [specific topic] with the following information: [insert new information]\&quot;\n\nThese examples illustrate how the Self-Consistency Prompt can be used to ensure that the output of ChatGPT is consistent with the input provided, and to perform various tasks such as text generation, summarization, completion, and analysis.&quot;,&quot;sender&quot;:&quot;Machine&quot;,&quot;sender_name&quot;:&quot;AI&quot;,&quot;files&quot;:[],&quot;session_id&quot;:&quot;da021761-1feb-4b45-bd28-148dcd3693b5&quot;,&quot;timestamp&quot;:&quot;2024-12-14T07:05:58Z&quot;,&quot;flow_id&quot;:&quot;da021761-1feb-4b45-bd28-148dcd3693b5&quot;,&quot;error&quot;:false,&quot;edit&quot;:false,&quot;properties&quot;:{&quot;text_color&quot;:&quot;&quot;,&quot;background_color&quot;:&quot;&quot;,&quot;edited&quot;:false,&quot;source&quot;:{&quot;id&quot;:&quot;NVIDIAModelComponent-vd9j8&quot;,&quot;display_name&quot;:&quot;NVIDIA&quot;,&quot;source&quot;:&quot;meta/llama-3.1-70b-instruct&quot;},&quot;icon&quot;:&quot;NVIDIA&quot;,&quot;allow_markdown&quot;:false,&quot;state&quot;:&quot;complete&quot;,&quot;targets&quot;:[]},&quot;category&quot;:&quot;message&quot;,&quot;content_blocks&quot;:[]}},&quot;artifacts&quot;:{&quot;message&quot;:&quot;Here are some examples of Self-Consistency Prompt:\n\n1. **Text Generation**: \&quot;Generate a product review that is consistent with the following product information [insert product information]\&quot;\n\n2. **Text Summarization**: \&quot;Summarize the following news article in a way that is consistent with the information provided [insert news article]\&quot;\n\n3. **Text Completion**: \&quot;Complete the following sentence by selecting one of the following options: [insert sentence] [insert option 1] [insert option 2] [insert option 3]\&quot;\n\n4. **Question Answering**: \&quot;Answer the following question by selecting one of the following options: [insert question] [insert option 1] [insert option 2] [insert option 3]\&quot;\n\n5. **Sentiment Analysis**: \&quot;Classify the following text as positive, neutral or negative by selecting one of the following options: [insert text] [positive] [neutral] [negative]\&quot;\n\n6. **Knowledge Integration**: \&quot;Integrate the following information with the existing knowledge about [specific topic]: [insert new information]\&quot;\n\n7. **Connecting pieces of information**: \&quot;Connect the following pieces of information in a way that is relevant and logical: [insert information 1] [insert information 2]\&quot;\n\n8. **Updating existing knowledge**: \&quot;Update the existing knowledge about [specific topic] with the following information: [insert new information]\&quot;\n\nThese examples illustrate how the Self-Consistency Prompt can be used to ensure that the output of ChatGPT is consistent with the input provided, and to perform various tasks such as text generation, summarization, completion, and analysis.&quot;,&quot;sender&quot;:&quot;Machine&quot;,&quot;sender_name&quot;:&quot;AI&quot;,&quot;files&quot;:[],&quot;type&quot;:&quot;object&quot;},&quot;outputs&quot;:{&quot;message&quot;:{&quot;message&quot;:{&quot;timestamp&quot;:&quot;2024-12-14T07:05:58&quot;,&quot;sender&quot;:&quot;Machine&quot;,&quot;sender_name&quot;:&quot;AI&quot;,&quot;session_id&quot;:&quot;da021761-1feb-4b45-bd28-148dcd3693b5&quot;,&quot;text&quot;:&quot;Here are some examples of Self-Consistency Prompt:\n\n1. **Text Generation**: \&quot;Generate a product review that is consistent with the following product information [insert product information]\&quot;\n2. **Text Summarization**: \&quot;Summarize the following news article in a way that is consistent with the information provided [insert news article]\&quot;\n3. **Text Completion**: \&quot;Complete the following sentence by selecting one of the following options: [insert sentence] [insert option 1] [insert option 2] [insert option 3]\&quot;\n4. **Question Answering**: \&quot;Answer the following question by selecting one of the following options: [insert question] [insert option 1] [insert option 2] [insert option 3]\&quot;\n5. **Sentiment Analysis**: \&quot;Classify the following text as positive, neutral or negative by selecting one of the following options: [insert text] [positive] [neutral] [negative]\&quot;\n6. **Knowledge Integration**: \&quot;Integrate the following information with the existing knowledge about [specific topic]: [insert new information]\&quot;\n7. **Connecting pieces of information**: \&quot;Connect the following pieces of information in a way that is relevant and logical: [insert information 1] [insert information 2]\&quot;\n8. **Updating existing knowledge**: \&quot;Update the existing knowledge about [specific topic] with the following information: [insert new information]\&quot;\n\nThese examples illustrate how the Self-Consistency Prompt can be used to ensure that the output of ChatGPT is consistent with the input provided, and to perform various tasks such as text generation, summarization, completion, and analysis.&quot;,&quot;files&quot;:[],&quot;error&quot;:false,&quot;edit&quot;:false,&quot;properties&quot;:{&quot;text_color&quot;:&quot;&quot;,&quot;background_color&quot;:&quot;&quot;,&quot;edited&quot;:false,&quot;source&quot;:{&quot;id&quot;:&quot;NVIDIAModelComponent-vd9j8&quot;,&quot;display_name&quot;:&quot;NVIDIA&quot;,&quot;source&quot;:&quot;meta/llama-3.1-70b-instruct&quot;},&quot;icon&quot;:&quot;NVIDIA&quot;,&quot;allow_markdown&quot;:false,&quot;state&quot;:&quot;complete&quot;,&quot;targets&quot;:[]},&quot;category&quot;:&quot;message&quot;,&quot;content_blocks&quot;:[],&quot;id&quot;:&quot;8d81c6c1-061b-432a-b14f-746e65390b36&quot;,&quot;flow_id&quot;:&quot;da021761-1feb-4b45-bd28-148dcd3693b5&quot;},&quot;type&quot;:&quot;object&quot;}},&quot;logs&quot;:{&quot;message&quot;:[]},&quot;messages&quot;:[{&quot;message&quot;:&quot;Here are some examples of Self-Consistency Prompt:\n\n1. **Text Generation**: \&quot;Generate a product review that is consistent with the following product information [insert product information]\&quot;\n\n2. **Text Summarization**: \&quot;Summarize the following news article in a way that is consistent with the information provided [insert news article]\&quot;\n\n3. **Text Completion**: \&quot;Complete the following sentence by selecting one of the following options: [insert sentence] [insert option 1] [insert option 2] [insert option 3]\&quot;\n\n4. **Question Answering**: \&quot;Answer the following question by selecting one of the following options: [insert question] [insert option 1] [insert option 2] [insert option 3]\&quot;\n\n5. **Sentiment Analysis**: \&quot;Classify the following text as positive, neutral or negative by selecting one of the following options: [insert text] [positive] [neutral] [negative]\&quot;\n\n6. **Knowledge Integration**: \&quot;Integrate the following information with the existing knowledge about [specific topic]: [insert new information]\&quot;\n\n7. **Connecting pieces of information**: \&quot;Connect the following pieces of information in a way that is relevant and logical: [insert information 1] [insert information 2]\&quot;\n\n8. **Updating existing knowledge**: \&quot;Update the existing knowledge about [specific topic] with the following information: [insert new information]\&quot;\n\nThese examples illustrate how the Self-Consistency Prompt can be used to ensure that the output of ChatGPT is consistent with the input provided, and to perform various tasks such as text generation, summarization, completion, and analysis.&quot;,&quot;sender&quot;:&quot;Machine&quot;,&quot;sender_name&quot;:&quot;AI&quot;,&quot;session_id&quot;:&quot;da021761-1feb-4b45-bd28-148dcd3693b5&quot;,&quot;component_id&quot;:&quot;ChatOutput-iQnhL&quot;,&quot;files&quot;:[],&quot;type&quot;:&quot;message&quot;}],&quot;component_display_name&quot;:&quot;Chat Output&quot;,&quot;component_id&quot;:&quot;ChatOutput-iQnhL&quot;,&quot;used_frozen_result&quot;:false}]}]}% 
-</code></pre><h3 id="15c3b313-aef4-80b2-8bdd-d951856ec804" class="">检索prompt</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="15c3b313-aef4-804a-af70-ce772541e45b" class="code"><code class="language-JavaScript">Query some examples of Self-Consistency Prompt from rag-server</code></pre><p id="15c3b313-aef4-80df-8aa2-dfb4300c449d" class="">
-</p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
+    &quot;...fetches Jira tickets&quot;: Get ticket ACs and put Cline to work
+    &quot;...manages AWS EC2s&quot;: Check server metrics and scale up or down
+    &quot;...pulls PagerDuty incidents&quot;: Pulls details to help Cline fix bugs
+    </code></pre><h3 id="15c3b313-aef4-80d6-9759-fc41c718c043" class="">天气预报示例</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="15b3b313-aef4-8038-a4fe-f28878ba731e" class="code"><code class="language-JavaScript">
+    #链接 https://openweathermap.org/
+    
+    Add a tool that can help get weather forecast information. Below is the API link and an example of the response content:
+    
+    API Link:
+    https://api.openweathermap.org/data/2.5/weather?lat=44.34&amp;lon=10.99&amp;appid=a2b8512c08d3ee7407e25a2f5f03cbc8
+    
+    
+    Response Content:
+    {
+      &quot;coord&quot;: {
+        &quot;lon&quot;: 10.99,
+        &quot;lat&quot;: 44.34
+      },
+      &quot;weather&quot;: [
+        {
+          &quot;id&quot;: 804,
+          &quot;main&quot;: &quot;Clouds&quot;,
+          &quot;description&quot;: &quot;overcast clouds&quot;,
+          &quot;icon&quot;: &quot;04d&quot;
+        }
+      ],
+      &quot;base&quot;: &quot;stations&quot;,
+      &quot;main&quot;: {
+        &quot;temp&quot;: 275.74,
+        &quot;feels_like&quot;: 275.74,
+        &quot;temp_min&quot;: 272.16,
+        &quot;temp_max&quot;: 277.08,
+        &quot;pressure&quot;: 1030,
+        &quot;humidity&quot;: 91,
+        &quot;sea_level&quot;: 1030,
+        &quot;grnd_level&quot;: 959
+      },
+      &quot;visibility&quot;: 6446,
+      &quot;wind&quot;: {
+        &quot;speed&quot;: 1.15,
+        &quot;deg&quot;: 35,
+        &quot;gust&quot;: 1.51
+      },
+      &quot;clouds&quot;: {
+        &quot;all&quot;: 99
+      },
+      &quot;dt&quot;: 1734081976,
+      &quot;sys&quot;: {
+        &quot;type&quot;: 2,
+        &quot;id&quot;: 2004688,
+        &quot;country&quot;: &quot;IT&quot;,
+        &quot;sunrise&quot;: 1734072230,
+        &quot;sunset&quot;: 1734104225
+      },
+      &quot;timezone&quot;: 3600,
+      &quot;id&quot;: 3163858,
+      &quot;name&quot;: &quot;Zocca&quot;,
+      &quot;cod&quot;: 200
+    }
+    
+    </code></pre><h2 id="15c3b313-aef4-808d-a3f3-dcadaa005b8c" class=""><strong>🔥🔥🔥如有问题，请联系我的徽信 stoeng</strong></h2><h2 id="15c3b313-aef4-8041-a0fc-e6e325f7c363" class=""><strong>🔥🔥🔥本项目代码由AI超元域频道制作，观看更多大模型微调视频请访问我的频道⬇</strong></h2><h3 id="15c3b313-aef4-808e-8ff4-e5a3761f120f" class=""><strong>👉👉👉</strong><strong><a href="https://space.bilibili.com/3493277319825652">我的哔哩哔哩频道</a></strong></h3><h3 id="15c3b313-aef4-80bc-b5b8-fe025624b3f9" class=""><strong>👉👉👉</strong><strong><a href="https://www.youtube.com/@AIsuperdomain">我的YouTube频道</a></strong></h3><h3 id="15c3b313-aef4-805c-ac25-f346237a6025" class=""><strong>👉👉👉我的开源项目 </strong><strong><a href="https://github.com/win4r/AISuperDomain">https://github.com/win4r/AISuperDomain</a></strong></h3><h3 id="15c3b313-aef4-801a-a8f4-de469a8fb169" class=""></p><p id="15c3b313-aef4-8048-8479-f7767e066c35" class="">
+    </p><p id="15c3b313-aef4-8089-83e2-f21df72af249" class="">
+    </p><p id="15c3b313-aef4-8056-95e6-c45fb667af05" class="">
+    </p><h3 id="15c3b313-aef4-8013-8300-f7ed9896311e" class="">Google News API</h3><p id="15c3b313-aef4-80ba-87bf-c304940a1fde" class="">✅<a href="https://serpapi.com/google-news-api">https://serpapi.com/google-news-api</a></p><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="15c3b313-aef4-8002-984b-c07834a9e546" class="code"><code class="language-JavaScript">Add a tool that can search for news from Google News using the SERP API. The tool should process the retrieved results to extract key information, such as the title, source, publication date, and link for each news article. The extracted data should then be used to generate a contextually accurate and detailed response to the user&#x27;s query. 
+    
+    The following is an example of how to use the SERP API with a cURL command. It includes an example request and response to demonstrate the expected input and output format.
+    
+    Request:
+    
+    curl --get https://serpapi.com/search \
+     -d engine=&quot;google_news&quot; \
+     -d q=&quot;pizza&quot; \
+     -d gl=&quot;us&quot; \
+     -d hl=&quot;en&quot; \
+     -d api_key=&quot;daafd52eec6092450963a1910b9be1adae39cb245a25afc7821a0c32335ec7b4&quot;
+    
+    Response:
+    
+    {
+      &quot;search_metadata&quot;: {
+        &quot;id&quot;: &quot;6734b33796b8f8a59b244ae1&quot;,
+        &quot;status&quot;: &quot;Success&quot;,
+        &quot;json_endpoint&quot;: &quot;https://serpapi.com/searches/87b042ba1547994d/6734b33796b8f8a59b244ae1.json&quot;,
+        &quot;created_at&quot;: &quot;2024-11-13 14:09:59 UTC&quot;,
+        &quot;processed_at&quot;: &quot;2024-11-13 14:09:59 UTC&quot;,
+        &quot;google_news_url&quot;: &quot;https://news.google.com/search?q=pizza&amp;hl=en&amp;gl=US&quot;,
+        &quot;raw_html_file&quot;: &quot;https://serpapi.com/searches/87b042ba1547994d/6734b33796b8f8a59b244ae1.html&quot;,
+        &quot;total_time_taken&quot;: 1.62
+      },
+      &quot;search_parameters&quot;: {
+        &quot;engine&quot;: &quot;google_news&quot;,
+        &quot;gl&quot;: &quot;us&quot;,
+        &quot;hl&quot;: &quot;en&quot;,
+        &quot;q&quot;: &quot;pizza&quot;
+      },
+      &quot;news_results&quot;: [
+        {
+          &quot;position&quot;: 1,
+          &quot;title&quot;: &quot;Industrial Taphouse owners opening Steampunk Pizza in Ashland&quot;,
+          &quot;source&quot;: {
+            &quot;name&quot;: &quot;RichmondBizSense&quot;,
+            &quot;icon&quot;: &quot;https://encrypted-tbn0.gstatic.com/faviconV2?url=https://richmondbizsense.com&amp;client=NEWS_360&amp;size=96&amp;type=FAVICON&amp;fallback_opts=TYPE,SIZE,URL&quot;,
+            &quot;authors&quot;: [
+              &quot;Mike Platania&quot;
+            ]
+          },
+          &quot;link&quot;: &quot;https://richmondbizsense.com/2024/11/12/industrial-taphouse-owners-opening-steampunk-pizza-in-ashland/&quot;,
+          &quot;thumbnail&quot;: &quot;https://richmondbizsense.com/wp-content/uploads/2024/11/steampunk-pizza1-Cropped.jpg&quot;,
+          &quot;thumbnail_small&quot;: &quot;https://news.google.com/api/attachments/CC8iI0NnNDVjM3BhYjFwZlJreG1aV05ZVFJDb0FSaXNBaWdCTWdB&quot;,
+          &quot;date&quot;: &quot;11/12/2024, 09:03 AM, +0200 EET&quot;
+        },
+        {
+          &quot;position&quot;: 2,
+          &quot;title&quot;: &quot;A Top LA Pizzeria Makes a Big Move to the Westside Next Year&quot;,
+          &quot;source&quot;: {
+            &quot;name&quot;: &quot;Eater LA&quot;,
+            &quot;icon&quot;: &quot;https://lh3.googleusercontent.com/Etyvq1qAM7RUdeLuULrKii11AFXQoHHgNx5bKBWLlByYuMa91G3F-EC2J0Qv_xQSCVh8agge&quot;,
+            &quot;authors&quot;: [
+              &quot;Matthew Kang&quot;
+            ]
+          },
+          &quot;link&quot;: &quot;https://la.eater.com/2024/11/11/24293844/pizzeria-sei-william-joo-moving-palms-los-angeles&quot;,
+          &quot;thumbnail&quot;: &quot;https://cdn.vox-cdn.com/thumbor/VasMxoW8YdbQK21KtDos_W_3ar8=/0x0:4032x3024/1200x800/filters:focal(1873x937:2517x1581)/cdn.vox-cdn.com/uploads/chorus_image/image/73716446/PXL_20220216_204449626.PORTRAIT.0.jpg&quot;,
+          &quot;thumbnail_small&quot;: &quot;https://news.google.com/api/attachments/CC8iK0NnNWlORlZtT0RWM1VsTnpObTV4VFJDM0FSaVRBaWdCTWdhQkFZejBBQTA&quot;,
+          &quot;date&quot;: &quot;11/12/2024, 01:27 AM, +0200 EET&quot;
+        },
+        {
+          &quot;position&quot;: 3,
+          &quot;title&quot;: &quot;Best Bites | Homemade sauce and loaded toppings makes this pizza place a favorite in Appleton&quot;,
+          &quot;source&quot;: {
+            &quot;name&quot;: &quot;Post-Crescent&quot;,
+            &quot;icon&quot;: &quot;https://encrypted-tbn0.gstatic.com/faviconV2?url=https://www.postcrescent.com&amp;client=NEWS_360&amp;size=96&amp;type=FAVICON&amp;fallback_opts=TYPE,SIZE,URL&quot;,
+            &quot;authors&quot;: [
+              &quot;Jelissa Burns&quot;
+            ]
+          },
+          &quot;link&quot;: &quot;https://www.postcrescent.com/story/life/food/2024/11/13/stucs-pizza-is-known-for-its-award-winning-pizza-and-calzones/75823785007/&quot;,
+          &quot;thumbnail&quot;: &quot;https://www.postcrescent.com/gcdn/authoring/authoring-images/2024/10/25/PAPN/75841461007-apc-stucs-pizza-1010240313-djp-1.jpg?width=660&amp;height=440&amp;fit=crop&amp;format=pjpg&amp;auto=webp&quot;,
+          &quot;thumbnail_small&quot;: &quot;https://news.google.com/api/attachments/CC8iK0NnNXBWMDF3WmtZM1JtWktUMFJUVFJDM0FSaVRBaWdCTWdZQlI0eUduZ2c&quot;,
+          &quot;date&quot;: &quot;11/13/2024, 01:01 PM, +0200 EET&quot;
+        },
+        ...
+      ],
+      &quot;menu_links&quot;: [
+        {
+          &quot;title&quot;: &quot;U.S.&quot;,
+          &quot;topic_token&quot;: &quot;CAAqIggKIhxDQkFTRHdvSkwyMHZNRGxqTjNjd0VnSmxiaWdBUAE&quot;,
+          &quot;serpapi_link&quot;: &quot;https://serpapi.com/search.json?engine=google_news&amp;gl=us&amp;topic_token=CAAqIggKIhxDQkFTRHdvSkwyMHZNRGxqTjNjd0VnSmxiaWdBUAE&quot;
+        },
+        ...
+      ]
+    }</code></pre><p id="15c3b313-aef4-8041-8be1-f0850dad9fde" class="">
+    </p><p id="15c3b313-aef4-80d6-84a9-f93da3d60fce" class="">
+    </p><p id="15c3b313-aef4-80e9-b38d-cf5aba3bdb33" class="">
+    </p><h3 id="15c3b313-aef4-80f5-9dda-dc93ca84981b" class="">LangFlow</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="15c3b313-aef4-800c-8bb7-e51a20b501db" class="code"><code class="language-JavaScript">
+    python -m pip install langflow
+    
+    python -m langflow run
+    </code></pre><h3 id="15c3b313-aef4-8088-acac-ce31db05cb47" class="">FAISS路径</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="15c3b313-aef4-807b-bca8-f403e35e1ebc" class="code"><code class="language-JavaScript">/Users/charlesqin/Downloads/testfaiss/</code></pre><h3 id="15c3b313-aef4-80db-8db4-f24952ef6aaf" class="">cURL</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="15c3b313-aef4-8076-b865-d94127f54fb6" class="code"><code class="language-JavaScript">Add a tool that retrieves relevant search results from an API, processes the results to extract information, and uses the extracted data to generate a contextually accurate and detailed response to the user&#x27;s query. The tool should integrate retrieval and response generation in a Retrieval-Augmented Generation (RAG) workflow.
+    
+    The following is an example of how to use the API with a cURL command. It includes an example request and response to demonstrate the expected input and output format.
+    
+    
+    cURL:
+    
+    curl -X POST \
+        &quot;http://127.0.0.1:7860/api/v1/run/da021761-1feb-4b45-bd28-148dcd3693b5?stream=false&quot; \
+        -H &#x27;Content-Type: application/json&#x27;\
+        -d &#x27;{&quot;input_value&quot;: &quot;message&quot;,# Query content
+        &quot;output_type&quot;: &quot;chat&quot;,
+        &quot;input_type&quot;: &quot;chat&quot;,
+        &quot;tweaks&quot;: {
+      &quot;ChatInput-UF6l2&quot;: {},
+      &quot;ParseData-ezHSd&quot;: {},
+      &quot;Prompt-Zl6V5&quot;: {},
+      &quot;SplitText-yHqNN&quot;: {},
+      &quot;ChatOutput-iQnhL&quot;: {},
+      &quot;File-msFnr&quot;: {},
+      &quot;NVIDIAEmbeddingsComponent-SU7Lm&quot;: {},
+      &quot;NVIDIAEmbeddingsComponent-PmCRD&quot;: {},
+      &quot;FAISS-EDe30&quot;: {},
+      &quot;FAISS-JheoQ&quot;: {},
+      &quot;NVIDIAModelComponent-vd9j8&quot;: {}
+    }}&#x27;
+    
+    
+    Example:
+    
+    curl -X POST \
+        &quot;http://127.0.0.1:7860/api/v1/run/da021761-1feb-4b45-bd28-148dcd3693b5?stream=false&quot; \
+        -H &#x27;Content-Type: application/json&#x27;\
+        -d &#x27;{&quot;input_value&quot;: &quot;provide some examples of Self-Consistency Prompt&quot;,
+        &quot;output_type&quot;: &quot;chat&quot;,
+        &quot;input_type&quot;: &quot;chat&quot;,
+        &quot;tweaks&quot;: {
+      &quot;ChatInput-UF6l2&quot;: {},
+      &quot;ParseData-ezHSd&quot;: {},
+      &quot;Prompt-Zl6V5&quot;: {},
+      &quot;SplitText-yHqNN&quot;: {},
+      &quot;ChatOutput-iQnhL&quot;: {},
+      &quot;File-msFnr&quot;: {},
+      &quot;NVIDIAEmbeddingsComponent-SU7Lm&quot;: {},
+      &quot;NVIDIAEmbeddingsComponent-PmCRD&quot;: {},
+      &quot;FAISS-EDe30&quot;: {},
+      &quot;FAISS-JheoQ&quot;: {},
+      &quot;NVIDIAModelComponent-vd9j8&quot;: {}
+    }}&#x27;
+        
+        
+    Response:
+        
+    {&quot;session_id&quot;:&quot;da021761-1feb-4b45-bd28-148dcd3693b5&quot;,&quot;outputs&quot;:[{&quot;inputs&quot;:{&quot;input_value&quot;:&quot;provide some examples of Self-Consistency Prompt&quot;},&quot;outputs&quot;:[{&quot;results&quot;:{&quot;message&quot;:{&quot;text_key&quot;:&quot;text&quot;,&quot;data&quot;:{&quot;timestamp&quot;:&quot;2024-12-14T07:05:58&quot;,&quot;sender&quot;:&quot;Machine&quot;,&quot;sender_name&quot;:&quot;AI&quot;,&quot;session_id&quot;:&quot;da021761-1feb-4b45-bd28-148dcd3693b5&quot;,&quot;text&quot;:&quot;Here are some examples of Self-Consistency Prompt:\n\n1. **Text Generation**: \&quot;Generate a product review that is consistent with the following product information [insert product information]\&quot;\n2. **Text Summarization**: \&quot;Summarize the following news article in a way that is consistent with the information provided [insert news article]\&quot;\n3. **Text Completion**: \&quot;Complete the following sentence by selecting one of the following options: [insert sentence] [insert option 1] [insert option 2] [insert option 3]\&quot;\n4. **Question Answering**: \&quot;Answer the following question by selecting one of the following options: [insert question] [insert option 1] [insert option 2] [insert option 3]\&quot;\n5. **Sentiment Analysis**: \&quot;Classify the following text as positive, neutral or negative by selecting one of the following options: [insert text] [positive] [neutral] [negative]\&quot;\n6. **Knowledge Integration**: \&quot;Integrate the following information with the existing knowledge about [specific topic]: [insert new information]\&quot;\n7. **Connecting pieces of information**: \&quot;Connect the following pieces of information in a way that is relevant and logical: [insert information 1] [insert information 2]\&quot;\n8. **Updating existing knowledge**: \&quot;Update the existing knowledge about [specific topic] with the following information: [insert new information]\&quot;\n\nThese examples illustrate how the Self-Consistency Prompt can be used to ensure that the output of ChatGPT is consistent with the input provided, and to perform various tasks such as text generation, summarization, completion, and analysis.&quot;,&quot;files&quot;:[],&quot;error&quot;:false,&quot;edit&quot;:false,&quot;properties&quot;:{&quot;text_color&quot;:&quot;&quot;,&quot;background_color&quot;:&quot;&quot;,&quot;edited&quot;:false,&quot;source&quot;:{&quot;id&quot;:&quot;NVIDIAModelComponent-vd9j8&quot;,&quot;display_name&quot;:&quot;NVIDIA&quot;,&quot;source&quot;:&quot;meta/llama-3.1-70b-instruct&quot;},&quot;icon&quot;:&quot;NVIDIA&quot;,&quot;allow_markdown&quot;:false,&quot;state&quot;:&quot;complete&quot;,&quot;targets&quot;:[]},&quot;category&quot;:&quot;message&quot;,&quot;content_blocks&quot;:[],&quot;id&quot;:&quot;8d81c6c1-061b-432a-b14f-746e65390b36&quot;,&quot;flow_id&quot;:&quot;da021761-1feb-4b45-bd28-148dcd3693b5&quot;},&quot;default_value&quot;:&quot;&quot;,&quot;text&quot;:&quot;Here are some examples of Self-Consistency Prompt:\n\n1. **Text Generation**: \&quot;Generate a product review that is consistent with the following product information [insert product information]\&quot;\n2. **Text Summarization**: \&quot;Summarize the following news article in a way that is consistent with the information provided [insert news article]\&quot;\n3. **Text Completion**: \&quot;Complete the following sentence by selecting one of the following options: [insert sentence] [insert option 1] [insert option 2] [insert option 3]\&quot;\n4. **Question Answering**: \&quot;Answer the following question by selecting one of the following options: [insert question] [insert option 1] [insert option 2] [insert option 3]\&quot;\n5. **Sentiment Analysis**: \&quot;Classify the following text as positive, neutral or negative by selecting one of the following options: [insert text] [positive] [neutral] [negative]\&quot;\n6. **Knowledge Integration**: \&quot;Integrate the following information with the existing knowledge about [specific topic]: [insert new information]\&quot;\n7. **Connecting pieces of information**: \&quot;Connect the following pieces of information in a way that is relevant and logical: [insert information 1] [insert information 2]\&quot;\n8. **Updating existing knowledge**: \&quot;Update the existing knowledge about [specific topic] with the following information: [insert new information]\&quot;\n\nThese examples illustrate how the Self-Consistency Prompt can be used to ensure that the output of ChatGPT is consistent with the input provided, and to perform various tasks such as text generation, summarization, completion, and analysis.&quot;,&quot;sender&quot;:&quot;Machine&quot;,&quot;sender_name&quot;:&quot;AI&quot;,&quot;files&quot;:[],&quot;session_id&quot;:&quot;da021761-1feb-4b45-bd28-148dcd3693b5&quot;,&quot;timestamp&quot;:&quot;2024-12-14T07:05:58Z&quot;,&quot;flow_id&quot;:&quot;da021761-1feb-4b45-bd28-148dcd3693b5&quot;,&quot;error&quot;:false,&quot;edit&quot;:false,&quot;properties&quot;:{&quot;text_color&quot;:&quot;&quot;,&quot;background_color&quot;:&quot;&quot;,&quot;edited&quot;:false,&quot;source&quot;:{&quot;id&quot;:&quot;NVIDIAModelComponent-vd9j8&quot;,&quot;display_name&quot;:&quot;NVIDIA&quot;,&quot;source&quot;:&quot;meta/llama-3.1-70b-instruct&quot;},&quot;icon&quot;:&quot;NVIDIA&quot;,&quot;allow_markdown&quot;:false,&quot;state&quot;:&quot;complete&quot;,&quot;targets&quot;:[]},&quot;category&quot;:&quot;message&quot;,&quot;content_blocks&quot;:[]}},&quot;artifacts&quot;:{&quot;message&quot;:&quot;Here are some examples of Self-Consistency Prompt:\n\n1. **Text Generation**: \&quot;Generate a product review that is consistent with the following product information [insert product information]\&quot;\n\n2. **Text Summarization**: \&quot;Summarize the following news article in a way that is consistent with the information provided [insert news article]\&quot;\n\n3. **Text Completion**: \&quot;Complete the following sentence by selecting one of the following options: [insert sentence] [insert option 1] [insert option 2] [insert option 3]\&quot;\n\n4. **Question Answering**: \&quot;Answer the following question by selecting one of the following options: [insert question] [insert option 1] [insert option 2] [insert option 3]\&quot;\n\n5. **Sentiment Analysis**: \&quot;Classify the following text as positive, neutral or negative by selecting one of the following options: [insert text] [positive] [neutral] [negative]\&quot;\n\n6. **Knowledge Integration**: \&quot;Integrate the following information with the existing knowledge about [specific topic]: [insert new information]\&quot;\n\n7. **Connecting pieces of information**: \&quot;Connect the following pieces of information in a way that is relevant and logical: [insert information 1] [insert information 2]\&quot;\n\n8. **Updating existing knowledge**: \&quot;Update the existing knowledge about [specific topic] with the following information: [insert new information]\&quot;\n\nThese examples illustrate how the Self-Consistency Prompt can be used to ensure that the output of ChatGPT is consistent with the input provided, and to perform various tasks such as text generation, summarization, completion, and analysis.&quot;,&quot;sender&quot;:&quot;Machine&quot;,&quot;sender_name&quot;:&quot;AI&quot;,&quot;files&quot;:[],&quot;type&quot;:&quot;object&quot;},&quot;outputs&quot;:{&quot;message&quot;:{&quot;message&quot;:{&quot;timestamp&quot;:&quot;2024-12-14T07:05:58&quot;,&quot;sender&quot;:&quot;Machine&quot;,&quot;sender_name&quot;:&quot;AI&quot;,&quot;session_id&quot;:&quot;da021761-1feb-4b45-bd28-148dcd3693b5&quot;,&quot;text&quot;:&quot;Here are some examples of Self-Consistency Prompt:\n\n1. **Text Generation**: \&quot;Generate a product review that is consistent with the following product information [insert product information]\&quot;\n2. **Text Summarization**: \&quot;Summarize the following news article in a way that is consistent with the information provided [insert news article]\&quot;\n3. **Text Completion**: \&quot;Complete the following sentence by selecting one of the following options: [insert sentence] [insert option 1] [insert option 2] [insert option 3]\&quot;\n4. **Question Answering**: \&quot;Answer the following question by selecting one of the following options: [insert question] [insert option 1] [insert option 2] [insert option 3]\&quot;\n5. **Sentiment Analysis**: \&quot;Classify the following text as positive, neutral or negative by selecting one of the following options: [insert text] [positive] [neutral] [negative]\&quot;\n6. **Knowledge Integration**: \&quot;Integrate the following information with the existing knowledge about [specific topic]: [insert new information]\&quot;\n7. **Connecting pieces of information**: \&quot;Connect the following pieces of information in a way that is relevant and logical: [insert information 1] [insert information 2]\&quot;\n8. **Updating existing knowledge**: \&quot;Update the existing knowledge about [specific topic] with the following information: [insert new information]\&quot;\n\nThese examples illustrate how the Self-Consistency Prompt can be used to ensure that the output of ChatGPT is consistent with the input provided, and to perform various tasks such as text generation, summarization, completion, and analysis.&quot;,&quot;files&quot;:[],&quot;error&quot;:false,&quot;edit&quot;:false,&quot;properties&quot;:{&quot;text_color&quot;:&quot;&quot;,&quot;background_color&quot;:&quot;&quot;,&quot;edited&quot;:false,&quot;source&quot;:{&quot;id&quot;:&quot;NVIDIAModelComponent-vd9j8&quot;,&quot;display_name&quot;:&quot;NVIDIA&quot;,&quot;source&quot;:&quot;meta/llama-3.1-70b-instruct&quot;},&quot;icon&quot;:&quot;NVIDIA&quot;,&quot;allow_markdown&quot;:false,&quot;state&quot;:&quot;complete&quot;,&quot;targets&quot;:[]},&quot;category&quot;:&quot;message&quot;,&quot;content_blocks&quot;:[],&quot;id&quot;:&quot;8d81c6c1-061b-432a-b14f-746e65390b36&quot;,&quot;flow_id&quot;:&quot;da021761-1feb-4b45-bd28-148dcd3693b5&quot;},&quot;type&quot;:&quot;object&quot;}},&quot;logs&quot;:{&quot;message&quot;:[]},&quot;messages&quot;:[{&quot;message&quot;:&quot;Here are some examples of Self-Consistency Prompt:\n\n1. **Text Generation**: \&quot;Generate a product review that is consistent with the following product information [insert product information]\&quot;\n\n2. **Text Summarization**: \&quot;Summarize the following news article in a way that is consistent with the information provided [insert news article]\&quot;\n\n3. **Text Completion**: \&quot;Complete the following sentence by selecting one of the following options: [insert sentence] [insert option 1] [insert option 2] [insert option 3]\&quot;\n\n4. **Question Answering**: \&quot;Answer the following question by selecting one of the following options: [insert question] [insert option 1] [insert option 2] [insert option 3]\&quot;\n\n5. **Sentiment Analysis**: \&quot;Classify the following text as positive, neutral or negative by selecting one of the following options: [insert text] [positive] [neutral] [negative]\&quot;\n\n6. **Knowledge Integration**: \&quot;Integrate the following information with the existing knowledge about [specific topic]: [insert new information]\&quot;\n\n7. **Connecting pieces of information**: \&quot;Connect the following pieces of information in a way that is relevant and logical: [insert information 1] [insert information 2]\&quot;\n\n8. **Updating existing knowledge**: \&quot;Update the existing knowledge about [specific topic] with the following information: [insert new information]\&quot;\n\nThese examples illustrate how the Self-Consistency Prompt can be used to ensure that the output of ChatGPT is consistent with the input provided, and to perform various tasks such as text generation, summarization, completion, and analysis.&quot;,&quot;sender&quot;:&quot;Machine&quot;,&quot;sender_name&quot;:&quot;AI&quot;,&quot;session_id&quot;:&quot;da021761-1feb-4b45-bd28-148dcd3693b5&quot;,&quot;component_id&quot;:&quot;ChatOutput-iQnhL&quot;,&quot;files&quot;:[],&quot;type&quot;:&quot;message&quot;}],&quot;component_display_name&quot;:&quot;Chat Output&quot;,&quot;component_id&quot;:&quot;ChatOutput-iQnhL&quot;,&quot;used_frozen_result&quot;:false}]}]}% 
+    </code></pre><h3 id="15c3b313-aef4-80b2-8bdd-d951856ec804" class="">检索prompt</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="15c3b313-aef4-804a-af70-ce772541e45b" class="code"><code class="language-JavaScript">Query some examples of Self-Consistency Prompt from rag-server</code></pre><p id="15c3b313-aef4-80df-8aa2-dfb4300c449d" class="">
+    </p></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
