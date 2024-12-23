@@ -1,4 +1,4 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>F5-TTS声音克隆！本地配置F5-TTS最新版！支持E2-TTS！ngrok内网穿透让Colab也能运行</title><style>
+<html><head><meta content="text/html; charset=utf-8" http-equiv="Content-Type"/><title>F5-TTS声音克隆！本地配置F5-TTS最新版！支持E2-TTS！ngrok内网穿透让Colab也能运行</title><style>
 /* cspell:disable-file */
 /* webkit printing magic: print all background colors */
 html {
@@ -681,11 +681,11 @@ blockquote {
 	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
 }
 	
-</style></head><body><article id="1303b313-aef4-805a-ae74-e1827b3022f6" class="page sans"><header><h1 class="page-title"><strong>F5-TTS声音克隆！本地配置F5-TTS最新版！支持E2-TTS！ngrok内网穿透让Colab也能运行</strong></h1><p class="page-description"></p></header><div class="page-body"><p id="1303b313-aef4-8083-985d-cb5727fb40c4" class="">
-</p><p id="1303b313-aef4-80f6-b28b-cca5d0549449" class="">
-</p><blockquote id="1303b313-aef4-80a6-b717-f90b06b7021f" class=""><strong>🚀F5-TTS</strong> 是一款非自回归文本转语音（TTS）系统，采用了 <strong>Flow Matching</strong>和<strong>Diffusion Transformer</strong>技术。这款模型摒弃了传统 TTS 系统中的复杂模块，例如时长模型、音素对齐和文本编码器等，而是通过将文本填充至与输入语音相同的长度，并应用去噪方法实现语音生成。<br/><br/><p id="875bb29a-b3b1-4b80-94c8-4afd79069d57" class=""><strong>🚀</strong>F5-TTS 的一大创新点是 <strong>Sway Sampling</strong> 策略，在推理阶段显著提升了效率，使其具备实时处理能力。这种特性适用于需要快速语音合成的场景，如语音助手和交互式语音系统。<br/><br/><br/><strong>🚀</strong>F5-TTS 支持 <strong>零样本语音克隆</strong>，无需大量训练数据即可生成多种声音和口音，还提供了 <strong>情绪控制</strong> 和 <strong>速度调整</strong> 功能。该系统多语言支持强大，特别适合需要生成多样音频内容的应用场景，比如有声书、电子学习模块和营销材料等。</p></blockquote><p id="1303b313-aef4-8026-9f4c-c74967b61e2e" class="">
-</p><p id="1303b313-aef4-8033-a65d-d98053724c81" class="">
-</p><h3 id="1303b313-aef4-80e1-92c8-df2efd4d7183" class="">安装</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1303b313-aef4-80dc-a335-fc5ef12a6df1" class="code"><code class="language-Python">conda create -n f5-tts python=3.10
+</style></head><body><article class="page sans" id="1303b313-aef4-805a-ae74-e1827b3022f6"><header><h1 class="page-title"><strong>F5-TTS声音克隆！本地配置F5-TTS最新版！支持E2-TTS！ngrok内网穿透让Colab也能运行</strong></h1><p class="page-description"></p></header><div class="page-body"><p class="" id="1303b313-aef4-8083-985d-cb5727fb40c4">
+</p><p class="" id="1303b313-aef4-80f6-b28b-cca5d0549449">
+</p><blockquote class="" id="1303b313-aef4-80a6-b717-f90b06b7021f"><strong>🚀F5-TTS</strong> 是一款非自回归文本转语音（TTS）系统，采用了 <strong>Flow Matching</strong>和<strong>Diffusion Transformer</strong>技术。这款模型摒弃了传统 TTS 系统中的复杂模块，例如时长模型、音素对齐和文本编码器等，而是通过将文本填充至与输入语音相同的长度，并应用去噪方法实现语音生成。<br/><br/><p class="" id="875bb29a-b3b1-4b80-94c8-4afd79069d57"><strong>🚀</strong>F5-TTS 的一大创新点是 <strong>Sway Sampling</strong> 策略，在推理阶段显著提升了效率，使其具备实时处理能力。这种特性适用于需要快速语音合成的场景，如语音助手和交互式语音系统。<br/><br/><br/><strong>🚀</strong>F5-TTS 支持 <strong>零样本语音克隆</strong>，无需大量训练数据即可生成多种声音和口音，还提供了 <strong>情绪控制</strong> 和 <strong>速度调整</strong> 功能。该系统多语言支持强大，特别适合需要生成多样音频内容的应用场景，比如有声书、电子学习模块和营销材料等。</p></blockquote><p class="" id="1303b313-aef4-8026-9f4c-c74967b61e2e">
+</p><p class="" id="1303b313-aef4-8033-a65d-d98053724c81">
+</p><h3 class="" id="1303b313-aef4-80e1-92c8-df2efd4d7183">安装</h3><script crossorigin="anonymous" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" referrerpolicy="no-referrer" src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script><link crossorigin="anonymous" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" referrerpolicy="no-referrer" rel="stylesheet"/><pre class="code" id="1303b313-aef4-80dc-a335-fc5ef12a6df1"><code class="language-Python">conda create -n f5-tts python=3.10
 conda activate f5-tts
 
 
@@ -716,7 +716,7 @@ f5-tts_infer-gradio --port 7860 --host 0.0.0.0
 
 # Launch a share link
 f5-tts_infer-gradio --share
-</code></pre><h3 id="1303b313-aef4-80ef-a513-fe06b742c078" class="">一次执行</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1303b313-aef4-8028-b7c1-dbb16ca37bdc" class="code"><code class="language-Python">conda create -n f5-tts python=3.10 -y &amp;&amp; \
+</code></pre><h3 class="" id="1303b313-aef4-80ef-a513-fe06b742c078">一次执行</h3><script crossorigin="anonymous" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" referrerpolicy="no-referrer" src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script><link crossorigin="anonymous" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" referrerpolicy="no-referrer" rel="stylesheet"/><pre class="code" id="1303b313-aef4-8028-b7c1-dbb16ca37bdc"><code class="language-Python">conda create -n f5-tts python=3.10 -y &amp;&amp; \
 conda activate f5-tts &amp;&amp; \
 sudo apt update &amp;&amp; sudo apt install -y ffmpeg &amp;&amp; \
 pip uninstall -y torch torchvision torchaudio transformers &amp;&amp; \
@@ -724,7 +724,7 @@ pip install torch torchvision torchaudio --index-url https://download.pytorch.or
 git clone https://github.com/SWivid/F5-TTS.git &amp;&amp; \
 cd F5-TTS &amp;&amp; \
 pip install -e . &amp;&amp; \
-f5-tts_infer-gradio --port 7860 --host 0.0.0.0</code></pre><h2 id="1303b313-aef4-8089-9d81-e7b0735a63bd" class=""><strong>👉👉👉如有问题或请联系我的徽信 stoeng</strong></h2><h2 id="1303b313-aef4-804d-8046-d67ec85cfde9" class=""><strong>🔥🔥🔥本项目代码由AI超元域频道制作，观看更多大模型微调视频请访问我的频道⬇</strong></h2><h3 id="1303b313-aef4-80c5-ade3-e50cae38d061" class=""><strong>👉👉👉</strong><strong><a href="https://space.bilibili.com/3493277319825652">我的哔哩哔哩频道</a></strong></h3><h3 id="1303b313-aef4-80c5-bc76-fbc1c0d4946f" class=""><strong>👉👉👉</strong><strong><a href="https://www.youtube.com/@AIsuperdomain">我的YouTube频道</a></strong></h3><h3 id="1303b313-aef4-803e-978a-ea847d4be65d" class=""><strong>👉👉👉我的开源项目 </strong><strong><a href="https://github.com/win4r/AISuperDomain">https://github.com/win4r/AISuperDomain</a></strong></h3><h3 id="1303b313-aef4-80a1-88ce-fcde6b95bbb2" class=""><strong>充值openai api key或者ChatGPT会员可以使用wildcard虚拟卡充值。wildcard官方链接：</strong></h3><p id="1303b313-aef4-8098-a466-ce8d3bbbf7a9" class=""><a href="https://bewildcard.com/i/VLM">https://bewildcard.com/i/VLM</a></p><h3 id="1303b313-aef4-80d1-a287-cd6b3a2eb56c" class=""><strong>wildcard注册教程和充值API教程(国内打开速度快)：</strong></h3><p id="1303b313-aef4-80ee-9754-f94b3328d201" class=""><a href="https://mp.weixin.qq.com/s?__biz=MzU0NDc2MzQ3MA==&amp;mid=2247484020&amp;idx=1&amp;sn=fee448a207cbf3b4ccda8a775f4fe946&amp;chksm=fb767955cc01f043b9e4a5ae926c2e68cefc0ee12af9df715eb632a90003784c45e2108470f1#rd">https://mp.weixin.qq.com/s?__biz=MzU0NDc2MzQ3MA==&amp;mid=2247484020&amp;idx=1&amp;sn=fee448a207cbf3b4ccda8a775f4fe946&amp;chksm=fb767955cc01f043b9e4a5ae926c2e68cefc0ee12af9df715eb632a90003784c45e2108470f1#rd</a></p><h3 id="1303b313-aef4-80bf-8356-d95a0b7ca10e" class=""><strong>wildcard注册教程和充值API教程(海外打开速度快)：</strong></h3><p id="1303b313-aef4-807d-8c8a-e9eb42d43c60" class=""><strong><a href="https://stoeng.medium.com/%E4%BF%9D%E5%A7%86%E7%BA%A7%E6%95%99%E7%A8%8B-%E9%80%9A%E8%BF%87wildcard%E8%99%9A%E6%8B%9F%E4%BF%A1%E7%94%A8%E5%8D%A1%E8%AE%A2%E9%98%85chatgpt-claude%E4%BC%9A%E5%91%98%E5%92%8Capi-%E7%99%BE%E5%88%86%E7%99%BE%E5%8F%AF%E7%94%A8-a2865a18df01">https://stoeng.medium.com/保姆级教程-通过wildcard虚拟信用卡订阅chatgpt-claude会员和api-百分百可用-a2865a18df01</a></strong></p><h3 id="1303b313-aef4-8004-b1a1-f57f82dec14f" class="">Colab</h3><script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" crossorigin="anonymous" referrerPolicy="no-referrer"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" crossorigin="anonymous" referrerPolicy="no-referrer"/><pre id="1303b313-aef4-80eb-865d-d8779baa81d4" class="code"><code class="language-Python">!pip install pyngrok transformers gradio
+f5-tts_infer-gradio --port 7860 --host 0.0.0.0</code></pre><h2 class="" id="1303b313-aef4-8089-9d81-e7b0735a63bd"><strong>👉👉👉如有问题或请联系我的徽信 stoeng</strong></h2><h2 class="" id="1303b313-aef4-804d-8046-d67ec85cfde9"><strong>🔥🔥🔥本项目代码由AI超元域频道制作，观看更多大模型微调视频请访问我的频道⬇</strong></h2><h3 class="" id="1303b313-aef4-80c5-ade3-e50cae38d061"><strong>👉👉👉</strong><strong><a href="https://space.bilibili.com/3493277319825652">我的哔哩哔哩频道</a></strong></h3><h3 class="" id="1303b313-aef4-80c5-bc76-fbc1c0d4946f"><strong>👉👉👉</strong><strong><a href="https://www.youtube.com/@AIsuperdomain">我的YouTube频道</a></strong></h3><h3 class="" id="1303b313-aef4-803e-978a-ea847d4be65d"><strong>👉👉👉我的开源项目 </strong><strong><a href="https://github.com/win4r/AISuperDomain">https://github.com/win4r/AISuperDomain</a></strong></h3><script crossorigin="anonymous" integrity="sha512-7Z9J3l1+EYfeaPKcGXu3MS/7T+w19WtKQY/n+xzmw4hZhJ9tyYmcUS+4QqAlzhicE5LAfMQSF3iFTK9bQdTxXg==" referrerpolicy="no-referrer" src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js"></script><link crossorigin="anonymous" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism.min.css" integrity="sha512-tN7Ec6zAFaVSG3TpNAKtk4DOHNpSwKHxxrsiw4GHKESGPs5njn/0sMCUMl2svV4wo4BK/rCP7juYz+zx+l6oeQ==" referrerpolicy="no-referrer" rel="stylesheet"/><pre class="code" id="1303b313-aef4-80eb-865d-d8779baa81d4"><code class="language-Python">!pip install pyngrok transformers gradio
 
 # 导入所需库
 import os
@@ -755,14 +755,14 @@ import requests
 
 def is_port_in_use(port):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        return s.connect_ex((&#x27;localhost&#x27;, port)) == 0
+        return s.connect_ex(('localhost', port)) == 0
 
 def wait_for_server(port, timeout=60):
     start_time = time.time()
     while time.time() - start_time &lt; timeout:
         if is_port_in_use(port):
             try:
-                response = requests.get(f&#x27;http://localhost:{port}&#x27;)
+                response = requests.get(f'http://localhost:{port}')
                 if response.status_code == 200:
                     return True
             except:
@@ -777,7 +777,7 @@ ngrok.kill()
 def run_gradio():
     import sys
     import f5_tts.infer.infer_gradio
-    sys.argv = [&#x27;f5-tts_infer-gradio&#x27;, &#x27;--port&#x27;, &#x27;7860&#x27;, &#x27;--host&#x27;, &#x27;0.0.0.0&#x27;]
+    sys.argv = ['f5-tts_infer-gradio', '--port', '7860', '--host', '0.0.0.0']
     f5_tts.infer.infer_gradio.main()
 
 thread = threading.Thread(target=run_gradio)
@@ -785,16 +785,16 @@ thread.daemon = True
 thread.start()
 
 # 等待 Gradio 服务启动
-print(&quot;等待 Gradio 服务启动...&quot;)
+print("等待 Gradio 服务启动...")
 if wait_for_server(7860):
-    print(&quot;Gradio 服务已启动&quot;)
+    print("Gradio 服务已启动")
     # 启动 ngrok
     public_url = ngrok.connect(7860)
-    print(f&quot;\n=== 访问信息 ===&quot;)
-    print(f&quot;Ngrok URL: {public_url}&quot;)
-    print(&quot;===============\n&quot;)
+    print(f"\n=== 访问信息 ===")
+    print(f"Ngrok URL: {public_url}")
+    print("===============\n")
 else:
-    print(&quot;Gradio 服务启动超时&quot;)
+    print("Gradio 服务启动超时")
 
 # 保持程序运行
 while True:
@@ -807,7 +807,7 @@ while True:
 
 
 !f5-tts_infer-cli \
---model &quot;F5-TTS&quot; \
---ref_audio &quot;/content/test.MP3&quot; \
---ref_text &quot;欢迎来到AI超元域,微软发布了一款基于大模型的屏幕解析工具OmniParser.这款工具是专为增强用户界面自动化而设计的它.&quot; \
---gen_text &quot;欢迎来到AI超元域，今天将为大家详细演示另一款开源语音克隆项目。&quot;</code></pre></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
+--model "F5-TTS" \
+--ref_audio "/content/test.MP3" \
+--ref_text "欢迎来到AI超元域,微软发布了一款基于大模型的屏幕解析工具OmniParser.这款工具是专为增强用户界面自动化而设计的它." \
+--gen_text "欢迎来到AI超元域，今天将为大家详细演示另一款开源语音克隆项目。"</code></pre></div></article><span class="sans" style="font-size:14px;padding-top:2em"></span></body></html>
